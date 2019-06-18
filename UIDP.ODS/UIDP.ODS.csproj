@@ -8,8 +8,4 @@
     <ProjectReference Include="..\UIDP.UTILITY\UIDP.UTILITY.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CangChu\" />
-  </ItemGroup>
-
 </Project>

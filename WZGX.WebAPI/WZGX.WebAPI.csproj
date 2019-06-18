@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\CangChu\" />
     <Folder Include="UploadFiles\img\" />
     <Folder Include="UploadFiles\notice\" />
     <Folder Include="wwwroot\" />
