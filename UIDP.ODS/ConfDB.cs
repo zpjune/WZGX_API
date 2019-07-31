@@ -23,7 +23,7 @@ namespace UIDP.ODS
 
            // sql += " limit " + limit * page + "," + limit;
 
-            return  db.GetDataTable(sql.ToUpper());
+            return  db.GetDataTable(sql);
         }
         /// <summary>
         /// 登录获取系统配置信息

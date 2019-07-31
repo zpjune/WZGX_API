@@ -45,20 +45,20 @@ LEFT JOIN ts_uidp_org on ts_uidp_org_user.ORG_ID=ts_uidp_org.ORG_ID where 1=1 ";
             {
                 DateTime date = Convert.ToDateTime(d["BEGIN_ACCESS_TIME"].ToString());
                 //sql += " and ACCESS_TIME > '" + date.Year + "-" + date.Month + "-" + date.Day + " 00:00:00'";
-                sql += " and ACCESS_TIME between '" + date.Year + "-" + date.Month + "-" + date.Day + " 00:00:00' and '" + date.Year + "-" + date.Month + "-" + date.Day + " 23:59:59'";
+                sql += " and ACCESS_TIME between to_date('" + date.Year + "-" + date.Month + "-" + date.Day + " 00:00:00','yyyy-mm-dd hh24:mi:ss') and to_date('" + date.Year + "-" + date.Month + "-" + date.Day + " 23:59:59','yyyy-mm-dd hh24:mi:ss')";
                 //sql += " and date_format(ACCESS_TIME,'%Y-%m-%d')= date_format('"+ d["ACCESS_TIME"].ToString() + "','%Y-%m-%d')  ";
             }
             else if (d["END_ACCESS_TIME"] != null && d["END_ACCESS_TIME"].ToString() != "" && (d["BEGIN_ACCESS_TIME"] == null || d["BEGIN_ACCESS_TIME"].ToString() == ""))
             {
                 DateTime date = Convert.ToDateTime(d["END_ACCESS_TIME"].ToString());
-                sql += " and ACCESS_TIME < '" + date.Year + "-" + date.Month + "-" + date.Day + " 23:59:59'";
+                sql += " and ACCESS_TIME < to_date('" + date.Year + "-" + date.Month + "-" + date.Day + " 23:59:59','yyyy-mm-dd hh24:mi:ss')";
 
             }
             else if (d["BEGIN_ACCESS_TIME"] != null && d["BEGIN_ACCESS_TIME"].ToString() != "" && d["END_ACCESS_TIME"] != null && d["END_ACCESS_TIME"].ToString() != "")
             {
                 DateTime bdate = Convert.ToDateTime(d["BEGIN_ACCESS_TIME"].ToString());
                 DateTime edate = Convert.ToDateTime(d["END_ACCESS_TIME"].ToString());
-                sql += " and ACCESS_TIME between '"+bdate.Year+"-"+bdate.Month+"-"+bdate.Day+" 00:00:00' and '" + edate.Year + "-" + edate.Month + "-" + edate.Day + " 23:59:59'" ;
+                sql += " and ACCESS_TIME between to_date('"+bdate.Year+"-"+bdate.Month+"-"+bdate.Day+ " 00:00:00','yyyy-mm-dd hh24:mi:ss') and to_date('" + edate.Year + "-" + edate.Month + "-" + edate.Day + " 23:59:59','yyyy-mm-dd hh24:mi:ss')";
                 //sql += " and date_format(ACCESS_TIME,'%Y-%m-%d')= date_format('"+ d["ACCESS_TIME"].ToString() + "','%Y-%m-%d')  ";
             }
             sql += " order by ACCESS_TIME desc ";

@@ -53,7 +53,7 @@ namespace UIDP.ODS
                 val = val.Substring(1);
             }
 
-            string sql = "INSERT INTO ts_store_notice_detail(" + col + ",CREATE_DATE,IS_DELETE) VALUES(" + val + ",'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "',0)";
+            string sql = "INSERT INTO ts_store_notice_detail(" + col + ",CREATE_DATE,IS_DELETE) VALUES(" + val + "," + "TO_DATE('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+ "','yyyy-mm-dd hh24:mi:ss')" + ",0)";
 
             return db.ExecutByStringResult(sql);
         }

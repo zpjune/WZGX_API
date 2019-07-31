@@ -69,11 +69,13 @@ namespace UIDP.ODS
             sql += "'" + GetIsNullStr(d["NOTICE_CODE"]) + "',";
             sql += "'" + GetIsNullStr(d["NOTICE_TITLE"]) + "',";
             sql += "'" + GetIsNullStr(d["NOTICE_CONTENT"]) + "',";
-            sql += "'" + GetIsNullStr(d["NOTICE_DATETIME"]) + "',";
+            //sql += "'" + GetIsNullStr(d["NOTICE_DATETIME"]) + "',";
+            sql += "TO_DATE('" + d["NOTICE_DATETIME"] + "','yyyy-mm-dd hh24:mi:ss'),";
             sql += "'" + GetIsNullStr(d["NOTICE_ORGID"]) + "',";
             sql += "'" + GetIsNullStr(d["NOTICE_ORGNAME"]) + "',";
             sql += "'" + GetIsNullStr(d["CREATER"]) + "',";
-            sql += "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "',0 )";
+            //sql += "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "',0 )";
+            sql+= "TO_DATE('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','yyyy-mm-dd hh24:mi:ss'),0)";
             //sql += "'" + GetIsNullStr(d["REMARK"]) + "')";
             return db.ExecutByStringResult(sql);
         }
@@ -101,8 +103,8 @@ namespace UIDP.ODS
             sb.Append(" NOTICE_CONTENT='");
             sb.Append(d["NOTICE_CONTENT"] == null ? "" : GetIsNullStr(d["NOTICE_CONTENT"]) + "', ");
 
-            sb.Append(" NOTICE_DATETIME='");
-            sb.Append(d["NOTICE_DATETIME"] == null ? "" : GetIsNullStr(d["NOTICE_DATETIME"]) + "', ");
+            sb.Append(" NOTICE_DATETIME=");
+            sb.Append(d["NOTICE_DATETIME"] == null ? "" : "TO_DATE('" + d["NOTICE_DATETIME"] + "', 'yyyy-mm-dd hh24:mi:ss'),");
             //sb.Append(" NOTICE_ORGID='");
             //sb.Append(d["NOTICE_ORGID"] == null ? "" : GetIsNullStr(d["NOTICE_ORGID"]) + "', ");
             //sb.Append(" NOTICE_ORGNAME='");

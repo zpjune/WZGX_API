@@ -51,7 +51,7 @@ namespace UIDP.ODS
             sql += " GROUP_NAME='" + GetIsNullStr(d["groupName"]) + "',";
             sql += " GROUP_CODE_UPPER='" + GetIsNullStr(d["parentId"]) + "',";
             sql += " REMARK='" + GetIsNullStr(d["remark"]) + "'";
-            sql += " where GROUP_ID='" + d["id"].ToString() + "' ;";
+            sql += " where GROUP_ID='" + d["id"].ToString() + "'";
 
             return db.ExecutByStringResult(sql);
         }

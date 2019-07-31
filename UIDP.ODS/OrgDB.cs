@@ -82,8 +82,7 @@ namespace UIDP.ODS
             sql += " ORG_CODE_UPPER='" + GetIsNullStr(d["orgpCode"]) + "',";
             sql += " ISINVALID='" + GetIsNullStr(d["ISINVALID"]) + "',";
             sql += " REMARK='" + GetIsNullStr(d["remark"]) + "'";
-            sql += " where ORG_ID='" + d["id"].ToString() + "' ;";
-
+            sql += " where ORG_ID='" + d["id"].ToString() + "'";
             return db.ExecutByStringResult(sql);
         }
         /// <summary>
@@ -138,7 +137,7 @@ namespace UIDP.ODS
         /// <returns></returns>
         public DataTable GetOrgById(string orgId)
         {
-            string sql = "select * FROM ts_uidp_org where ORG_ID='" + orgId + "' ;";
+            string sql = "select * FROM ts_uidp_org where ORG_ID='" + orgId + "'";
             return db.GetDataTable(sql);
         }
         public DataTable GetOrgByCode(string orgCode)
