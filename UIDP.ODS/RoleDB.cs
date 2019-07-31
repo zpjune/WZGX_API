@@ -62,7 +62,7 @@ namespace UIDP.ODS
         /// <returns></returns>
         public string updateRoleArticle(string ids)
         {
-            string sql = "delete FROM ts_uidp_groupinfo where GROUP_ID in(" + ids + ") ;";
+            string sql = "delete FROM ts_uidp_groupinfo where GROUP_ID in(" + ids + ")";
 
             return db.ExecutByStringResult(sql);
         }

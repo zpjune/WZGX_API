@@ -376,7 +376,8 @@ namespace UIDP.BIZModule
 
             for (int i = 1; i < truckNum + 1; i++)
             {
-                StringBuilder sb = new StringBuilder();
+                //StringBuilder sb = new StringBuilder();
+                string str = "insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ";
                 string fengefu = "";
                 int rowbegin = (i - 1) * 500;
                 int rowend = i * 500;
@@ -391,8 +392,8 @@ namespace UIDP.BIZModule
                     DataRow[] rows = orgdt.Select("ORG_CODE='" + getString(dt.Rows[j]["组织机构编码"]) + "' and ORG_CODE_UPPER='" + getString(dt.Rows[j]["上级组织机构编码"]) + "'");
                     if (rows.Length == 0)
                     {
-                        //sb.Append(" insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
-                        sb.Append(fengefu + "('" + Guid.NewGuid().ToString() + "',");
+                        StringBuilder sb = new StringBuilder(str);
+                        sb.Append(fengefu+"('" + Guid.NewGuid().ToString() + "',");
                         sb.Append("'" + getString(dt.Rows[j]["组织机构编码"]) + "',");
                         sb.Append("'" + getString(dt.Rows[j]["组织机构名称"]) + "',");
                         sb.Append("'" + getString(dt.Rows[j]["组织机构简称"]) + "',");
@@ -407,7 +408,8 @@ namespace UIDP.BIZModule
                         }
                         sb.Append("'1',");
                         sb.Append("'" + getString(dt.Rows[j]["备注"]) + "')");
-                        fengefu = ",";
+                        //fengefu = ",";
+                        sqllst.Add(sb.ToString());
                     }
                     else
                     {
@@ -427,15 +429,15 @@ namespace UIDP.BIZModule
                     }
                     //sqllst.Add(sb.ToString());
                 }
-                if (sb.Length > 0)
-                {
-                    sb.Insert(0, " insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
-                }
-                //sb.Append(tempsb);
-                if (sb != null && sb.Length > 0)
-                {
-                    sqllst.Add(sb.ToString());
-                }
+                //if (sb.Length > 0)
+                //{
+                //    sb.Insert(0, " insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
+                //}
+                ////sb.Append(tempsb);
+                //if (sb != null && sb.Length > 0)
+                //{
+                //    sqllst.Add(sb.ToString());
+                //}
             }
 
             if (db.GetDBType() == "MYSQL")
@@ -452,8 +454,7 @@ namespace UIDP.BIZModule
             }
             else if (db.GetDBType() == "ORACLE")
             {
-                string sql = @"update ts_uidp_org a,ts_uidp_org b set a.ORG_ID_UPPER=b.ORG_ID
-                where a.ORG_CODE_UPPER=b.ORG_CODE";
+                string sql = @"UPDATE TS_UIDP_ORG a SET a.ORG_ID_UPPER =(SELECT ORG_ID FROM TS_UIDP_ORG b WHERE a.ORG_CODE_UPPER=b.ORG_CODE)";
                 sqllst.Add(sql);
             }
             //sqllst.Add(sb.ToString());

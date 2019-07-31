@@ -5,6 +5,7 @@
 // 编写日期：2005-11-01
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.OracleClient;
@@ -20,8 +21,9 @@ namespace UIDP.DB
 		private string m_ParamPlaceholder;	//参数的占位符
 		private OracleConnection m_Connection;
 		private OracleTransaction m_Transaction;
-		private string m_ConnectionString = "";
-        private int m_ConnectionTimeout = 600;
+        private OracleCommand m_Command;
+        private string m_ConnectionString = "";
+        private int m_ConnectionTimeout = 3600;
 		private string m_Database = "";
 		private ConnectionState m_ConnectionState = ConnectionState.Closed;
         private DBTYPE m_dbType = DBTYPE.ORACLE;
@@ -245,7 +247,7 @@ namespace UIDP.DB
 		/// </summary>
 		public void Open()
 		{
-			m_Connection.Open();
+            m_Connection.Open();
 			m_ConnectionState = m_Connection.State;
 		}
 
@@ -265,9 +267,33 @@ namespace UIDP.DB
 		/// <returns>事务对象</returns>
 		public IDbTransaction BeginTransaction()
 		{
-			m_Transaction = m_Connection.BeginTransaction();
-			return m_Transaction;
+            m_Command = m_Connection.CreateCommand();
+            m_Transaction = m_Connection.BeginTransaction(IsolationLevel.ReadCommitted);
+            m_Command.Transaction = m_Transaction;
+            return m_Transaction;
 		}
+        /// <summary>
+        /// Oracle数据库执行事务的方法，mysql和sqlserver用不上
+        /// </summary>
+        /// <param name="list">执行的SQL</param>
+        public void ExecuteTransactionSQL(List<string> list)
+        {
+            try
+            {
+                foreach (string str in list)
+                {
+                    m_Command.CommandText = str;
+                    m_Command.ExecuteNonQuery();
+                }
+                Commit();
+                Close();
+            }
+            catch(Exception e)
+            {
+                Rollback();
+                throw new Exception(e.Message);           
+            }       
+        }
 
 		/// <summary>
 		/// 根据事务锁定级别创建一个新事务

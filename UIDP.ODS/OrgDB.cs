@@ -143,7 +143,7 @@ namespace UIDP.ODS
         }
         public DataTable GetOrgByCode(string orgCode)
         {
-            string sql = "select * FROM ts_uidp_org where ORG_CODE_UPPER='" + orgCode + "' ;";
+            string sql = "select * FROM ts_uidp_org where ORG_CODE_UPPER='" + orgCode + "'";
             return db.GetDataTable(sql);
         }
 

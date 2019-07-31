@@ -204,7 +204,7 @@ namespace UIDP.ODS
         /// </summary>
         /// <returns></returns>
         public string getAdminCode() {
-            string sqluser = "SELECT conf_value from ts_uidp_config where conf_code= 'Admin_Code'";
+            string sqluser = "SELECT conf_value from ts_uidp_config where conf_code=".ToUpper()+ " 'Admin_Code'";
             return db.GetString(sqluser);
         }/// <summary>
          /// 获取管理员密码
@@ -212,7 +212,7 @@ namespace UIDP.ODS
          /// <returns></returns>
         public string getAdminPass()
         {
-            string sqluser = "SELECT conf_value from ts_uidp_config where conf_code= 'Admin_Password'";
+            string sqluser = "SELECT conf_value from ts_uidp_config where conf_code=".ToUpper()+ "'Admin_Password'";
             return db.GetString(sqluser);
         }
         /// <summary>

@@ -135,15 +135,19 @@ namespace UIDP.ODS
             }
             else
             {
-                sql = "SELECT distinct * " +
-      "from(select f.* " +
-              "from ts_uidp_group_user ur, " +
-                   "TS_UIDP_GROUP_POWERINFO rf, " +
-                  "ts_uidp_menuinfo        f " +
-             "where ur.user_id = '" + sysCode["userId"].ToString() + "' " +
-             " and f.SYS_CODE='" + sysCode["sysCode"].ToString() + "' " +
-               "and ur.group_id = rf.group_id  " +  //and f.MENU_PROP=1
-               "and rf.menu_id = f.menu_id ) a union select * from ts_uidp_menuinfo where MENU_ID='0fea0012-b259-43b9-9c49-1a993cf3defa'";
+                //          sql = "SELECT distinct * " +
+                //"from(select f.* " +
+                //        "from ts_uidp_group_user ur, " +
+                //             "TS_UIDP_GROUP_POWERINFO rf, " +
+                //            "ts_uidp_menuinfo        f " +
+                //       "where ur.user_id = '" + sysCode["userId"].ToString() + "' " +
+                //       " and f.SYS_CODE='" + sysCode["sysCode"].ToString() + "' " +
+                //         "and ur.group_id = rf.group_id  " +  //and f.MENU_PROP=1
+                //         "and rf.menu_id = f.menu_id ) a union select * from ts_uidp_menuinfo where MENU_ID='0fea0012-b259-43b9-9c49-1a993cf3defa'";
+                sql = @"SELECT DISTINCT f.* from ts_uidp_group_user ur LEFT JOIN TS_UIDP_GROUP_POWERINFO rf ON ur.GROUP_ID = rf.GROUP_ID LEFT JOIN ts_uidp_menuinfo f ON rf.MENU_ID = f.MENU_ID";
+                sql += " WHERE ur.USER_ID = '" + sysCode["userId"] + "'";
+                sql += " AND f.SYS_CODE = '" + sysCode["sysCode"] + "'";
+                sql += " OR f.MENU_ID = '0fea0012-b259-43b9-9c49-1a993cf3defa'";
             }
 
             //string sql = "SELECT * from ts_uidp_menuinfo";

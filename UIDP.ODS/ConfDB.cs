@@ -23,7 +23,7 @@ namespace UIDP.ODS
 
            // sql += " limit " + limit * page + "," + limit;
 
-            return  db.GetDataTable(sql);
+            return  db.GetDataTable(sql.ToUpper());
         }
         /// <summary>
         /// 登录获取系统配置信息
@@ -32,7 +32,7 @@ namespace UIDP.ODS
         /// <returns></returns>
         public DataTable loginConfig(Dictionary<string, object> d)
         {
-            string sql = "select * from ts_uidp_config where CONF_CODE in ("+ d["CONF_CODE"].ToString()+ ") order by conf_code ";
+            string sql = "select * from ts_uidp_config where CONF_CODE in (".ToUpper()+ d["CONF_CODE"].ToString()+ ") order by conf_code ".ToUpper();
             return db.GetDataTable(sql);
             
         }
@@ -43,7 +43,7 @@ namespace UIDP.ODS
         public DataTable SysColor(Dictionary<string, object> d)
         {
             string sql = "select CONF_VALUE from ts_uidp_config where CONF_CODE='COLOR'";
-            return db.GetDataTable(sql);
+            return db.GetDataTable(sql.ToUpper());
         }
         /// <summary>
         /// 登录获取系统配置信息
@@ -54,7 +54,7 @@ namespace UIDP.ODS
         {
             string sql = "select * from ts_uidp_config where CONF_CODE='CLOUD_ORG'";
 
-            return db.GetDataTable(sql);
+            return db.GetDataTable(sql.ToUpper());
         }
         public string createConfigArticle(Dictionary<string, object> d)
         {
@@ -76,13 +76,13 @@ namespace UIDP.ODS
 
             string sql = "INSERT INTO ts_uidp_config(" + col + ") VALUES(" + val + ")";
 
-            return db.ExecutByStringResult(sql);
+            return db.ExecutByStringResult(sql.ToUpper());
         }
 
 
         public string updateConfigData(Dictionary<string, object> d)
         {
-            string sql = "update  ts_uidp_config set  CONF_VALUE='" + d["CONF_VALUE"].ToString() + "' ";
+            string sql = "update  ts_uidp_config set  CONF_VALUE='" + d["CONF_VALUE"].ToString() + "'".ToUpper();
             if (d["CONF_NAME"]!=null) {
                 sql += " , CONF_NAME='" + d["CONF_NAME"].ToString() + "' ";
             }
@@ -94,7 +94,7 @@ namespace UIDP.ODS
         {
             string sql = "delete FROM ts_uidp_config where CONF_CODE='" + d["CONF_CODE"].ToString() + "'";
 
-            return db.ExecutByStringResult(sql);
+            return db.ExecutByStringResult(sql.ToUpper());
         }
 
     }

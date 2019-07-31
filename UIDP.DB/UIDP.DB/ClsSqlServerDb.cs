@@ -5,6 +5,7 @@
 // ±àÐ´ÈÕÆÚ£º2005-11-01
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -447,6 +448,11 @@ namespace UIDP.DB
             DataSet ds = new DataSet();
             da.Fill(ds);
             return ds;
+        }
+
+        public void ExecuteTransactionSQL(List<string> list)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

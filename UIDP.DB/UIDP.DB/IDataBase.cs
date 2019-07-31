@@ -6,6 +6,7 @@
 
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 namespace UIDP.DB
@@ -175,10 +176,17 @@ namespace UIDP.DB
 		/// <returns>IDbTransaction</returns>
 		IDbTransaction BeginTransaction(IsolationLevel isoLevel);
 
-		/// <summary>
-		/// 使用 ConnectionString 所指定的属性设置打开数据库连接
-		/// </summary>
-		void Open();
+
+        /// <summary>
+        /// Oracle数据库执行事务的方法，mysql和sqlserver用不上
+        /// </summary>
+        /// <param name="list">执行的SQL</param>
+        void ExecuteTransactionSQL(List<string> list);
+
+        /// <summary>
+        /// 使用 ConnectionString 所指定的属性设置打开数据库连接
+        /// </summary>
+        void Open();
 
 		/// <summary>
 		/// 关闭数据库连接

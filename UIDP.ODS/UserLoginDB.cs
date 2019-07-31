@@ -28,7 +28,7 @@ namespace UIDP.ODS
             sql.Append(d["LOGIN_PASS"] == null ? "" : d["LOGIN_PASS"].ToString() + "',");
             sql.Append(" '");
             sql.Append(d["LOGIN_REMARK"] == null ? "" : d["LOGIN_REMARK"].ToString() + "')");
-            return db.ExecutByStringResult(sql.ToString());
+            return db.ExecutByStringResult(sql.ToString().ToUpper());
         }
         /// <summary>
         /// 通过LOGIN_ID查询ts_uidp_login
@@ -38,7 +38,7 @@ namespace UIDP.ODS
         public DataTable GetUserLoginById(string LOGIN_ID)
         {
             string sql = "select * from ts_uidp_login where LOGIN_ID='" + LOGIN_ID + "'";
-            return db.GetDataTable(sql);
+            return db.GetDataTable(sql.ToUpper());
         }
         /// <summary>
         /// LOGIN_CODE查询ts_uidp_login
@@ -48,7 +48,7 @@ namespace UIDP.ODS
         public DataTable GetUserLoginByLOGIN_CODE(string LOGIN_CODE)
         {
             string sql = "select * from ts_uidp_login where LOGIN_CODE='" + LOGIN_CODE + "'";
-            return db.GetDataTable(sql);
+            return db.GetDataTable(sql.ToUpper());
         }
         /// <summary>
         /// 修改
@@ -63,7 +63,7 @@ namespace UIDP.ODS
             sql += d["LOGIN_REMARK"] == null ? "" : d["LOGIN_REMARK"].ToString() + "' ";
             sql += " where LOGIN_ID='";
             sql += d["LOGIN_ID"].ToString() + "'";
-            return db.ExecutByStringResult(sql);
+            return db.ExecutByStringResult(sql.ToUpper());
         }
         /// <summary>
         /// 删除
@@ -74,7 +74,7 @@ namespace UIDP.ODS
         {
             string sql = " delete from  ts_uidp_login ";
             sql += " where LOGIN_ID='" + d["LOGIN_ID"].ToString() + "'";
-            return db.ExecutByStringResult(sql);
+            return db.ExecutByStringResult(sql.ToUpper());
         }
         public DataTable fetchUserLoginList(string LOGIN_REMARK, string sort)
         {
@@ -93,7 +93,7 @@ namespace UIDP.ODS
             {
                 sql += "order by a.LOGIN_ID";
             }
-            return db.GetDataTable(sql);
+            return db.GetDataTable(sql.ToUpper());
         }
         /// <summary>
         /// 通过LOGIN_ID查用户信息
@@ -107,7 +107,7 @@ namespace UIDP.ODS
             sql += "  join ts_uidp_userinfo c on c.USER_ID=b.USER_ID ";
             sql += " where a.LOGIN_ID ='" + LOGIN_ID + "'";
             sql += " order by a.LOGIN_ID";
-            return db.GetDataTable(sql);
+            return db.GetDataTable(sql.ToUpper());
         }
         public DataTable fetchUserForLoginList(string USER_ID)
         {
@@ -134,7 +134,7 @@ on tbl.USER_ID = ts_uidp_userinfo.USER_ID
             //{
             //    sql += " AND  a.LOGIN_ID ='" + LOGIN_ID + "'";
             //}
-            return db.GetDataTable(sql);
+            return db.GetDataTable(sql.ToUpper());
         }
 
         public DataTable fetchUserForAllList(string USER_ID)
@@ -160,7 +160,7 @@ where USER_ID = '{0}'
             //{
             //    sql += " AND  a.LOGIN_ID ='" + LOGIN_ID + "'";
             //}
-            return db.GetDataTable(sql);
+            return db.GetDataTable(sql.ToUpper());
         }
         /// <summary>
         /// 分配组织结构给用户
@@ -198,9 +198,9 @@ where USER_ID = '{0}'
             // string sqlUpdateUserInfo = "  update ts_uidp_userinfo set ASSOCIATED_ACCOUNT= case when ASSOCIATED_ACCOUNT<>'' or ASSOCIATED_ACCOUNT is not null then CONCAT(ASSOCIATED_ACCOUNT,'," + userid + "') else '"+ userid + "' where USER_ID='"+ d["LOGIN_ID"].ToString()+"'";
             string sqlUpdateUserInfo = " update ts_uidp_userinfo set ASSOCIATED_ACCOUNT='" + userid + "' where USER_ID='" + d["LOGIN_ID"].ToString() + "'";
             List<string> list = new List<string>();
-            list.Add(delSql);
-            list.Add(sql);
-            list.Add(sqlUpdateUserInfo);
+            list.Add(delSql.ToUpper());
+            list.Add(sql.ToUpper());
+            list.Add(sqlUpdateUserInfo.ToUpper());
             return db.Executs(list);
         }
         /// <summary>
@@ -251,8 +251,8 @@ where USER_ID = '{0}'
             }
             delSql += ")";
             string sqlUpdateUserInfo = " update ts_uidp_userinfo set ASSOCIATED_ACCOUNT='" + strUsers + "' where USER_ID='" + d["LOGIN_ID"] + "'";
-            list.Add(sqlUpdateUserInfo);
-            list.Add(delSql);
+            list.Add(sqlUpdateUserInfo.ToUpper());
+            list.Add(delSql.ToUpper());
             return db.Executs(list);
             //return db.ExecutByStringResult(delSql);
         }
@@ -289,7 +289,7 @@ union
 select LOGIN_ID from ts_uidp_login_user
 where USER_ID = '{0}'
 union
-select '{0}'
+select N'{0}' from dual
 ) tbl
 LEFT JOIN
 ts_uidp_userinfo

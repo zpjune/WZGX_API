@@ -74,17 +74,27 @@ namespace UIDP.LOG
             try
             {
                 LogMod mod = (LogMod)obj;
-                string SQLString = "insert into ts_uidp_loginfo(ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_TYPE,LOG_CONTENT,REMARK,ALARM_LEVEL)"
-         + " VALUES(@ACCESS_TIME, @USER_ID, @USER_NAME, @IP_ADDR, @LOG_TYPE, @LOG_CONTENT, @REMARK,@ALARM_LEVEL)";
-                OracleParameter[] cmdParms = new OracleParameter[8];
-                cmdParms[0] = new OracleParameter("@ACCESS_TIME", mod.ACCESS_TIME == null ? DateTime.Now : mod.ACCESS_TIME);
-                cmdParms[1] = new OracleParameter("@USER_ID", mod.USER_ID == null ? "" : mod.USER_ID);
-                cmdParms[2] = new OracleParameter("@USER_NAME", mod.USER_NAME == null ? "" : mod.USER_NAME);
-                cmdParms[3] = new OracleParameter("@IP_ADDR", mod.IP_ADDR == null ? "" : mod.IP_ADDR);
-                cmdParms[4] = new OracleParameter("@LOG_TYPE", mod.LOG_TYPE);
-                cmdParms[5] = new OracleParameter("@LOG_CONTENT", mod.LOG_CONTENT == null ? "" : mod.LOG_CONTENT);
-                cmdParms[6] = new OracleParameter("@REMARK", mod.REMARK == null ? "" : mod.REMARK);
-                cmdParms[7] = new OracleParameter("@ALARM_LEVEL", mod.ALARM_LEVEL == null ? 1 : mod.ALARM_LEVEL);
+         //       string SQLString = "insert into ts_uidp_loginfo(ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_TYPE,LOG_CONTENT,REMARK,ALARM_LEVEL)"
+         //+ " VALUES(@ACCESS_TIME, @USER_ID, @USER_NAME, @IP_ADDR, @LOG_TYPE, @LOG_CONTENT, @REMARK,@ALARM_LEVEL)".ToUpper();
+         //       OracleParameter[] cmdParms = new OracleParameter[8];
+         //       cmdParms[0] = new OracleParameter("@ACCESS_TIME", mod.ACCESS_TIME == null ? DateTime.Now : mod.ACCESS_TIME);
+         //       cmdParms[1] = new OracleParameter("@USER_ID", mod.USER_ID == null ? "" : mod.USER_ID);
+         //       cmdParms[2] = new OracleParameter("@USER_NAME", mod.USER_NAME == null ? "" : mod.USER_NAME);
+         //       cmdParms[3] = new OracleParameter("@IP_ADDR", mod.IP_ADDR == null ? "" : mod.IP_ADDR);
+         //       cmdParms[4] = new OracleParameter("@LOG_TYPE", mod.LOG_TYPE);
+         //       cmdParms[5] = new OracleParameter("@LOG_CONTENT", mod.LOG_CONTENT == null ? "" : mod.LOG_CONTENT);
+         //       cmdParms[6] = new OracleParameter("@REMARK", mod.REMARK == null ? "" : mod.REMARK);
+         //       cmdParms[7] = new OracleParameter("@ALARM_LEVEL", mod.ALARM_LEVEL == null ? 1 : mod.ALARM_LEVEL);
+
+                string sql = " INSERT INTO TS_UIDP_LOGINFO(ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_TYPE,LOG_CONTENT,REMARK,ALARM_LEVEL) VALUES(";
+                sql += " TO_DATE('" + mod.ACCESS_TIME + "','yyyy-mm-dd hh24:mi:ss'),";
+                sql += GetSQLStr(mod.USER_ID);
+                sql += GetSQLStr(mod.USER_NAME);
+                sql += GetSQLStr(mod.IP_ADDR);
+                sql += mod.LOG_TYPE == null ? "null" : mod.LOG_TYPE + ",";
+                sql += GetSQLStr(mod.LOG_CONTENT);
+                sql += GetSQLStr(mod.REMARK);
+                sql += mod.ALARM_LEVEL + ")";
                 //if (conn.State != System.Data.ConnectionState.Open)
                 //{
                 //    conn = new OracleConnection(connStr);
@@ -99,10 +109,10 @@ namespace UIDP.LOG
                 //}
 
 
-                using (OracleCommand cmd = new OracleCommand(SQLString, conn2))
+                using (OracleCommand cmd = new OracleCommand(sql, conn2))
                 {
                     // MySqlTransaction tran = conn.BeginTransaction();
-                    cmd.Parameters.AddRange(cmdParms);
+                    //cmd.Parameters.AddRange(cmdParms);
                     if (conn2.State != System.Data.ConnectionState.Open)
                     {
                         conn2.Open();
@@ -117,6 +127,18 @@ namespace UIDP.LOG
             {
                 conn2.Close();
                 throw e;
+            }
+        }
+
+        public string GetSQLStr(string s)
+        {
+            if (!String.IsNullOrEmpty(s))
+            {
+                return "'" + s + "',";
+            }
+            else
+            {
+                return "null,";
             }
         }
     }

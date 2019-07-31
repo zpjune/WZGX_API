@@ -134,11 +134,11 @@ namespace UIDP.ODS
             string sql = "";
             if (DateTime.Now.Month != 12)
             {
-                sql = "select count(*) from ts_store_notice where  CREATE_DATE  between '" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-01" + " 00:00:00' and '" + DateTime.Now.Year + "-" + Convert.ToInt32(DateTime.Now.Month + 1) + "-01" + " 00:00:00'";
+                sql = "select count(*) from ts_store_notice where  CREATE_DATE  between TO_DATE('" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-01" + " 00:00:00','yyyy-mm-dd hh24:mi:ss') and TO_DATE('" + DateTime.Now.Year + "-" + Convert.ToInt32(DateTime.Now.Month + 1) + "-01" + " 00:00:00','yyyy-mm-dd hh24:mi:ss')";
             }
             else
             {
-                sql= "select count(*) from ts_store_notice where  CREATE_DATE  between '" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-01" + " 00:00:00' and '" + Convert.ToInt32(DateTime.Now.Year+1)+ "-" + Convert.ToInt32(DateTime.Now.Month) + "-01" + " 00:00:00'";
+                sql= "select count(*) from ts_store_notice where  CREATE_DATE  between  TO_DATE('" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-01" + " 00:00:00','yyyy-mm-dd hh24:mi:ss') and TO_DATE('" + Convert.ToInt32(DateTime.Now.Year+1)+ "-" + Convert.ToInt32(DateTime.Now.Month) + "-01" + " 00:00:00','yyyy-mm-dd hh24:mi:ss')";
             }
             num = db.GetString(sql);
             if (string.IsNullOrEmpty(num))

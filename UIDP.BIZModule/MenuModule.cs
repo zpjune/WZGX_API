@@ -3,6 +3,7 @@ using UIDP.UTILITY;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System;
 
 namespace UIDP.BIZModule
 {
@@ -98,8 +99,9 @@ namespace UIDP.BIZModule
                 }
 
             }
-            catch
+            catch(Exception e)
             {
+                throw new Exception(e.Message);
             }
 
         }

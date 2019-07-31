@@ -131,7 +131,7 @@ namespace UIDP.UTILITY
         /// </summary>
         public static void DeleteToken(string userId) {
             DBTool tool = new DBTool("MYSQL");
-            string sql = "delete from ts_uidp_accesstoken where USER_ID='" + userId + "' ;";
+            string sql = "delete from ts_uidp_accesstoken where USER_ID='".ToUpper() + userId + "'";
             tool.Execut(sql);
         }
         /// <summary>
@@ -143,7 +143,7 @@ namespace UIDP.UTILITY
         public static void InsertToken(string userId,string token,DateTime datetime)
         {
             DBTool tool = new DBTool("MYSQL");
-            string sql = "insert into ts_uidp_accesstoken (USER_ID,ACCESS_TOKEN,EXPIRED_TIME) VALUES('"+userId+"','"+token+ "','"+datetime.ToString("yyyy-MM-dd HH:mm:ss") +"'); ";
+            string sql = "insert into ts_uidp_accesstoken (USER_ID,ACCESS_TOKEN,EXPIRED_TIME) VALUES('".ToUpper()+userId+"','"+token+ "',TO_DATE('"+datetime.ToString("yyyy-MM-dd HH:mm:ss") + "','SYYYY-MM-DD HH24:MI:SS'))";
             tool.Execut(sql);
         }
         /// <summary>
@@ -155,7 +155,7 @@ namespace UIDP.UTILITY
         public static void UpdateToken(string userId, DateTime datetime)
         {
             DBTool tool = new DBTool("MYSQL");
-            string sql = "update ts_uidp_accesstoken set EXPIRED_TIME='"+datetime.ToString("yyyy-MM-dd HH:mm:ss") + "' where USER_ID='" + userId+"'";
+            string sql = "update ts_uidp_accesstoken set EXPIRED_TIME=".ToUpper()+"TO_DATE('"+datetime.ToString("yyyy-MM-dd HH:mm:ss")+ "','SYYYY-MM-DD HH24:MI:SS')" +"where USER_ID='" + userId+"'";
             tool.Execut(sql);
         }
     }

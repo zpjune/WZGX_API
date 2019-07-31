@@ -102,7 +102,7 @@ namespace UIDP.LOG
             {
                 LogMod mod = (LogMod)obj;
                 string SQLString = "insert into ts_uidp_loginfo(ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_TYPE,LOG_CONTENT,REMARK,ALARM_LEVEL)"
-         + " VALUES(@ACCESS_TIME, @USER_ID, @USER_NAME, @IP_ADDR, @LOG_TYPE, @LOG_CONTENT, @REMARK,@ALARM_LEVEL)";
+         + " VALUES(@ACCESS_TIME, @USER_ID, @USER_NAME, @IP_ADDR, @LOG_TYPE, @LOG_CONTENT, @REMARK,@ALARM_LEVEL)".ToUpper();
                 SqlParameter[] cmdParms = new SqlParameter[8];
                 cmdParms[0] = new SqlParameter("@ACCESS_TIME", mod.ACCESS_TIME == null ? DateTime.Now : mod.ACCESS_TIME);
                 cmdParms[1] = new SqlParameter("@USER_ID", mod.USER_ID == null ? "" : mod.USER_ID);

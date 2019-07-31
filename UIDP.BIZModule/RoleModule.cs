@@ -159,7 +159,15 @@ namespace UIDP.BIZModule
         private string GetSubMenu(string pid, DataTable dt)
         {
             StringBuilder sb = new StringBuilder();
-            DataRow[] rows = dt.Select("GROUP_CODE_UPPER='" + pid+"'");
+            DataRow[] rows;
+            if (String.IsNullOrEmpty(pid))
+            {
+                rows = dt.Select("GROUP_CODE_UPPER='' OR GROUP_CODE_UPPER IS NULL");
+            }
+            else
+            {
+                rows = dt.Select("GROUP_CODE_UPPER='" + pid + "'");
+            }        
             if (rows.Length > 0)
             {
                 bool isFist = false;

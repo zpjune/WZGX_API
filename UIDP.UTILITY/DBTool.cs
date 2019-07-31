@@ -196,14 +196,14 @@ namespace UIDP.UTILITY
         {
             try
             {
-
-                db.Open();
+                List<string> list=new List<string>();
+                db.Open();           
                 db.BeginTransaction();
                 foreach (var str in sql)
                 {
-                    db.ExecuteSQL(str.Value);
+                    list.Add(str.Value);
                 }
-                db.Commit();
+                db.ExecuteTransactionSQL(list);
                 return "";
             }
             catch (Exception ex)
@@ -227,17 +227,11 @@ namespace UIDP.UTILITY
             {
                 db.Open();
                 db.BeginTransaction();
-                foreach (var item in sql)
-                {
-                    db.ExecuteSQL(item);
-                }
-                db.Commit();
-                db.Close();
+                db.ExecuteTransactionSQL(sql);
                 return "";
             }
             catch (Exception ex)
             {
-                db.Rollback();
                 return ex.Message;
             }
             finally {

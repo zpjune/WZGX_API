@@ -426,5 +426,10 @@ namespace UIDP.DB
             da.Fill(ds);
             return ds;
         }
+
+        public void ExecuteTransactionSQL(List<string> list)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
