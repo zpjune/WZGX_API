@@ -83,7 +83,7 @@ namespace UIDP.BIZModule
                     clsMenuInfo.MODULE_URL = dr["MODULE_URL"].ToString();
                     clsMenuInfo.MODULE_ROUTE = dr["MODULE_ROUTE"].ToString();
                     clsMenuInfo.MODULE_OBJ = dr["MODULE_OBJ"].ToString();
-                    clsMenuInfo.MENU_PROP = dr["MENU_PROP"].ToString();
+                    clsMenuInfo.MENU_PROP = dr["MENU_PROP"].ToString().Trim();
                     clsMenuInfo.MENU_ORDER = int.Parse(dr["MENU_ORDER"] == null ? "0" : dr["MENU_ORDER"].ToString());
                     if (dr["MENU_PROP"].ToString() == "0")
                     {

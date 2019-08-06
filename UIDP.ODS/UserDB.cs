@@ -64,7 +64,7 @@ namespace UIDP.ODS
             sb.Append(d["USER_SEX"] == null ? "1" : d["USER_SEX"] + ",");
             sb.Append(d["AUTHENTICATION_TYPE"] == null ? "" : d["AUTHENTICATION_TYPE"] + ", ");
             sb.Append(d["FLAG"] == null ? "1" : d["FLAG"] + ", ");
-            sb.Append("'"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +"',");
+            sb.Append("TO_DATE('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','yyyy-mm-dd hh24:mi:ss'),");
             sb.Append(d["USER_TYPE"]==null?"1" : d["USER_TYPE"].ToString()+",'");
             sb.Append(d["REMARK"] == null ? "" : d["REMARK"] + "' )");
             list.Add(sb.ToString());
@@ -74,8 +74,8 @@ namespace UIDP.ODS
         public string updateUserArticle(Dictionary<string, object> d)
         {
             List<string> list = new List<string>();
-            string sql = "delete FROM ts_uidp_userinfo where USER_ID='" + d["USER_ID"].ToString() + "' ;";
-            string sql2= " delete from ts_uidp_org_user where USER_ID='" + d["USER_ID"].ToString() + "' ;";
+            string sql = "delete FROM ts_uidp_userinfo where USER_ID='" + d["USER_ID"].ToString() + "'";
+            string sql2= " delete from ts_uidp_org_user where USER_ID='" + d["USER_ID"].ToString() + "'";
             list.Add(sql);
             list.Add(sql2);
             return db.Executs(list);
@@ -125,30 +125,30 @@ namespace UIDP.ODS
         public string updateUserData(Dictionary<string, object> d,string newpass) {
             StringBuilder sb = new StringBuilder();
             sb.Append(" update ts_uidp_userinfo set ");
-            sb.Append(" USER_DOMAIN='");
-            sb.Append(d["USER_DOMAIN"] == null ? "" : d["USER_DOMAIN"] + "', ");
-            sb.Append(" USER_CODE='");
-            sb.Append(d["USER_CODE"] == null ? "" : d["USER_CODE"] + "', ");
-            sb.Append(" USER_NAME='");
-            sb.Append(d["USER_NAME"] == null ? "" : d["USER_NAME"] + "', ");
+            sb.Append("USER_DOMAIN=");
+            sb.Append(GetSQLStr(d["USER_DOMAIN"]));
+            sb.Append("USER_CODE=");
+            sb.Append(GetSQLStr(d["USER_CODE"]));
+            sb.Append("USER_NAME=");
+            sb.Append(GetSQLStr(d["USER_NAME"]));
             if (d["USER_PASS"]!=null&& d["USER_PASS"].ToString()!="") {
-                sb.Append(" USER_PASS= case when USER_PASS<>'"+ d["USER_PASS"].ToString() + "' then '"+newpass+ "' else USER_PASS end , ");
+                sb.Append(" USER_PASS= case when USER_PASS<> N'"+ d["USER_PASS"].ToString() + "' then N'"+newpass+ "' else USER_PASS end , ");
             }
-            sb.Append(" PHONE_MOBILE='");
-            sb.Append(d["PHONE_MOBILE"] == null ? "" : d["PHONE_MOBILE"] + "', ");
-            sb.Append(" PHONE_OFFICE='");
-            sb.Append(d["PHONE_OFFICE"] == null ? "" : d["PHONE_OFFICE"] + "', ");
-            sb.Append(" USER_EMAIL='");
-            sb.Append(d["USER_EMAIL"] == null ? "" : d["USER_EMAIL"] + "', ");
-            sb.Append(" USER_SEX=");
+            sb.Append("PHONE_MOBILE=");
+            sb.Append(GetSQLStr(d["PHONE_MOBILE"]));
+            sb.Append("PHONE_OFFICE=");
+            sb.Append(GetSQLStr(d["PHONE_OFFICE"]));
+            sb.Append("USER_EMAIL=");
+            sb.Append(GetSQLStr(d["USER_EMAIL"]));
+            sb.Append("USER_SEX=");
             sb.Append(d["USER_SEX"] == null ? "1" : d["USER_SEX"] + ",");
-            sb.Append(" AUTHENTICATION_TYPE=");
+            sb.Append("AUTHENTICATION_TYPE=");
             sb.Append(d["AUTHENTICATION_TYPE"] == null ? "" : d["AUTHENTICATION_TYPE"] + ", ");
-            sb.Append(" FLAG=");
+            sb.Append("FLAG=");
             sb.Append(d["FLAG"] == null ? "1" : d["FLAG"] + ", ");
-            sb.Append(" REMARK='");
-            sb.Append(d["REMARK"] == null ? "" : d["REMARK"] + "', ");
-            sb.Append(" USER_TYPE=");
+            sb.Append("REMARK=");
+            sb.Append(GetSQLStr(d["REMARK"]));
+            sb.Append("USER_TYPE=");
             if (d["USER_TYPE"] == null || d["USER_TYPE"].ToString() == "" || d["USER_TYPE"].ToString() == "1")
             {
                 sb.Append("1");//普通用户
@@ -156,7 +156,7 @@ namespace UIDP.ODS
             else {
                 sb.Append("0");//管理员
             }
-            sb.Append(" where USER_ID='" + d["USER_ID"].ToString() + "' ");
+            sb.Append(" where USER_ID= N'" + d["USER_ID"].ToString() + "' ");
             string sql= "UPDATE ts_uidp_org_user SET ORG_ID='"+d["orgId"] + "'";
             sql += " WHERE USER_ID='" + d["USER_ID"] + "'";
             List<string> sqllist = new List<string>();
@@ -442,5 +442,18 @@ namespace UIDP.ODS
             string sqluser = "SELECT conf_value from ts_uidp_config where conf_code= 'Cloud_Password'";
             return db.GetString(sqluser);
         }
+
+        public string GetSQLStr(object t)
+        {
+            if (t == null || t.ToString() == "")
+            {
+                return "null,";
+            }
+            else
+            {
+                return " N'" + t + "',";
+            }
+        }
+
     }
 }
