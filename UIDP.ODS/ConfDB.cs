@@ -76,7 +76,7 @@ namespace UIDP.ODS
 
             string sql = "INSERT INTO ts_uidp_config(" + col + ") VALUES(" + val + ")";
 
-            return db.ExecutByStringResult(sql.ToUpper());
+            return db.ExecutByStringResult(sql);
         }
 
 
