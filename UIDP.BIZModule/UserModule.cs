@@ -553,8 +553,8 @@ namespace UIDP.BIZModule
             for (int j = 1; j < truckNum + 1; j++)
             {
                 string fengefu = "";
-                StringBuilder sb = new StringBuilder();
-                StringBuilder sbOrgUser = new StringBuilder();
+                //StringBuilder sb = new StringBuilder();
+                //StringBuilder sbOrgUser = new StringBuilder();
                 //sbOrgUser.Append("insert into ts_uidp_org_user(ORG_ID,USER_ID)values ");
                 //sb.Append(" INSERT INTO ts_uidp_userinfo(USER_ID,USER_DOMAIN,USER_CODE,USER_NAME,USER_PASS,PHONE_MOBILE,PHONE_OFFICE," +
                 //    "USER_EMAIL,USER_IP,USER_SEX,AUTHENTICATION_TYPE,FLAG,REG_TIME,REMARK) values ");
@@ -614,8 +614,12 @@ namespace UIDP.BIZModule
                     }
                     if (rows.Length == 0)
                     {
+                        StringBuilder sbOrgUser = new StringBuilder("insert into ts_uidp_org_user(ORG_ID,USER_ID)values");
                         string id = Guid.NewGuid().ToString();
-                        sbOrgUser.Append(fengefu + "('" + dt.Rows[i]["组织机构编码"].ToString().Trim() + "','" + id + "')");
+                        sbOrgUser.Append("('" + dt.Rows[i]["组织机构编码"].ToString().Trim() + "','" + id + "')");
+                        list.Add(sbOrgUser.ToString());
+                        StringBuilder sb = new StringBuilder(" INSERT INTO ts_uidp_userinfo(USER_ID,AUTHENTICATION_TYPE,USER_DOMAIN,USER_TYPE,USER_PASS,USER_NAME,USER_CODE,USER_SEX,PHONE_OFFICE,PHONE_MOBILE," +
+                    "USER_EMAIL,FLAG,REG_TIME,REMARK) values ");
                         sb.Append(fengefu + "('" + id + "',");
                         if (dt.Rows[i]["账号类型"] != null && dt.Rows[i]["账号类型"].ToString() == "PTR账号")
                         {
@@ -659,9 +663,10 @@ namespace UIDP.BIZModule
                         {
                             sb.Append("1,");
                         }
-                        sb.Append("'"+ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "',");
+                        sb.Append("TO_DATE('"+ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','yyyy-mm-dd hh24:mi:ss'),");
                         sb.Append("'" + getString(dt.Rows[i]["备注"]) + "')");
-                        fengefu = ",";
+                        //fengefu = ",";
+                        list.Add(sb.ToString());                  
                     }
                     else {
                         foreach (var item in rows)
@@ -684,7 +689,7 @@ namespace UIDP.BIZModule
                             sql += " USER_EMAIL='" + getString(dt.Rows[i]["电子邮箱"]) + "',";
                             sql += " FLAG='";
                             sql+= getString((dt.Rows[i]["账号状态"] != null && dt.Rows[i]["账号状态"].ToString() == "禁用") ? 0: 1) + "',";
-                            sql += " REG_TIME='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "',";
+                            sql += " REG_TIME=TO_DATE('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "',yyyy-mm-dd hh24:mi:ss')";
                             sql += " REMARK='" + getString(dt.Rows[i]["备注"]) + "'";
                             sql += " where USER_ID='" + item["USER_ID"].ToString() + "' ;";
                             list.Add(sql);
@@ -702,23 +707,23 @@ namespace UIDP.BIZModule
                     //    list.Add(sb.ToString());
                     //}
                 }
-                if (sb.Length > 0)
-                {
-                    sb.Insert(0, " INSERT INTO ts_uidp_userinfo(USER_ID,AUTHENTICATION_TYPE,USER_DOMAIN,USER_TYPE,USER_PASS,USER_NAME,USER_CODE,USER_SEX,PHONE_OFFICE,PHONE_MOBILE," +
-                    "USER_EMAIL,FLAG,REG_TIME,REMARK) values ");
-                }
-                if (sbOrgUser.Length > 0)
-                {
-                    sbOrgUser.Insert(0, " insert into ts_uidp_org_user(ORG_ID,USER_ID)values ");
-                }
-                if (sb != null && sb.Length > 0)
-                {
-                    list.Add(sb.ToString());
-                }
-                if (sbOrgUser != null && sbOrgUser.Length > 0)
-                {
-                    list.Add(sbOrgUser.ToString());
-                }
+                //if (sb.Length > 0)
+                //{
+                //    sb.Insert(0, " INSERT INTO ts_uidp_userinfo(USER_ID,AUTHENTICATION_TYPE,USER_DOMAIN,USER_TYPE,USER_PASS,USER_NAME,USER_CODE,USER_SEX,PHONE_OFFICE,PHONE_MOBILE," +
+                //    "USER_EMAIL,FLAG,REG_TIME,REMARK) values ");
+                //}
+                //if (sbOrgUser.Length > 0)
+                //{
+                //    sbOrgUser.Insert(0, " insert into ts_uidp_org_user(ORG_ID,USER_ID)values ");
+                //}
+                //if (sb != null && sb.Length > 0)
+                //{
+                //    list.Add(sb.ToString());
+                //}
+                //if (sbOrgUser != null && sbOrgUser.Length > 0)
+                //{
+                //    list.Add(sbOrgUser.ToString());
+                //}
             }
 
             if (db.GetDBType() == "MYSQL")
@@ -735,7 +740,8 @@ namespace UIDP.BIZModule
             }
             else if (db.GetDBType() == "ORACLE")
             {
-                string sqlUpdate = "  update ts_uidp_org_user a ,ts_uidp_org b set a.ORG_ID = b.ORG_ID where a.ORG_ID = b.ORG_CODE";
+                //string sqlUpdate = "  update ts_uidp_org_user a ,ts_uidp_org b set a.ORG_ID = b.ORG_ID where a.ORG_ID = b.ORG_CODE";
+                string sqlUpdate = "UPDATE TS_UIDP_ORG_USER a SET a.ORG_ID = (SELECT ORG_ID FROM TS_UIDP_ORG b WHERE a.ORG_ID = b.ORG_CODE)";
 
                 list.Add(sqlUpdate);
             }
