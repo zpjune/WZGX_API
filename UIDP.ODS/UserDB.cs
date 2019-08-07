@@ -83,30 +83,30 @@ namespace UIDP.ODS
 
         public string updateUserFlag(Dictionary<string, object> d)
         {
-            string sql = "update  ts_uidp_userinfo set FLAG=" + d["FLAG"] + " where USER_ID='" + d["USER_ID"].ToString() + "' ;";
+            string sql = "update  ts_uidp_userinfo set FLAG=" + d["FLAG"] + " where USER_ID='" + d["USER_ID"].ToString() + "'";
 
             return db.ExecutByStringResult(sql);
         }
         public string updatePasswordData(Dictionary<string, object> d)
         {
-            string sql = "update  ts_uidp_userinfo set USER_PASS='" + d["newpassword"].ToString() + "' where USER_ID='" + d["userid"].ToString() + "' and USER_PASS='" + d["password"].ToString() + "' ;";
+            string sql = "update  ts_uidp_userinfo set USER_PASS='" + d["newpassword"].ToString() + "' where USER_ID='" + d["userid"].ToString() + "' and USER_PASS='" + d["password"].ToString() + "'";
 
             return db.ExecutByStringResult(sql);
         }
         public string updatePTRpass(Dictionary<string, object> d) {
-            string sql = "update ts_uidp_userinfo set USER_PASS='" + d["newpassword"].ToString() + "' where USER_ID='" + d["userid"].ToString() + "' ;";
+            string sql = "update ts_uidp_userinfo set USER_PASS='" + d["newpassword"].ToString() + "' where USER_ID='" + d["userid"].ToString() + "'";
 
             return db.ExecutByStringResult(sql);
         }
         public string updateAdminPasswordData(Dictionary<string, object> d)
         {
-            string sql = "update  ts_uidp_config set CONF_VALUE='" + d["newpassword"].ToString() + "' where CONF_CODE='Admin_Password' ;";
+            string sql = "update  ts_uidp_config set CONF_VALUE='" + d["newpassword"].ToString() + "' where CONF_CODE='Admin_Password'";
 
             return db.ExecutByStringResult(sql);
         }
         public DataTable IsInvalidPassword(Dictionary<string, object> d)
         {
-            string sql = "select * from  ts_uidp_userinfo  where USER_ID='" + d["userid"].ToString() + "' and USER_PASS='" + d["password"].ToString() + "' ;";
+            string sql = "select * from  ts_uidp_userinfo  where USER_ID='" + d["userid"].ToString() + "' and USER_PASS='" + d["password"].ToString() + "'";
 
             return db.GetDataTable(sql);
         }
@@ -237,7 +237,7 @@ namespace UIDP.ODS
             string sql = "select a.*,c.* from  ts_uidp_userinfo a ";
             sql += " left join ts_uidp_group_user b on a.USER_ID=b.USER_ID ";
             sql += " left join ts_uidp_groupinfo c on   c.GROUP_ID=b.GROUP_ID ";
-            sql += " where a.USER_ID='" + userId + "'; ";
+            sql += " where a.USER_ID='" + userId + "'";
             return db.GetDataTable(sql);
 
         }
