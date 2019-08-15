@@ -91,7 +91,7 @@ namespace UIDP.BIZModule.CangChu
                 wLZ.PMNAME = dr["PMNAME"].ToString();
                 wLZ.XHGGGF = dr["XHGGGF"].ToString();
                 wLZ.JBJLDW = dr["JBJLDW"].ToString(); 
-                wLZ.hasChildren = true;
+                wLZ.hasChildren = false;
                 wLZ.flagID = "ALL" + i;
                 i++;
                 List.Add(wLZ);
