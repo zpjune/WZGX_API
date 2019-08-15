@@ -13,7 +13,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
     [Route("CKInfo")]
     public class CKInfoController : Controller
     {
-        CKInfoModel CK = new CKInfoModel();
+        CKInfoModule CK = new CKInfoModule();
 
         [HttpGet("GetCKInfo")]
         public IActionResult GetCKInfo(int page, int limit, string CKTime, string LocationNumber)

@@ -13,7 +13,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
     [Route("RKInfo")]
     public class RKInfoController : Controller
     {
-        RKInfoModel RK = new RKInfoModel();
+        RKInfoModule RK = new RKInfoModule();
 
         [HttpGet("GetRKInfo")]
         public IActionResult GetRKInfo(int page, int limit, string RKTime, string LocationNumber)

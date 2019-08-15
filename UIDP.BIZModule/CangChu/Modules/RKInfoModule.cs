@@ -7,15 +7,15 @@ using UIDP.UTILITY;
 
 namespace UIDP.BIZModule.CangChu
 {
-    public class CKInfoModel
+    public class RKInfoModule
     {
-        CKInfoDB db = new CKInfoDB();
-        public Dictionary<string, object> GetRKInfo(int page, int limit, string CKTime, string LocationNumber)
+        RKInfoDB db = new RKInfoDB();
+        public Dictionary<string,object> GetRKInfo(int page,int limit,string RKTime,string LocationNumber)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetCKInfo(CKTime, LocationNumber);
+                DataTable dt = db.GetRKInfo(RKTime, LocationNumber);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -30,21 +30,46 @@ namespace UIDP.BIZModule.CangChu
                     r["total"] = 0;
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 r["code"] = -1;
-                r["message"] = "failed!" + e.Message;
+                r["message"] = "failed!"+e.Message;
             }
             return r;
         }
 
-        public Dictionary<string, object> CreateCKInfo(Dictionary<string, object> d)
+        public Dictionary<string, object> CreateRKInfo(Dictionary<string,object> d)
         {
-            d["CK_ID"] = Guid.NewGuid();
+            d["RK_ID"] = Guid.NewGuid();
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                string b = db.CreateCKInfo(d);
+                string b = db.CreateRKInfo(d);
+                if (b == "")
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success";
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = b;
+                }
+            }
+            catch(Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> UpdateRKInfo(Dictionary<string, object> d)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.UpdateRKInfo(d);
                 if (b == "")
                 {
                     r["code"] = 2000;
@@ -64,37 +89,12 @@ namespace UIDP.BIZModule.CangChu
             return r;
         }
 
-        public Dictionary<string, object> UpdateCKInfo(Dictionary<string, object> d)
+        public Dictionary<string, object> DeleteRKInfo(Dictionary<string, object> d)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                string b = db.UpdateCKInfo(d);
-                if (b == "")
-                {
-                    r["code"] = 2000;
-                    r["message"] = "success";
-                }
-                else
-                {
-                    r["code"] = -1;
-                    r["message"] = b;
-                }
-            }
-            catch (Exception e)
-            {
-                r["code"] = -1;
-                r["message"] = e.Message;
-            }
-            return r;
-        }
-
-        public Dictionary<string, object> DeleteCKInfo(Dictionary<string, object> d)
-        {
-            Dictionary<string, object> r = new Dictionary<string, object>();
-            try
-            {
-                string b = db.DeleteCKInfo(d);
+                string b = db.DeleteRKInfo(d);
                 if (b == "")
                 {
                     r["code"] = 2000;
