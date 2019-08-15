@@ -15,7 +15,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
     {
         GCWHModule gCWHModule = new GCWHModule();
         [HttpGet("GetGCInfo")]
-        public IActionResult GetGCInfo(string DW_CODE,string DW_NAME,int limit,int page)=> Ok(gCWHModule.GetGCInfo(DW_CODE, DW_NAME, limit, page));
+        public IActionResult GetGCInfo(string DW_CODE,string DW_NAME,string DW_ISSS,int limit,int page)=> Ok(gCWHModule.GetGCInfo(DW_CODE, DW_NAME,DW_ISSS,limit, page));
 
         [HttpPost("CreateGCInfo")]
         public IActionResult CreateGCInfo([FromBody]JObject value)=>Ok(gCWHModule.CreateGCInfo(value.ToObject<Dictionary<string, string>>()));

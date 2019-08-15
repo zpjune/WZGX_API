@@ -11,12 +11,12 @@ namespace UIDP.BIZModule.CangChu.Modules
     {
         GCWHDB db = new GCWHDB();
 
-        public Dictionary<string,object> GetGCInfo(string DW_CODE,string DW_NAME,int limit,int page)
+        public Dictionary<string,object> GetGCInfo(string DW_CODE,string DW_NAME,string DW_ISSS,int limit,int page)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetGCInfo(DW_CODE, DW_NAME);
+                DataTable dt = db.GetGCInfo(DW_CODE, DW_NAME,DW_ISSS);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
