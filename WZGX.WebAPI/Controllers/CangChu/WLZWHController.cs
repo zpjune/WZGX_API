@@ -22,9 +22,9 @@ namespace WZGX.WebAPI.Controllers.CangChu
         }
 
         [HttpGet("GetChildrenWLZList")]
-        public IActionResult GetChildrenWLZList(string DLCODE,string ZLCODE,string XLCODE,int level)
+        public IActionResult GetChildrenWLZList(string DLCODE,string ZLCODE,string XLCODE,string FlagID,int level)
         {
-            return Ok(wLZWZModule.GetChildrenWLZList(DLCODE,ZLCODE,XLCODE,level));
+            return Ok(wLZWZModule.GetChildrenWLZList(DLCODE,ZLCODE,XLCODE,FlagID,level));
         }
 
         [HttpPost("editNode")]
@@ -33,16 +33,26 @@ namespace WZGX.WebAPI.Controllers.CangChu
             return Ok(wLZWZModule.editNode(value.ToObject<Dictionary<string, object>>()));
         }
 
-        [HttpGet("getOptions")]
-        public IActionResult getOptions()
+        [HttpGet("getDLOptions")]
+        public IActionResult getDLOptions()
         {
-            return Ok(wLZWZModule.getOptions());
+            return Ok(wLZWZModule.getDLOptions());
+        }
+        [HttpGet("getZLOptions")]
+        public IActionResult getZLOptions(string DLCODE)
+        {
+            return Ok(wLZWZModule.getZLOptions(DLCODE)) ;
+        }
+        [HttpGet("getXLOptions")]
+        public IActionResult getxLOptions(string DLCODE,string ZLCODE)
+        {
+            return Ok(wLZWZModule.getXLOptions(DLCODE,ZLCODE));
         }
 
         [HttpGet("delNode")]
-        public IActionResult delNode(string id)
+        public IActionResult delNode(string ID)
         {
-            return Ok(wLZWZModule.delNode(id));
+            return Ok(wLZWZModule.delNode(ID));
         }
 
         [HttpPost("createNode")]

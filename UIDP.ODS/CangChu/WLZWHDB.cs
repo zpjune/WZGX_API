@@ -19,11 +19,11 @@ namespace UIDP.ODS.CangChu
             }
             else
             {
-                sql += "select DISTINCT DLCODE,DLNAME from WZ_WLZ where 1=1";
+                sql += "select * from WZ_WLZ where 1=1";
                 if (!String.IsNullOrEmpty(WLZCODE))
                 {
 
-                    sql += " AND PMCODE LIKE '%" + WLZCODE + "'";
+                    sql += " AND PMCODE LIKE '" + WLZCODE + "%'";
                 }
                 if (!String.IsNullOrEmpty(WLZNAME))
                 {
@@ -91,16 +91,28 @@ namespace UIDP.ODS.CangChu
             return db.ExecutByStringResult(sql);
         }
 
-        public DataSet getOptions()
+        public DataSet getDLOptions()
         {
             string sql = "SELECT DISTINCT DLNAME,DLCODE FROM WZ_WLZ";
-            string sql1 = " SELECT DISTINCT ZLNAME,ZLCODE FROM WZ_WLZ";
-            string sql2 = " SELECT DISTINCT XLNAME,XLCODE FROM WZ_WLZ";
+            //string sql1 = " SELECT DISTINCT ZLNAME,ZLCODE FROM WZ_WLZ";
+            //string sql2 = " SELECT DISTINCT XLNAME,XLCODE FROM WZ_WLZ";
             Dictionary<string, string> d = new Dictionary<string, string>();
             d.Add("DL", sql);
-            d.Add("ZL", sql1);
-            d.Add("XL", sql2);
+            //d.Add("ZL", sql1);
+            //d.Add("XL", sql2);
             return db.GetDataSet(d);
+        }
+
+        public DataTable getZLOptions(string DLCODE)
+        {
+            string sql = " SELECT DISTINCT ZLNAME,ZLCODE FROM WZ_WLZ WHERE DLCODE='"+DLCODE+"'";
+            return db.GetDataTable(sql);
+        }
+
+        public DataTable getXLOptions(string DLCODE,string ZLCODE)
+        {
+            string sql = "SELECT DISTINCT XLNAME,XLCODE FROM WZ_WLZ WHERE DLCODE='" + DLCODE + "' AND ZLCODE='"+ZLCODE+"'";
+            return db.GetDataTable(sql);
         }
 
         public string delNode(string id)
@@ -135,7 +147,7 @@ namespace UIDP.ODS.CangChu
             }
             else
             {
-                return "'null',";
+                return "null,";
             }
         }
     }

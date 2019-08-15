@@ -19,19 +19,38 @@ namespace UIDP.BIZModule.CangChu
             try
             {
                 DataTable dt = db.GetParentWLZList(WLZCODE, WLZNAME);
-                if (dt.Rows.Count > 0)
+                if (!String.IsNullOrEmpty(WLZCODE) || !String.IsNullOrEmpty(WLZNAME))
                 {
-                    r["code"] = 2000;
-                    r["message"] = "success";
-                    r["items"]= CreateParentNode(dt, page, limit);
-                    r["total"] = dt.Rows.Count;
+                    if (dt.Rows.Count > 0)
+                    {
+                        r["code"] = 2000;
+                        r["message"] = "success";
+                        r["items"] = CreateFullNode(dt,page,limit);
+                        r["total"] = dt.Rows.Count;
+                    }
+                    else
+                    {
+                        r["code"] = 2001;
+                        r["message"] = "success,but not info";
+                        r["total"] = 0;
+                    }
                 }
                 else
                 {
-                    r["code"] = 2000;
-                    r["message"] = "success";
-                    r["total"] = 0;
-                }
+                    if (dt.Rows.Count > 0)
+                    {
+                        r["code"] = 2000;
+                        r["message"] = "success";
+                        r["items"] = CreateParentNode(dt, page, limit);
+                        r["total"] = dt.Rows.Count;
+                    }
+                    else
+                    {
+                        r["code"] = 2001;
+                        r["message"] = "success,but not info";
+                        r["total"] = 0;
+                    }
+                }            
             }
             catch(Exception e)
             {
@@ -41,18 +60,43 @@ namespace UIDP.BIZModule.CangChu
             return r;
         }
 
-        public List<WLZModel> GetChildrenWLZList(string DLCODE, string ZLCODE, string XLCODE, int level)
+        public List<WLZModel> GetChildrenWLZList(string DLCODE, string ZLCODE, string XLCODE,string FlagID,int level)
         { 
             try
             {
                 DataTable dt = db.GetChildrenWLZList(DLCODE,ZLCODE,XLCODE, level);
-                return CreateChildrenNode(dt, level);
+                return CreateChildrenNode(dt,FlagID, level);
 
             }
             catch (Exception e)
             {
                 throw e;
             }           
+        }
+        public List<WLZModel> CreateFullNode(DataTable dt,int page,int limit)
+        {
+            List<WLZModel> List = new List<WLZModel>();
+            int i = 0;
+            foreach (DataRow dr in dt.Rows)
+            {
+                WLZModel wLZ = new WLZModel();
+                wLZ.ID = dr["ID"].ToString();
+                wLZ.DLCODE = dr["DLCODE"].ToString();
+                wLZ.DLNAME = dr["DLNAME"].ToString();
+                wLZ.ZLCODE = dr["ZLCODE"].ToString();
+                wLZ.ZLNAME = dr["ZLNAME"].ToString();
+                wLZ.XLCODE = dr["XLCODE"].ToString();
+                wLZ.XLNAME = dr["XLNAME"].ToString();
+                wLZ.PMCODE = dr["PMCODE"].ToString();
+                wLZ.PMNAME = dr["PMNAME"].ToString();
+                wLZ.XHGGGF = dr["XHGGGF"].ToString();
+                wLZ.JBJLDW = dr["JBJLDW"].ToString(); 
+                wLZ.hasChildren = true;
+                wLZ.flagID = "ALL" + i;
+                i++;
+                List.Add(wLZ);
+            }
+            return List.Skip((page - 1) * limit).Take(limit).ToList();
         }
 
         public List<WLZModel> CreateParentNode(DataTable dt,int page,int limit)
@@ -101,7 +145,7 @@ namespace UIDP.BIZModule.CangChu
             return ParentList.Skip((page - 1) * limit).Take(limit).ToList();
         }
 
-        public List<WLZModel> CreateChildrenNode(DataTable dt,int level)
+        public List<WLZModel> CreateChildrenNode(DataTable dt,string FlagID,int level)
         {
             List<WLZModel> ChildrenList = new List<WLZModel>();
             int i = 0;
@@ -115,14 +159,14 @@ namespace UIDP.BIZModule.CangChu
                 wLZ.ZLNAME = dr["ZLNAME"].ToString();
                 if (level == 0)
                 {
-                    wLZ.flagID = "ZL" + i;
+                    wLZ.flagID =FlagID+"ZL" + i;
                     wLZ.hasChildren = true;
                 }
                 if (level == 1)
                 {
                     wLZ.XLCODE = dr["XLCODE"].ToString();
                     wLZ.XLNAME = dr["XLNAME"].ToString();
-                    wLZ.flagID = "XL" + i;
+                    wLZ.flagID = FlagID+"XL" + i;
                     wLZ.hasChildren = true;
                 }
                 if (level == 2)
@@ -134,7 +178,7 @@ namespace UIDP.BIZModule.CangChu
                     wLZ.PMNAME = dr["PMNAME"].ToString();
                     wLZ.XHGGGF = dr["XHGGGF"].ToString();
                     wLZ.JBJLDW = dr["JBJLDW"].ToString();
-                    wLZ.flagID = "PM" + i;
+                    wLZ.flagID = FlagID+"PM" + i;
                     wLZ.hasChildren = false;
                 }
                 i++;
@@ -189,17 +233,17 @@ namespace UIDP.BIZModule.CangChu
             return r;
         }
 
-        public Dictionary<string,object> getOptions()
+        public Dictionary<string,object> getDLOptions()
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataSet ds = db.getOptions();
+                DataSet ds = db.getDLOptions();
                 if (ds.Tables.Count > 0)
                 {
                     r["DLOptions"] = ds.Tables[0];
-                    r["ZLOptions"] = ds.Tables[1];
-                    r["XLOptions"] = ds.Tables[2];
+                    //r["ZLOptions"] = ds.Tables[1];
+                    //r["XLOptions"] = ds.Tables[2];
                     r["code"] = 2000;
                     r["message"] = "success";
                 }
@@ -210,6 +254,58 @@ namespace UIDP.BIZModule.CangChu
                 }
             }
             catch(Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> getZLOptions(string DLCODE)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable ds = db.getZLOptions(DLCODE);
+                if (ds.Rows.Count > 0)
+                {
+                    r["ZLOptions"] = ds;
+                    r["code"] = 2000;
+                    r["message"] = "success";
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = "success,but not info";
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> getXLOptions(string DLCODE,string ZLCODE)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable ds = db.getXLOptions(DLCODE,ZLCODE);
+                if (ds.Rows.Count > 0)
+                {
+                    r["XLOptions"] = ds;
+                    r["code"] = 2000;
+                    r["message"] = "success";
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = "success,but not info";
+                }
+            }
+            catch (Exception e)
             {
                 r["code"] = -1;
                 r["message"] = e.Message;
