@@ -9,16 +9,17 @@ namespace UIDP.ODS.CangChu
     public class BGYWHDB
     {
         DBTool db = new DBTool("");
-        public DataTable GetBGYInfo(string WORKERCODE,string WORKERNAME,string WORKER_DP)
+        public DataTable GetBGYInfo(string WORKER_CODE,string WORKER_NAME,string WORKER_DP)
         {
-            string sql = "select * from WZ_BGY where 1=1";
-            if (!String.IsNullOrEmpty(WORKERCODE))
+            string sql = "select * from WZ_BGY a";
+            sql += " left join WZ_DW b on a.WORKER_DP=b.DW_CODE where 1=1";
+            if (!String.IsNullOrEmpty(WORKER_CODE))
             {
-                sql += " AND WORKERCODE='" + WORKERCODE + "'";
+                sql += " AND WORKERCODE='" + WORKER_CODE + "'";
             }
-            if (!String.IsNullOrEmpty(WORKERNAME))
+            if (!String.IsNullOrEmpty(WORKER_NAME))
             {
-                sql += " AND WORKERNAME='" + WORKERNAME + "'";
+                sql += " AND WORKERNAME='" + WORKER_NAME + "'";
             }
             if (!String.IsNullOrEmpty(WORKER_DP))
             {
@@ -30,18 +31,18 @@ namespace UIDP.ODS.CangChu
 
         public string CreateBGYInfo(Dictionary<string,object> d)
         {
-            string sql = "insert into WZ_BGY (WORKERCODE,WORKERNAME,WORK_DP) VALUES('" + d["WORKERCODE"] + "','" + d["WORKERNAME"] + "','" + d["WORK_DP"] + "')";
+            string sql = "insert into WZ_BGY (WORKER_CODE,WORKER_NAME,WORKER_DP) VALUES('" + d["WORKER_CODE"] + "','" + d["WORKER_NAME"] + "','" + d["WORKER_DP"] + "')";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditBGYInfo(Dictionary<string,object> d)
         {
-            string sql = "update WZ_BGY SET WORKERNAME='" + d["WORKERNAME"] + "',WORKER_DP='" + d["WORKER_DP"] + "' WHERE WORKERCODE='" + d["WORKERCODE"] + "'";
+            string sql = "update WZ_BGY SET WORKER_NAME='" + d["WORKER_NAME"] + "',WORKER_DP='" + d["WORKER_DP"] + "' WHERE WORKER_CODE='" + d["WORKER_CODE"] + "'";
             return db.ExecutByStringResult(sql);
         }
         public string DelBGYInfo(Dictionary<string, object> d)
         {
-            string sql = "delete from WZ_BGY where WORKERCODE='" + d["WOKERCODE"] + "'";
+            string sql = "delete from WZ_BGY where WORKER_CODE='" + d["WORKER_CODE"] + "'";
             return db.ExecutByStringResult(sql);
         }
         public DataTable GetGCInfo()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using UIDP.BIZModule.CangChu.Models;
 using UIDP.ODS.CangChu;
 using UIDP.UTILITY;
 
@@ -10,12 +11,12 @@ namespace UIDP.BIZModule.CangChu.Modules
     public class BGYModule
     {
         BGYWHDB db = new BGYWHDB();
-        public Dictionary<string,object> GetBGYInfo(string WORKERCODE, string WORKERNAME, string WORKER_DP,int limit,int page)
+        public Dictionary<string,object> GetBGYInfo(string WORKER_CODE, string WORKER_NAME, string WORKER_DP,int limit,int page)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetBGYInfo(WORKERCODE, WORKERNAME, WORKER_DP);
+                DataTable dt = db.GetBGYInfo(WORKER_CODE, WORKER_NAME, WORKER_DP);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -118,12 +119,12 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetGCInfo();
+                DataTable dt = db.GetGCInfo();       
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
                     r["message"] = "success";
-                    r["items"] = dt;
+                    r["items"] = CreateNode(dt);
                     r["total"] = dt.Rows.Count;
                 }
                 else
@@ -139,6 +140,35 @@ namespace UIDP.BIZModule.CangChu.Modules
                 r["message"] = e.Message;
             }
             return r;
+        }
+
+        public List<GCTreeNode> CreateNode(DataTable dt)
+        {
+            List<GCTreeNode> list = new List<GCTreeNode>();
+            GCTreeNode GC1 = new GCTreeNode();
+            GC1.DW_CODE = "ParentSSNode";
+            GC1.DW_NAME = "上市";
+            GCChildrenNode(GC1, dt,"Y");
+            list.Add(GC1);
+            GCTreeNode GC2 = new GCTreeNode();
+            GC2.DW_CODE = "ParentWSSNode";
+            GC2.DW_NAME = "未上市";
+            GCChildrenNode(GC2, dt,"N");
+            list.Add(GC2);
+            return list;
+
+        }
+        public void GCChildrenNode(GCTreeNode node,DataTable dt,string Flag)
+        {
+            node.Children = new List<GCTreeNode>();
+            foreach (DataRow dr in dt.Select("DW_ISSS='"+Flag+"'"))
+            {
+                GCTreeNode Children = new GCTreeNode();
+                Children.DW_CODE = dr["DW_CODE"].ToString();
+                Children.DW_NAME = dr["DW_NAME"].ToString();
+                Children.Children = null;
+                node.Children.Add(Children);
+            }
         }
     }
 }

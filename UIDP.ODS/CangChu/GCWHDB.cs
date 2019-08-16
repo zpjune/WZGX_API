@@ -36,7 +36,7 @@ namespace UIDP.ODS.CangChu
 
         public string EditGCInfo(Dictionary<string,string> d)
         {
-            string sql = " UPDATE WZ_DW SET DW_NAME='" + d["DW_NAME"] + ",DW_ISSS='"+d["DW_ISSS"]+"'"+" WHERE DW_CODE='" + d["DW_CODE"] + "'";
+            string sql = " UPDATE WZ_DW SET DW_NAME='" + d["DW_NAME"] + "',DW_ISSS='"+d["DW_ISSS"]+"'"+" WHERE DW_CODE='" + d["DW_CODE"] + "'";
             return db.ExecutByStringResult(sql);
         }
         public string DelGCInfo(Dictionary<string,object> d)

@@ -14,11 +14,19 @@ namespace WZGX.WebAPI.Controllers.CangChu
     public class BGYWHController : Controller
     {
         BGYModule bGYModule = new BGYModule();
-        public IActionResult GetBGYInfo(string WORKERCODE, string WORKERNAME, string WORKER_DP, int limit, int page)=> Ok(bGYModule.GetBGYInfo(WORKERCODE, WORKERNAME, WORKER_DP, limit, page));
+
+        [HttpGet("GetBGYInfo")]
+        public IActionResult GetBGYInfo(string WORKER_CODE, string WORKER_NAME, string GC_CODE,string WORKER_DP, int limit, int page)=> Ok(bGYModule.GetBGYInfo(WORKER_CODE, WORKER_NAME, WORKER_DP, limit, page));
+
+        [HttpPost("CreateBGYInfo")]
         public IActionResult CreateBGYInfo([FromBody]JObject value) => Ok(bGYModule.CreateBGYInfo(value.ToObject<Dictionary<string, object>>()));
+
+        [HttpPost("EditBGYInfo")]
         public IActionResult EditBGYInfo([FromBody]JObject value)=> Ok(bGYModule.EditBGYInfo(value.ToObject<Dictionary<string, object>>()));
+        [HttpPost("DelBGYInfo")]
         public IActionResult DelBGYInfo([FromBody]JObject value)=> Ok(bGYModule.DelBGYInfo(value.ToObject<Dictionary<string, object>>()));
 
+        [HttpGet("GetGCInfo")]
         public IActionResult GetGCInfo()=>Ok(bGYModule.GetGCInfo());
     }
 }
