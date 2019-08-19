@@ -15,7 +15,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
     {
         ZDWZPZModel zDWZPZModel = new ZDWZPZModel();
         [HttpGet("GetZDWZPZInfo")]
-        public IActionResult GetZDWZPZInfo(string WLZ_CODE, string WL_CODE, int limit, int page) => Ok(zDWZPZModel.GetZDWZPZInfo(WLZ_CODE, WL_CODE, limit, page));
+        public IActionResult GetZDWZPZInfo(string WLZ_CODE, string WL_CODE,string WL_NAME, int limit, int page) => Ok(zDWZPZModel.GetZDWZPZInfo(WLZ_CODE, WL_CODE,WL_NAME,limit, page));
 
         [HttpPost("CreateZDWZPZInfo")]
         public IActionResult CreateZDWZPZInfo([FromBody]JObject value) => Ok(zDWZPZModel.CreateZDWZPZInfo(value.ToObject<Dictionary<string, string>>()));
@@ -25,5 +25,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
 
         [HttpPost("DelZDWZPZinfo")]
         public IActionResult DelZDWZPZinfo([FromBody]JObject value) => Ok(zDWZPZModel.DelZDWZPZInfo(value.ToObject<Dictionary<string, object>>()));
+
+        [HttpGet("GetPMCODE")]
+        public IActionResult GetPMCODE() => Ok(zDWZPZModel.GetPMCODE());
     }
 }

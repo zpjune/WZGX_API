@@ -7,30 +7,56 @@ using UIDP.UTILITY;
 
 namespace UIDP.BIZModule.CangChu.Modules
 {
-    public class ZDWZPZModel
+    public class ZDWZWHModule
     {
-        ZDWZPZDB db = new ZDWZPZDB();
+        ZDWZWHDB db = new ZDWZWHDB();
 
-        public Dictionary<string, object> GetZDWZPZInfo(string WLZ_CODE, string WL_CODE,string WL_NAME, int limit, int page)
+        public Dictionary<string,object> GetZDWZWHInfo(string WL_LOCATIONCODE, string WL_CODE,int limit,int page)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetZDWZPZInfo(WLZ_CODE, WL_CODE, WL_NAME);
+                DataTable dt = db.GetZDWZWHInfo(WL_LOCATIONCODE, WL_CODE);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
+                    r["message"] = "success";
                     r["items"] = KVTool.GetPagedTable(dt, page, limit);
-                    r["message"] = "success";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
                     r["message"] = "success,but no info";
+                    r["total"] = 0;
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+        public Dictionary<string,object> CreateZDWZWHInfo(Dictionary<string, string> d)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.CreateZDWZWHInfo(d);
+                if (b == "")
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success";
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = b;
+                }
+            }
+            catch(Exception e)
             {
                 r["code"] = -1;
                 r["message"] = e.Message;
@@ -38,21 +64,17 @@ namespace UIDP.BIZModule.CangChu.Modules
             return r;
         }
 
+        public object GetPMCODE()
+        {
+            throw new NotImplementedException();
+        }
 
-        public Dictionary<string, object> CreateZDWZPZInfo(Dictionary<string, string> d)
+        public Dictionary<string, object> EditZDWZWHInfo(Dictionary<string, string> d)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
-            d.Add("ID", Guid.NewGuid().ToString());
             try
             {
-                DataTable dt = db.GetRepeat(d["WLZ_CODE"].ToString(), d["WL_CODE"].ToString());
-                if (dt.Rows.Count > 0)
-                {
-                    r["code"] = -1;
-                    r["message"] = "重复的信息！";
-                    return r;
-                }
-                string b = db.CreateZDWZPZInfo(d);
+                string b = db.EditZDWZWHInfo(d);
                 if (b == "")
                 {
                     r["code"] = 2000;
@@ -73,12 +95,12 @@ namespace UIDP.BIZModule.CangChu.Modules
         }
 
 
-        public Dictionary<string, object> DelZDWZPZInfo(Dictionary<string, object> d)
+        public Dictionary<string, object> DelZDWZWHInfo(Dictionary<string, string> d)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                string b = db.DelZDWZPZInfo(d);
+                string b = db.DelZDWZWHInfo(d);
                 if (b == "")
                 {
                     r["code"] = 2000;
@@ -98,55 +120,30 @@ namespace UIDP.BIZModule.CangChu.Modules
             return r;
         }
 
-        public Dictionary<string, object> EditZDWZPZInfo(Dictionary<string, string> d)
+        public Dictionary<string, object> GetKCDDInfo()
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                string b = db.EditZDWZPZInfo(d);
-                if (b == "")
-                {
-                    r["code"] = 2000;
-                    r["message"] = "success";
-                }
-                else
-                {
-                    r["code"] = -1;
-                    r["message"] = b;
-                }
-            }
-            catch (Exception e)
-            {
-                r["code"] = -1;
-                r["message"] = e.Message;
-            }
-            return r;
-        }
-
-
-        public Dictionary<string, object> GetPMCODE()
-        {
-            Dictionary<string, object> r = new Dictionary<string, object>();
-            try
-            {
-                DataTable dt = db.GetPMCODE();
+                DataTable dt = db.GetKCDDInfo();
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
+                    r["message"] = "success";
                     r["items"] = dt;
-                    r["message"] = "success";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
                     r["message"] = "success,but no info";
+                    r["total"] = 0;
                 }
             }
             catch (Exception e)
             {
-                r["code"] = -1;
                 r["message"] = e.Message;
+                r["code"] = -1;
             }
             return r;
         }
