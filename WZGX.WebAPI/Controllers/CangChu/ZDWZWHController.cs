@@ -16,19 +16,25 @@ namespace WZGX.WebAPI.Controllers.CangChu
         ZDWZWHModule zDWZWH = new ZDWZWHModule();
 
         [HttpGet("GetZDWZWHInfo")]
-        public IActionResult GetZDWZWHInfo(string WL_LOCATIONCODE, string WL_CODE, int limit, int page) => Ok(zDWZWH.GetZDWZWHInfo(WL_LOCATIONCODE, WL_CODE, limit, page));
+        public IActionResult GetZDWZWHInfo(string WL_LOCATIONCODE, string WLZ_CODE,string WL_CODE, int limit, int page) => Ok(zDWZWH.GetZDWZWHInfo(WL_LOCATIONCODE, WLZ_CODE,WL_CODE, limit, page));
 
-        [HttpGet("CreateZDWZWHInfo")]
+        [HttpPost("CreateZDWZWHInfo")]
         public IActionResult CreateZDWZWHInfo([FromBody]JObject value) => Ok(zDWZWH.CreateZDWZWHInfo(value.ToObject<Dictionary<string, string>>()));
 
-        [HttpGet("EditZDWZWHInfo")]
+        [HttpPost("EditZDWZWHInfo")]
         public IActionResult EditZDWZWHInfo([FromBody]JObject value) => Ok(zDWZWH.EditZDWZWHInfo(value.ToObject<Dictionary<string, string>>()));
 
-        [HttpGet("DelZDWZWHInfo")]
+        [HttpPost("DelZDWZWHInfo")]
         public IActionResult DelZDWZWHInfo([FromBody]JObject value) => Ok(zDWZWH.DelZDWZWHInfo(value.ToObject<Dictionary<string, string>>()));
 
         [HttpGet("GetKCDDInfo")]
         public IActionResult GetKCDDInfo() => Ok(zDWZWH.GetKCDDInfo());
+
+        [HttpGet("GetWLZCODE")]
+        public IActionResult GetWLZCODE() => Ok(zDWZWH.GetWLZCODE());
+
+        [HttpGet("GetWZCODE")]
+        public IActionResult GetWZCODE(string WLZ_CODE) => Ok(zDWZWH.GetWZCODE(WLZ_CODE));
 
     }
 }

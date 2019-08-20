@@ -11,12 +11,12 @@ namespace UIDP.BIZModule.CangChu.Modules
     {
         ZDWZWHDB db = new ZDWZWHDB();
 
-        public Dictionary<string,object> GetZDWZWHInfo(string WL_LOCATIONCODE, string WL_CODE,int limit,int page)
+        public Dictionary<string,object> GetZDWZWHInfo(string WL_LOCATIONCODE, string WLZ_CODE,string WL_CODE,int limit,int page)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetZDWZWHInfo(WL_LOCATIONCODE, WL_CODE);
+                DataTable dt = db.GetZDWZWHInfo(WL_LOCATIONCODE, WLZ_CODE,WL_CODE);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -42,6 +42,7 @@ namespace UIDP.BIZModule.CangChu.Modules
         public Dictionary<string,object> CreateZDWZWHInfo(Dictionary<string, string> d)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
+            d.Add("ID", Guid.NewGuid().ToString());
             try
             {
                 string b = db.CreateZDWZWHInfo(d);
@@ -126,6 +127,63 @@ namespace UIDP.BIZModule.CangChu.Modules
             try
             {
                 DataTable dt = db.GetKCDDInfo();
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success";
+                    r["items"] = dt;
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+
+        public Dictionary<string, object> GetWLZCODE()
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetWLZCODE();
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success";
+                    r["items"] = dt;
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> GetWZCODE(string WLZ_CODE)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetWZCODE(WLZ_CODE);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
