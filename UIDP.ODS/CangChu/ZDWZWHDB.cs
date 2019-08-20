@@ -17,15 +17,15 @@ namespace UIDP.ODS.CangChu
                 " WHERE 1=1";
             if (!String.IsNullOrEmpty(WL_LOCATIONCODE))
             {
-                sql += " AND WL_LOCATIONCODE='" + WL_LOCATIONCODE + "'";
+                sql += " AND a.WL_LOCATIONCODE='" + WL_LOCATIONCODE + "'";
             }
             if (!String.IsNullOrEmpty(WL_CODE))
             {
-                sql += " AND WL_CODE='" + WL_CODE + "'";
+                sql += " AND a.WL_CODE='" + WL_CODE + "'";
             }
             if (!String.IsNullOrEmpty(WLZ_CODE))
             {
-                sql += " AND WL_CODE='" + WLZ_CODE + "'";
+                sql += " AND a.WLZ_CODE='" + WLZ_CODE + "'";
             }
             return db.GetDataTable(sql);
         }
