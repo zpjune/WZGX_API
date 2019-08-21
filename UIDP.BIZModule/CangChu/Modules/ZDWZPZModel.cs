@@ -265,16 +265,18 @@ namespace UIDP.BIZModule.CangChu.Modules
                     Node.Code = dr["DLCODE"].ToString();
                     Node.DLCODE = Node.Code;
                     Node.label = dr["DLNAME"].ToString();
-                    Node.IsLoading = true;
+                    
                     Node.hasChildren = true;
                     Node.FlagID = "Parent";
                     if (Node.Code == PMCODE.Substring(0, 2))
                     {
+                        Node.IsLoading = true;
                         Node.children = new List<WLZTreeNode>();
                         GetEditChildrenNode(Node, ds, PMCODE, 0);
                     }
                     else
                     {
+                        Node.IsLoading = false;
                         Node.children = null;
                     }  
                     
@@ -314,6 +316,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                         }
                         else
                         {
+                            ZLNode.IsLoading = false;
                             ZLNode.children = null;
                         }
                         ParentNode.children.Add(ZLNode);
@@ -338,6 +341,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                         }
                         else
                         {
+                            XLNode.IsLoading = false;
                             XLNode.children = null;
                         }
                         ParentNode.children.Add(XLNode);
@@ -362,6 +366,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                         }
                         else
                         {
+                            PMNode.IsLoading = false;
                             PMNode.children = null;
                         }
                         ParentNode.children.Add(PMNode);

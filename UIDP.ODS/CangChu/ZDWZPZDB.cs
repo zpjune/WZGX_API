@@ -36,7 +36,7 @@ namespace UIDP.ODS.CangChu
 
         public string EditZDWZPZInfo(Dictionary<string, string> d)
         {
-            string sql = " UPDATE WZ_ZDWZPZ SET WL_CODE='" + d["WL_CODE"] + "', WL_NAME='"+d["WL_NAME"]+"'" +"WHERE WLZ_CODE='" + d["WLZ_CODE"] + "'";
+            string sql = " UPDATE WZ_ZDWZPZ SET WL_CODE='" + d["WL_CODE"] + "', WL_NAME='"+d["WL_NAME"]+"'" +", WLZ_CODE='" + d["WLZ_CODE"] + "'WHERE ID='"+d["ID"]+"'";
             return db.ExecutByStringResult(sql);
         }
         public string DelZDWZPZInfo(Dictionary<string, object> d)
