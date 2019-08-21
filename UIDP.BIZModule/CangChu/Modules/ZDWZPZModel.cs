@@ -252,113 +252,123 @@ namespace UIDP.BIZModule.CangChu.Modules
         }
 
 
-        //public List<WLZTreeNode> GetEditParentNode(string PMCODE)
-        //{
-        //    try
-        //    {
-        //        DataSet ds = db.GetNode(PMCODE);
-        //        List<WLZTreeNode> list = new List<WLZTreeNode>();
-        //        DataTable dt = ds.Tables[0];
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            WLZTreeNode Node = new WLZTreeNode();
-        //            Node.Code = dr["DLCODE"].ToString();
-        //            Node.DLCODE = Node.Code;
-        //            Node.label = dr["DLNAME"].ToString();
-        //            Node.children = new List<WLZTreeNode>();
+        public List<WLZTreeNode> GetEditParentNode(string PMCODE)
+        {
+            try
+            {
+                DataSet ds = db.GetNode(PMCODE);
+                List<WLZTreeNode> list = new List<WLZTreeNode>();
+                DataTable dt = ds.Tables[0];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    WLZTreeNode Node = new WLZTreeNode();
+                    Node.Code = dr["DLCODE"].ToString();
+                    Node.DLCODE = Node.Code;
+                    Node.label = dr["DLNAME"].ToString();
+                    Node.IsLoading = true;
+                    Node.hasChildren = true;
+                    Node.FlagID = "Parent";
+                    if (Node.Code == PMCODE.Substring(0, 2))
+                    {
+                        Node.children = new List<WLZTreeNode>();
+                        GetEditChildrenNode(Node, ds, PMCODE, 0);
+                    }
+                    else
+                    {
+                        Node.children = null;
+                    }  
                     
-        //            Node.IsLoading = true;
-        //            Node.hasChildren = true;
-        //            Node.FlagID = "Parent";
-        //            list.Add(Node);
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new Exception(e.Message);
-        //    }
-        //}
+                    list.Add(Node);
+                }
+                return list;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
 
-        //public void GetEditChildrenNode(WLZTreeNode ParentNode, DataSet ds,string PMCODE,int level)
-        //{
-        //    List<WLZTreeNode> ZLlist = new List<WLZTreeNode>();
-        //    int i = level;
-        //    foreach(DataRow dr in ds.Tables[i].Rows)
-        //    {
-        //        switch (ParentNode.FlagID)
-        //        {
-        //            case "Parent":
-        //                WLZTreeNode ZLNode = new WLZTreeNode();
-        //                ZLNode.DLCODE = ParentNode.DLCODE;
-        //                ZLNode.ZLCODE = dr["ZLCODE"].ToString();
-        //                ZLNode.Code = dr["ZLCODE"].ToString();
-        //                ZLNode.label = dr["ZLNAME"].ToString();                      
-        //                ZLNode.hasChildren = true;
-        //                ZLNode.FlagID = "ZLNode";
-        //                if (ZLNode.Code == PMCODE.Substring(0, 4))
-        //                {
-        //                    ZLNode.children = new List<WLZTreeNode>();
-        //                    ZLNode.IsLoading = true;
-        //                    if (level < 3)
-        //                    {
-        //                        GetEditChildrenNode(ZLNode, ds, PMCODE, i + 1);
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    ZLNode.children = null;
-        //                }
-        //                ParentNode.children.Add(ZLNode);
-        //                break;
-        //            case "ZLNode":
-        //                WLZTreeNode XLNode = new WLZTreeNode();
-        //                XLNode.DLCODE = ParentNode.DLCODE;
-        //                XLNode.ZLCODE = dr["ZLCODE"].ToString();
-        //                XLNode.Code = dr["XLCODE"].ToString();
-        //                XLNode.label = dr["XLNAME"].ToString();
-        //                XLNode.hasChildren = true;
-        //                XLNode.FlagID = "XLNode";
-        //                if (XLNode.Code == PMCODE.Substring(0, 6))
-        //                {
-        //                    XLNode.children = new List<WLZTreeNode>();
-        //                    XLNode.IsLoading = true;
-        //                    if (level < 3)
-        //                    {
-        //                        GetEditChildrenNode(XLNode, ds, PMCODE, i + 1);
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    XLNode.children = null;
-        //                }
-        //                ParentNode.children.Add(XLNode);
-        //                break;
-        //            case "XLNode":
-        //                WLZTreeNode PMNode = new WLZTreeNode();
-        //                PMNode.DLCODE = ParentNode.DLCODE;
-        //                PMNode.ZLCODE = dr["ZLCODE"].ToString();
-        //                PMNode.Code = dr["PMCODE"].ToString();
-        //                PMNode.label = dr["PMNAME"].ToString();
-        //                PMNode.hasChildren = false;
-        //                PMNode.FlagID = "XLNode";
-        //                if (PMNode.Code == PMCODE)
-        //                {
-        //                    PMNode.children = new List<WLZTreeNode>();
-        //                    PMNode.IsLoading = true;
-        //                    if (level < 3)
-        //                    {
-        //                        GetEditChildrenNode(PMNode, ds, PMCODE, i + 1);
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    PMNode.children = null;
-        //                }
-        //                ParentNode.children.Add(PMNode);
-        //                break;
+        public void GetEditChildrenNode(WLZTreeNode ParentNode, DataSet ds, string PMCODE, int level)
+        {
+            List<WLZTreeNode> list = new List<WLZTreeNode>();
+            foreach (DataRow dr in ds.Tables[level+1].Rows)
+            {
+                switch (ParentNode.FlagID)
+                {
+                    case "Parent":
+                        WLZTreeNode ZLNode = new WLZTreeNode();
+                        ZLNode.DLCODE = ParentNode.DLCODE;
+                        ZLNode.ZLCODE = dr["ZLCODE"].ToString();
+                        ZLNode.Code = dr["ZLCODE"].ToString();
+                        ZLNode.label = dr["ZLNAME"].ToString();
+                        ZLNode.hasChildren = true;
+                        ZLNode.FlagID = "ZLNode";
+                        if (ZLNode.Code == PMCODE.Substring(0, 4))
+                        {
+                            ZLNode.children = new List<WLZTreeNode>();
+                            ZLNode.IsLoading = true;
+                            if (level < 2)
+                            {
+                                GetEditChildrenNode(ZLNode, ds, PMCODE,1);
+                            }
+                        }
+                        else
+                        {
+                            ZLNode.children = null;
+                        }
+                        ParentNode.children.Add(ZLNode);
+                        break;
+                    case "ZLNode":
+                        WLZTreeNode XLNode = new WLZTreeNode();
+                        XLNode.DLCODE = PMCODE.Substring(0, 2);
+                        XLNode.ZLCODE = PMCODE.Substring(0, 4);                       
+                        XLNode.Code = dr["XLCODE"].ToString();
+                        XLNode.XLCODE = XLNode.Code;
+                        XLNode.label = dr["XLNAME"].ToString();
+                        XLNode.hasChildren = true;
+                        XLNode.FlagID = "XLNode";
+                        if (XLNode.Code == PMCODE.Substring(0, 6))
+                        {
+                            XLNode.children = new List<WLZTreeNode>();
+                            XLNode.IsLoading = true;
+                            if (level < 2)
+                            {
+                                GetEditChildrenNode(XLNode, ds, PMCODE, 2);
+                            }
+                        }
+                        else
+                        {
+                            XLNode.children = null;
+                        }
+                        ParentNode.children.Add(XLNode);
+                        break;
+                    case "XLNode":
+                        WLZTreeNode PMNode = new WLZTreeNode();
+                        PMNode.DLCODE = PMCODE.Substring(0, 2);
+                        PMNode.ZLCODE = PMCODE.Substring(0, 4);
+                        PMNode.XLCODE = PMCODE.Substring(0, 6);
+                        PMNode.Code = dr["PMCODE"].ToString();
+                        PMNode.label = dr["PMNAME"].ToString();
+                        PMNode.hasChildren = false;
+                        PMNode.FlagID = "XLNode";
+                        if (PMNode.Code == PMCODE)
+                        {
+                            PMNode.children = new List<WLZTreeNode>();
+                            PMNode.IsLoading = true;
+                            if (level < 2)
+                            {
+                                GetEditChildrenNode(PMNode, ds, PMCODE, 3);
+                            }
+                        }
+                        else
+                        {
+                            PMNode.children = null;
+                        }
+                        ParentNode.children.Add(PMNode);
+                        break;
 
-        //        }
-        //    } 
-        //}
+                }
+            }
+        }
     }
 }
