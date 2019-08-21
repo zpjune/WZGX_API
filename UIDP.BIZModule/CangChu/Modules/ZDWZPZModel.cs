@@ -293,6 +293,9 @@ namespace UIDP.BIZModule.CangChu.Modules
         public void GetEditChildrenNode(WLZTreeNode ParentNode, DataSet ds, string PMCODE, int level)
         {
             List<WLZTreeNode> list = new List<WLZTreeNode>();
+            string DLCODE = PMCODE.Substring(0, 2);
+            string ZLCODE = PMCODE.Substring(0, 4);
+            string XLCODE = PMCODE.Substring(0, 6);
             foreach (DataRow dr in ds.Tables[level+1].Rows)
             {
                 switch (ParentNode.FlagID)
@@ -305,7 +308,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                         ZLNode.label = dr["ZLNAME"].ToString();
                         ZLNode.hasChildren = true;
                         ZLNode.FlagID = "ZLNode";
-                        if (ZLNode.Code == PMCODE.Substring(0, 4))
+                        if (ZLNode.Code == ZLCODE)
                         {
                             ZLNode.children = new List<WLZTreeNode>();
                             ZLNode.IsLoading = true;
@@ -323,8 +326,8 @@ namespace UIDP.BIZModule.CangChu.Modules
                         break;
                     case "ZLNode":
                         WLZTreeNode XLNode = new WLZTreeNode();
-                        XLNode.DLCODE = PMCODE.Substring(0, 2);
-                        XLNode.ZLCODE = PMCODE.Substring(0, 4);                       
+                        XLNode.DLCODE = DLCODE;
+                        XLNode.ZLCODE = ZLCODE;                       
                         XLNode.Code = dr["XLCODE"].ToString();
                         XLNode.XLCODE = XLNode.Code;
                         XLNode.label = dr["XLNAME"].ToString();
@@ -348,9 +351,9 @@ namespace UIDP.BIZModule.CangChu.Modules
                         break;
                     case "XLNode":
                         WLZTreeNode PMNode = new WLZTreeNode();
-                        PMNode.DLCODE = PMCODE.Substring(0, 2);
-                        PMNode.ZLCODE = PMCODE.Substring(0, 4);
-                        PMNode.XLCODE = PMCODE.Substring(0, 6);
+                        PMNode.DLCODE = DLCODE;
+                        PMNode.ZLCODE = ZLCODE;
+                        PMNode.XLCODE = XLCODE;
                         PMNode.Code = dr["PMCODE"].ToString();
                         PMNode.label = dr["PMNAME"].ToString();
                         PMNode.hasChildren = false;
