@@ -28,5 +28,12 @@ namespace WZGX.WebAPI.Controllers.CangChu
 
         [HttpGet("GetPMCODE")]
         public IActionResult GetPMCODE() => Ok(zDWZPZModel.GetPMCODE());
+
+        [HttpGet("GetParentNode")]
+        public IActionResult GetParentNode() => Ok(zDWZPZModel.CreateParentNode());
+
+
+        [HttpGet("GetChildrenNode")]
+        public IActionResult GetChildrenNode(string flagID, string DLCODE, string ZLCODE, string XLCODE) => Ok(zDWZPZModel.CreateChildrenNode(flagID,DLCODE,ZLCODE,XLCODE));
     }
 }
