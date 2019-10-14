@@ -11,7 +11,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
 {
     [Produces("application/json")]
     [Route("CKInfo")]
-    public class CKInfoController : Controller
+    public class CKInfoController : WebApiBaseController
     {
         CKInfoModule CK = new CKInfoModule();
 

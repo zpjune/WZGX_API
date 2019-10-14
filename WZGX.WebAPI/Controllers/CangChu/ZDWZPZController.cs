@@ -11,7 +11,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
 {
     [Produces("application/json")]
     [Route("ZDWZPZ")]
-    public class ZDWZPZController : Controller
+    public class ZDWZPZController : WebApiBaseController
     {
         ZDWZPZModel zDWZPZModel = new ZDWZPZModel();
         [HttpGet("GetZDWZPZInfo")]

@@ -11,7 +11,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
 {
     [Produces("application/json")]
     [Route("KCDDWH")]
-    public class KCDDWHController : Controller
+    public class KCDDWHController : WebApiBaseController
     {
         KCDDWHModule kCDDWH = new KCDDWHModule();
         [HttpGet("GetKCDDInfo")]

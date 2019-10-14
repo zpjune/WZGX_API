@@ -11,7 +11,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
 {
     [Produces("application/json")]
     [Route("GCWH")]
-    public class GCWHController : Controller
+    public class GCWHController : WebApiBaseController
     {
         GCWHModule gCWHModule = new GCWHModule();
         [HttpGet("GetGCInfo")]
