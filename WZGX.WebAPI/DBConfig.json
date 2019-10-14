@@ -2,5 +2,5 @@
   "DataType": "ORACLE",
   "MYSQL": "server=localhost;user id=root;pwd=123456;database=individualtax;SslMode = none;Charset=utf8",
   "SQLSERVER": "server=weiapp.pw;user id=sa;pwd=Lhsm7800525;database=wzgx",
-  "ORACLE": "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.1.10)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORCL)));User Id=hbcxuser;Password=hbcxpass"
+  "ORACLE": "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=loalhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORCL)));User Id=hbcxuser;Password=hbcxpass"
 }
