@@ -45,16 +45,16 @@ namespace UIDP.ODS.CangChu
             }
             if (!string.IsNullOrEmpty(MATNR))
             {
-                sql += " AND LGORT_NAME='" + MATNR + "'";
+                sql += " AND MATNR='" + MATNR + "'";
             }
             if (!string.IsNullOrEmpty(MAKTX))
             {
-                sql += " AND LGORT_NAME like'" + MAKTX + "%'";
+                sql += " AND MAKTX like'" + MAKTX + "%'";
             }
             return db.GetDataTable(sql);
         }
 
-        public DataTable GetAllInfo(string MATKL,int level=0)
+        public DataTable GetAllInfo(string MATKL,string code,int level=0)
         {
             string sql = string.Empty;
             if (!string.IsNullOrEmpty(MATKL))
@@ -63,23 +63,20 @@ namespace UIDP.ODS.CangChu
             }
             else
             {
-                sql = "SELECT {0} FROM CONVERT_SWKC a LEFT JOIN WZ_WLZ b ON a.MATKL=b.PMCODE GROUP BY {1} ORDER BY {2}";
+                sql = "SELECT {0} FROM CONVERT_SWKC a LEFT JOIN WZ_WLZ b ON a.MATKL=b.PMCODE where {1}  GROUP BY {2} ORDER BY {3}";
                 switch (level)
                 {
                     case 0:
-                        sql = string.Format(sql, "b.DLCODE,b,DLNAME", "b.DLCODE,b,DLNAME", "b.DLCODE");
+                        sql = string.Format(sql, "b.DLCODE,b.DLNAME", "1=1","b.DLCODE,b. DLNAME", "b.DLCODE");
                         break;
                     case 1:
-                        sql= string.Format(sql, "b.ZLCODE,b,ZLNAME", "b.ZLCODE,b,ZLNAME", "b.ZLCODE");
-                        sql += " AND b.DLCODE='" + MATKL + "'";
+                        sql= string.Format(sql, "b.ZLCODE,b.ZLNAME", "b.DLCODE='" + code + "'","b.ZLCODE,b.ZLNAME", "b.ZLCODE");
                         break;
                     case 2:
-                        sql = string.Format(sql, "b.XLCODE,b,XLNAME", "b.XLCODE,b,XLNAME", "b.XLCODE");
-                        sql += " AND b.ZLCODE='" + MATKL + "'";
+                        sql = string.Format(sql, "b.XLCODE,b.XLNAME", "b.ZLCODE='" + code + "'", "b.XLCODE,b.XLNAME", "b.XLCODE");
                         break;
                     case 3:
-                        sql = string.Format(sql, "b.PMCODE,b,PMNAME", "b.PMCODE,b,PMNAME", "b.PMCODE");
-                        sql += " AND b.XLCODE='" + MATKL + "'";
+                        sql = string.Format(sql, "b.PMCODE,b.PMNAME,a.MEINS,a.GESME,a.LGORT_NAME", "b.XLCODE='" + code + "'", "b.PMCODE,b.PMNAME,a.MEINS,a.GESME,a.LGORT_NAME", "b.PMCODE");
                         break;
                 }
             }
