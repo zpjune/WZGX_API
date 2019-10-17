@@ -89,5 +89,74 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+        /// <summary>
+        /// 查询积压物资-总库页面
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        public Dictionary<string, object> GetJYWZ(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataTable dt = db.GetJYWZ(WERKS_NAME, LGORTNAME, MATNR, MATKL);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        public Dictionary<string, object> GetCRKJE(string year)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataSet ds = db.GetCRKJE(year);
+                if (ds.Tables.Count > 0)
+                {
+                    List<DataTable> list = new List<DataTable>();
+                    list.Add(ds.Tables["CKJE"]);
+                    list.Add(ds.Tables["RKJE"]);
+                    r["code"] = 2000;
+                    r["items"] = list;//dt
+                    r["message"] = "success";
+                    r["total"] = 0;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
     }
 }

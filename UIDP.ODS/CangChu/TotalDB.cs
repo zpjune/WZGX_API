@@ -40,7 +40,7 @@ namespace UIDP.ODS.CangChu
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
             sql += "where 1=1 ";
-                    if (!string.IsNullOrEmpty(WERKS_NAME))
+            if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  WERKS_NAME like'%" + WERKS_NAME + "%'";
             }
@@ -57,6 +57,65 @@ namespace UIDP.ODS.CangChu
                 sql += " and  MATKL like'%" + MATKL + "%'";
             }
             sql += "group by werks,matnr,lgort,zstatus,WERKS_NAME,LGORT_NAME ";//
+            return db.GetDataTable(sql);
+        }
+        /// <summary>
+        /// 查询积压物资-总库页面
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        public DataTable GetJYWZ(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
+        {
+            string sql = @" select sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
+                            '积压' ZT
+                               ,werks,matnr,lgort 
+                            from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
+            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6";
+            if (!string.IsNullOrEmpty(WERKS_NAME))
+            {
+                sql += " and  WERKS_NAME like'%" + WERKS_NAME + "%'";
+            }
+            if (!string.IsNullOrEmpty(LGORTNAME))
+            {
+                sql += " and  LGORT_NAME like'%" + LGORTNAME + "%'";
+            }
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                sql += " and  MATNR like'%" + MATNR + "%'";
+            }
+            if (!string.IsNullOrEmpty(MATKL))
+            {
+                sql += " and  MATKL like'%" + MATKL + "%'";
+            }
+            sql += "group by werks,matnr,lgort,zstatus,WERKS_NAME,LGORT_NAME ";//
+            return db.GetDataTable(sql);
+        }
+        /// <summary>
+        /// 总库存-出库入库统计-按年 按月统计金额
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public DataSet GetCRKJE(string year)
+        {
+            Dictionary<string, string> d = new Dictionary<string, string>();//以万为单位
+            string sql = @"select sum(JE)/10000 JE,substr(BUDAT_MKPF,5,2) Month
+                            from CONVERT_CKJE
+                            WHERE  substr(BUDAT_MKPF,1,4)='";
+            sql += year + "'  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
+            d.Add("CKJE", sql);
+            sql = @"select sum(JE)/10000 JE,substr(BUDAT_MKPF,5,2) Month
+                    from CONVERT_RKJE
+                    WHERE  substr(BUDAT_MKPF,1,4)='";
+            sql += year + "'  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
+            d.Add("RKJE", sql);
+            return db.GetDataSet(d);
+        }
+        public DataTable getCRKDeetail(string year,string month) {
+            string sql = @"";
+
             return db.GetDataTable(sql);
         }
     }
