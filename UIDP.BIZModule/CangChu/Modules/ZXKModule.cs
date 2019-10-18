@@ -9,12 +9,12 @@ namespace UIDP.BIZModule.CangChu.Modules
     public class ZXKModule
     {
         ZXKDB db = new ZXKDB();
-        public Dictionary<string,object> GetDRKInfo(string MATNR, string info, int page, int limit)
+        public Dictionary<string,object> GetDRKInfo(string MATNR, string info, string FacCode, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataSet ds = db.GetDRKInfo(MATNR, info, page, limit);
+                DataSet ds = db.GetDRKInfo(MATNR, info, FacCode,page, limit);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -39,12 +39,12 @@ namespace UIDP.BIZModule.CangChu.Modules
         }
 
 
-        public Dictionary<string, object> GetDCKInfo(string MATNR, string info, int page, int limit)
+        public Dictionary<string, object> GetDCKInfo(string MATNR, string info, string FacCode, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataSet ds = db.GetDCKInfo(MATNR, info, page, limit);
+                DataSet ds = db.GetDCKInfo(MATNR, info, FacCode,page, limit);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     r["code"] = 2000;
