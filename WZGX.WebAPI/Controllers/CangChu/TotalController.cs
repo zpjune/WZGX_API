@@ -52,5 +52,14 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("GetCRKJE")]
         public IActionResult GetCRKJE(string year) =>
            Ok(md.GetCRKJE(year));
+        /// <summary>
+        /// 总库存-查询出库如明细
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        [HttpGet("getCRKDetail")]
+        public IActionResult getCRKDetail(string year,string month) =>
+          Ok(md.getCRKDetail(year,month));
     }
 }

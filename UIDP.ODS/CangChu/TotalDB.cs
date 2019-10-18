@@ -113,10 +113,40 @@ namespace UIDP.ODS.CangChu
             d.Add("RKJE", sql);
             return db.GetDataSet(d);
         }
-        public DataTable getCRKDeetail(string year,string month) {
-            string sql = @"";
+        public DataSet getCRKDetail(string year,string month) {
+            Dictionary<string, string> d = new Dictionary<string, string>();//以万为单位
+            string sql = @" select DISTINCT B.CKH_NAME
+                            from CONVERT_CKJE A 
+                            join WZ_KCDD B on A.WERKS=B.DWCODE AND A.LGORT=B.KCDD_CODE
+                            LEFT JOIN WZ_CRKL C ON DK_CODE=B.CKH  AND ";
+            sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
+            sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            sql += " UNION ";
+            sql+= @"  select DISTINCT B.CKH_NAME
+                            from CONVERT_RKJE A
+                            join WZ_KCDD B on A.WERKS = B.DWCODE AND A.LGORT = B.KCDD_CODE
+                            LEFT JOIN WZ_CRKL C ON DK_CODE = B.CKH  AND ";
+            sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
+            sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
 
-            return db.GetDataTable(sql);
+            d.Add("DK_NAME", sql);//大库名称
+            sql = @"select MAX(B.CKH_NAME) CKH_NAME,sum(JE)/10000 CKJE,SUM(C.CKL) CKL
+                    from CONVERT_CKJE A
+                    join WZ_KCDD B on A.WERKS=B.DWCODE AND A.LGORT=B.KCDD_CODE
+                    LEFT JOIN WZ_CRKL C ON DK_CODE=B.CKH  AND ";
+            sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
+            sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            sql +="   GROUP BY  B.CKH";
+            d.Add("CKJE_Detail", sql);//出库金额明细
+            sql = @"select MAX(B.CKH_NAME) CKH_NAME,sum(JE)/10000 RKJE,SUM(C.RKL) RKL
+                    from CONVERT_RKJE A
+                    join WZ_KCDD B on A.WERKS=B.DWCODE AND A.LGORT=B.KCDD_CODE
+                    LEFT JOIN WZ_CRKL C ON DK_CODE=B.CKH  AND ";
+            sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
+            sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            sql += "   GROUP BY  B.CKH";
+            d.Add("RKJE_Detail", sql);//入库金额明细
+            return db.GetDataSet(d);
         }
     }
 }

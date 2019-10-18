@@ -126,6 +126,11 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+        /// <summary>
+        /// 总库存-查询输入库统计金额
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
         public Dictionary<string, object> GetCRKJE(string year)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
@@ -140,6 +145,70 @@ namespace UIDP.BIZModule.CangChu.Modules
                     list.Add(ds.Tables["RKJE"]);
                     r["code"] = 2000;
                     r["items"] = list;//dt
+                    r["message"] = "success";
+                    r["total"] = 0;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        /// <summary>
+        /// 总库存-查询出库如明细金额
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> getCRKDetail(string year, string month)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataSet ds = db.getCRKDetail(year,month);
+                if (ds.Tables.Count > 0)
+                {
+                    DataTable dtNew = new DataTable();
+                    dtNew.Columns.Add("DKName");
+                    dtNew.Columns.Add("RKJE");
+                    dtNew.Columns.Add("RKL");
+                    dtNew.Columns.Add("CKJE");
+                    dtNew.Columns.Add("CKL");
+                    foreach (DataRow rowDKName in ds.Tables["DK_NAME"].Rows)
+                    {
+                        int i = 0;//判断下面是否有数据，有才会add到dtnew里
+                        DataRow newRow = dtNew.NewRow();
+                        DataRow[] rowRK = ds.Tables["RKJE_Detail"].Select("CKH_NAME='"+rowDKName["CKH_NAME"] +"'");
+                        if (rowRK.Length>1) {
+                            i = 1;
+                            newRow["DKName"] = rowRK[0]["CKH_NAME"];
+                            newRow["RKJE"] = rowRK[0]["RKJE"];
+                            newRow["RKL"] = rowRK[0]["RKL"];
+                        }
+                        rowRK = ds.Tables["CKJE_Detail"].Select("CKH_NAME='" + rowDKName["CKH_NAME"] + "'");
+                        if (rowRK.Length > 1)
+                        {
+                            i = 1;
+                            newRow["DKName"] = rowRK[0]["CKH_NAME"];
+                            newRow["CKJE"] = rowRK[0]["CKJE"];
+                            newRow["CKL"] = rowRK[0]["CKL"];
+                        }
+                        if(i==1){
+                            dtNew.Rows.Add(newRow);
+                        }
+                    }
+                    r["code"] = 2000;
+                    r["items"] = dtNew;//dt
                     r["message"] = "success";
                     r["total"] = 0;
                 }
