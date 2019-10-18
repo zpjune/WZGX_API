@@ -24,15 +24,22 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
 
+        public DataTable GetDWInfo()
+        {
+            string sql = "select * from WZ_DW";
+            return db.GetDataTable(sql);
+        }
+
         public string CreateKCDDInfo(Dictionary<string, string> d)
         {
-            string sql = "insert into WZ_KCDD(KCDD_CODE,KCDD_NAME)VALUES('" + d["KCDD_CODE"] + "','" + d["KCDD_NAME"] +"')";
+            string sql = "insert into WZ_KCDD(KCDD_CODE,KCDD_NAME,DWCODE,CKH,CKH_NAME)VALUES('" + d["KCDD_CODE"] + "','" + d["KCDD_NAME"] +"','"+d["DWCODE"]+"','"+d["CKH"]+"','"+d["CKH_NAME"]+"')";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditKCDDInfo(Dictionary<string, string> d)
         {
-            string sql = " UPDATE WZ_KCDD SET KCDD_NAME='" + d["KCDD_NAME"] + "' WHERE KCDD_CODE='" + d["KCDD_CODE"] + "'";
+            string sql = " UPDATE WZ_KCDD SET KCDD_NAME='" + d["KCDD_NAME"] + "',CKH='"+d["CKH"]+ "',CKH_NAME='"+d["CKH_NAME"]+"' " +
+                "WHERE KCDD_CODE='" + d["KCDD_CODE"] + "' AND DWCODE='"+d["DWCODE"]+"'";
             return db.ExecutByStringResult(sql);
         }
         public string DelKCDDInfo(Dictionary<string, object> d)

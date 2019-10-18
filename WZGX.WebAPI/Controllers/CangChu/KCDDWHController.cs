@@ -17,6 +17,9 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("GetKCDDInfo")]
         public IActionResult GetKCDDInfo(string KCDD_CODE, string KCDD_NAME, int limit, int page) => Ok(kCDDWH.GetKCDDInfo(KCDD_CODE, KCDD_NAME,limit, page));
 
+        [HttpGet("GetDWInfo")]
+        public IActionResult GetDWInfo() => Ok(kCDDWH.GetDWInfo());
+
         [HttpPost("CreateKCDDInfo")]
         public IActionResult CreateKCDDInfo([FromBody]JObject value) => Ok(kCDDWH.CreateKCDDInfo(value.ToObject<Dictionary<string, string>>()));
 
