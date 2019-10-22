@@ -24,14 +24,14 @@ namespace UIDP.BIZModule.CangChu
                     if (dt.Rows.Count > 0)
                     {
                         r["code"] = 2000;
-                        r["message"] = "success";
+                        r["message"] = "成功！";
                         r["items"] = CreateFullNode(dt,page,limit);
                         r["total"] = dt.Rows.Count;
                     }
                     else
                     {
-                        r["code"] = 2001;
-                        r["message"] = "success,but not info";
+                        r["code"] = 2000;
+                        r["message"] = "成功！,但是没有数据";
                         r["total"] = 0;
                     }
                 }
@@ -40,14 +40,14 @@ namespace UIDP.BIZModule.CangChu
                     if (dt.Rows.Count > 0)
                     {
                         r["code"] = 2000;
-                        r["message"] = "success";
+                        r["message"] = "成功！";
                         r["items"] = CreateParentNode(dt, page, limit);
                         r["total"] = dt.Rows.Count;
                     }
                     else
                     {
-                        r["code"] = 2001;
-                        r["message"] = "success,but not info";
+                        r["code"] = 2000;
+                        r["message"] = "成功！,但是没有数据";
                         r["total"] = 0;
                     }
                 }            
@@ -217,7 +217,7 @@ namespace UIDP.BIZModule.CangChu
                 if (b == "")
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                 }
                 else
                 {
@@ -245,12 +245,12 @@ namespace UIDP.BIZModule.CangChu
                     //r["ZLOptions"] = ds.Tables[1];
                     //r["XLOptions"] = ds.Tables[2];
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                 }
                 else
                 {
                     r["code"] = -1;
-                    r["message"] = "success,but not info";
+                    r["message"] = "成功！,但是没有数据";
                 }
             }
             catch(Exception e)
@@ -271,12 +271,12 @@ namespace UIDP.BIZModule.CangChu
                 {
                     r["ZLOptions"] = ds;
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                 }
                 else
                 {
                     r["code"] = -1;
-                    r["message"] = "success,but not info";
+                    r["message"] = "成功！,但是没有数据";
                 }
             }
             catch (Exception e)
@@ -297,12 +297,12 @@ namespace UIDP.BIZModule.CangChu
                 {
                     r["XLOptions"] = ds;
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                 }
                 else
                 {
                     r["code"] = -1;
-                    r["message"] = "success,but not info";
+                    r["message"] = "成功！,但是没有数据";
                 }
             }
             catch (Exception e)
@@ -322,7 +322,7 @@ namespace UIDP.BIZModule.CangChu
                 if (b == "")
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                 }
                 else
                 {
@@ -348,7 +348,7 @@ namespace UIDP.BIZModule.CangChu
                 if (b == "")
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                 }
                 else
                 {

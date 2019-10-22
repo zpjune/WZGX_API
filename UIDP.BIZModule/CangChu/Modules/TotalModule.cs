@@ -36,13 +36,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                     d["C27B"] = dt.Select("WERKS='C27B'")[0][0];
                     r["code"] = 2000;
                     r["items"] = d;//dt
-                    r["message"] = "success";
+                    r["message"] = "成功";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功，但是没有数据！";
                 }
             }
             catch (Exception e)
@@ -71,13 +71,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功!但是没有数据";
                     r["items"] = new DataTable();//dt
                     r["total"] = 0;
                 }
@@ -108,13 +108,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功！但是没有数据";
                     r["items"] = new DataTable();//dt
                     r["total"] = 0;
                 }
@@ -145,13 +145,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                     list.Add(ds.Tables["RKJE"]);
                     r["code"] = 2000;
                     r["items"] = list;//dt
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["total"] = 0;
                 }
                 else
                 {
                     r["code"] = 2000;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功！,但是没有数据";
                     r["items"] = new DataTable();//dt
                     r["total"] = 0;
                 }
@@ -209,13 +209,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                     }
                     r["code"] = 2000;
                     r["items"] = dtNew;//dt
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["total"] = 0;
                 }
                 else
                 {
                     r["code"] = 2000;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功！，但是没有数据";
                     r["items"] = new DataTable();//dt
                     r["total"] = 0;
                 }
@@ -244,13 +244,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功！，但是没有数据";
                     r["items"] = new DataTable();//dt
                     r["total"] = 0;
                 }
@@ -278,13 +278,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功！,但是没有数据";
                     r["items"] = new DataTable();//dt
                     r["total"] = 0;
                 }

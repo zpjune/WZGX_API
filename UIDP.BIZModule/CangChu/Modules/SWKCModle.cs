@@ -21,14 +21,14 @@ namespace UIDP.BIZModule.CangChu.Modules
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["items"] = KVTool.GetPagedTable(dt, page, limit);
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
-                    r["code"] = 2001;
-                    r["message"] = "success,but no info";
+                    r["code"] = 2000;
+                    r["message"] = "成功！但是没有数据";
                 }
             }
             catch(Exception e)
@@ -49,13 +49,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["items"] = KVTool.GetPagedTable(dt, page, limit);
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
-                    r["code"] = 2001;
-                    r["message"] = "success,but no info";
+                    r["code"] = 2000;
+                    r["message"] = "成功，但是没有数据！";
                 }
             }
             catch (Exception e)
@@ -103,14 +103,14 @@ namespace UIDP.BIZModule.CangChu.Modules
                 if (list.Count > 0)
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["items"] = list.Skip((page - 1) * limit).Take(limit).ToList();
                     r["totoal"] = list.Count;
                 }
                 else
                 {
                     r["code"] = 2001;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功！,but no info";
                     r["totoal"] = list.Count;
                 }
             }

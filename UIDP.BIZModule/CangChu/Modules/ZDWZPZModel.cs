@@ -23,13 +23,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["items"] = KVTool.GetPagedTable(dt, page, limit);
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功！,没有数据";
                 }
             }
             catch (Exception e)
@@ -58,7 +58,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 if (b == "")
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                 }
                 else
                 {
@@ -84,7 +84,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 if (b == "")
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                 }
                 else
                 {
@@ -109,7 +109,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 if (b == "")
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                 }
                 else
                 {
@@ -136,13 +136,13 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["items"] = dt;
-                    r["message"] = "success";
+                    r["message"] = "成功！";
                     r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功！,没有数据";
                 }
             }
             catch (Exception e)

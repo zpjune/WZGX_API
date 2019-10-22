@@ -19,7 +19,7 @@ namespace UIDP.ODS.CangChu
                 " AND d.PARENTCODE='TOTAL'";
             if (!String.IsNullOrEmpty(WL_LOCATIONCODE))
             {
-                sql += " AND a.WL_LOCATIONCODE='" + WL_LOCATIONCODE + "'";
+                sql += " AND a.KC_CODE='" + WL_LOCATIONCODE + "'";
             }
             if (!String.IsNullOrEmpty(WL_CODE))
             {
@@ -34,14 +34,14 @@ namespace UIDP.ODS.CangChu
 
         public string CreateZDWZWHInfo(Dictionary<string,string> d)
         {
-            string sql = "INSERT INTO WZ_ZDWZWH (ID,WLZ_CODE,WL_CODE,WL_LOCATIONCODE,MAXHAVING,MINHAVING,KC_CODE,WL_NAME)VALUES('" +
-                d["ID"] + "','" + d["WLZ_CODE"] + "','"+d["WL_CODE"]+"','" + d["WL_LOCATIONCODE"] + "','" + d["MAXHAVING"] + "','" + d["MINHAVING"] + "','"+d["KC_CODE"]+ "','"+d["WL_NAME"]+"')";
+            string sql = "INSERT INTO WZ_ZDWZWH (ID,WL_CODE,MAXHAVING,MINHAVING,KC_CODE,WL_NAME)VALUES('" +
+                d["ID"] + "','"+d["WL_CODE"]+"','" + d["MAXHAVING"] + "','" + d["MINHAVING"] + "','"+d["KC_CODE"]+ "','"+d["WL_NAME"]+"')";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditZDWZWHInfo(Dictionary<string,string> d)
         {
-            string sql = "UPDATE WZ_ZDWZWH SET WLZ_CODE='" + d["WLZ_CODE"] + "',WL_LOCATIONCODE='" + d["WL_LOCATIONCODE"] + "',MAXHAVING='" + d["MAXHAVING"] + "',MINHAVING='" + d["MINHAVING"] + "',WL_CODE='"+d["WL_CODE"]+ "',KC_CODE= '"+d["KC_CODE"]+ "',WL_NAME='"+d["WL_NAME"]+"'";
+            string sql = "UPDATE WZ_ZDWZWH SET MAXHAVING='" + d["MAXHAVING"] + "',MINHAVING='" + d["MINHAVING"] + "',WL_CODE='"+d["WL_CODE"]+ "',KC_CODE= '"+d["KC_CODE"]+ "',WL_NAME='"+d["WL_NAME"]+"'";
             sql += " WHERE ID='" + d["ID"] + "'";
             return db.ExecutByStringResult(sql);
         }

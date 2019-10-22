@@ -19,14 +19,14 @@ namespace UIDP.BIZModule.CangChu
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功";
                     r["total"] = dt.Rows.Count;
                     r["items"] = KVTool.GetPagedTable(dt, page, limit);
                 }
                 else
                 {
                     r["code"] = 2001;
-                    r["message"] = "success,but have no data";
+                    r["message"] = "成功,但是没有数据！";
                     r["total"] = 0;
                 }
             }
@@ -48,7 +48,7 @@ namespace UIDP.BIZModule.CangChu
                 if (b == "")
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功";
                 }
                 else
                 {
@@ -73,7 +73,7 @@ namespace UIDP.BIZModule.CangChu
                 if (b == "")
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功";
                 }
                 else
                 {
@@ -98,7 +98,7 @@ namespace UIDP.BIZModule.CangChu
                 if (b == "")
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功";
                 }
                 else
                 {

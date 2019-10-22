@@ -18,14 +18,14 @@ namespace UIDP.BIZModule.CangChu.Modules
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功";
                     r["total"] = ds.Tables[1].Rows[0]["TOTAL"];
                     r["items"] = ds.Tables[0];
                 }
                 else
                 {
                     r["code"] = 2001;
-                    r["message"] = "success,but no info";
+                    r["message"] = "成功,但是没有数据";
                     r["total"] = 0;
 
                 }
@@ -48,14 +48,14 @@ namespace UIDP.BIZModule.CangChu.Modules
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     r["code"] = 2000;
-                    r["message"] = "success";
+                    r["message"] = "成功";
                     r["total"] = ds.Tables[1].Rows[0]["TOTAL"];
                     r["items"] = ds.Tables[0];
                 }
                 else
                 {
-                    r["code"] = 2001;
-                    r["message"] = "success,but no info";
+                    r["code"] = 2000;
+                    r["message"] = "成功,但是没有数据";
                     r["total"] = 0;
 
                 }
