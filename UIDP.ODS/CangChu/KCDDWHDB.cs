@@ -12,7 +12,10 @@ namespace UIDP.ODS.CangChu
 
         public DataTable GetKCDDInfo(string KCDD_CODE, string KCDD_NAME)
         {
-            string sql = "select * from WZ_KCDD where 1=1";
+            string sql = "select a.*,b.NAME from WZ_KCDD a " +
+                "LEFT JOIN TS_DICTIONARY b ON a.CKH=b.CODE" +
+                " where 1=1"+
+                " AND b.PARENTCODE='TOTAL'";
             if (!String.IsNullOrEmpty(KCDD_CODE))
             {
                 sql += " AND KCDD_CODE='" + KCDD_CODE + "'";

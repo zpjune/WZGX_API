@@ -11,26 +11,26 @@ namespace UIDP.ODS
         DBTool db = new DBTool("");
         public DataTable getData()
         {
-            string sql = @"SELECT * FROM tax_dictionary ORDER BY ""Code"",""SortNo""";
+            string sql = @"SELECT * FROM TS_DICTIONARY ORDER BY ""CODE"",""SORTNO""";
             return db.GetDataTable(sql);
         }
 
         public string editNode(Dictionary<string, object> d)
         {
-            string sql = @"UPDATE tax_dictionary SET ""ParentCode""='" + d["ParentCode"] + "',";
-            sql += @"""Code""='" + d["Code"] + "',";
-            sql += @"""Name""='" + d["Name"] + "',";
-            sql += @"""S_UpdateBy""='" + d["S_UpdateBy"] + "',";
-            sql += @"""S_UpdateDate""= to_date('" + d["S_UpdateDate"] + "','yyyy-MM-dd HH24:mi:ss')";
+            string sql = @"UPDATE TS_DICTIONARY SET ""PARENTCODE""='" + d["ParentCode"] + "',";
+            sql += @"""CODE""='" + d["Code"] + "',";
+            sql += @"""NAME""='" + d["Name"] + "',";
+            sql += @"""S_UPDATEBY""='" + d["S_UpdateBy"] + "',";
+            sql += @"""S_UPDATEDATE""= to_date('" + d["S_UpdateDate"] + "','yyyy-MM-dd HH24:mi:ss')";
             if (d["EnglishCode"] != null && d["EnglishCode"].ToString() != "")
             {
-                sql += @",""EnglishCode""='" + d["EnglishCode"] + "'";
+                sql += @",""ENGLISHCODE""='" + d["EnglishCode"] + "'";
             }
             if (d["SortNo"] != null && d["SortNo"].ToString() != "")
             {
-                sql += @",""SortNo""=" + d["SortNo"] + "";
+                sql += @",""SORTNO""=" + d["SortNo"] + "";
             }
-            sql += @" WHERE ""S_Id""='" + d["S_Id"] + "'";
+            sql += @" WHERE ""S_ID""='" + d["S_Id"] + "'";
             return db.ExecutByStringResult(sql);
         }
 
@@ -38,7 +38,7 @@ namespace UIDP.ODS
         {
             StringBuilder sql = new StringBuilder();
             //string sql = "INSERT INTO tax_dictionary(S_Id,S_CreateDate,S_CreateBy,ParentCode,Code,Name,EnglishCode,SortNo)VALUES(";
-            sql.Append(@"INSERT INTO tax_dictionary(""S_Id"",""S_CreateDate"",""S_CreateBy"",""ParentCode"",""Code"",""Name"",""EnglishCode"",""SortNo"")VALUES('");
+            sql.Append(@"INSERT INTO TS_DICTIONARY(""S_Id"",""S_CreateDate"",""S_CreateBy"",""ParentCode"",""Code"",""Name"",""EnglishCode"",""SortNo"")VALUES('".ToUpper());
             sql.Append(d["S_Id"]);
             sql.Append("',");
             sql.Append("to_date('"+d["S_CreateDate"]+ "','yyyy-MM-dd HH24:mi:ss')");
@@ -67,21 +67,26 @@ namespace UIDP.ODS
 
         public DataTable getRepeatInfo(Dictionary<string, object> d)
         {
-            string sql = "SELECT * FROM  TAX_DICTIONARY WHERE 1=1";
-            sql += " AND 'Code'='" + d["Code"] + "'";
+            string sql = "SELECT * FROM  TS_DICTIONARY WHERE 1=1";
+            sql += " AND 'CODE'='" + d["Code"] + "'";
             //sql+=" OR Name='" + d["Name"] + "'";
             return db.GetDataTable(sql);
         }
 
         public string delNode(Dictionary<string, object> d)
         {
-            string sql = @"DELETE FROM tax_dictionary WHERE ""S_Id""='" + d["S_Id"] + "'";
+            string sql = @"DELETE FROM TS_DICTIONARY WHERE ""S_ID""='" + d["S_Id"] + "'";
             return db.ExecutByStringResult(sql);
         }
 
         public DataTable search(string param)
         {
-            string sql = @"SELECT * FROM tax_dictionary WHERE ""Code""='" + param + "'" + @" OR ""Name""='" + param + "'" + @" OR ""EnglishCode""='" + param + "'";
+            string sql = @"SELECT * FROM TS_DICTIONARY WHERE ""CODE""='" + param + "'" + @" OR ""NAME""='" + param + "'" + @" OR ""ENGLISHCODE""='" + param + "'";
+            return db.GetDataTable(sql);
+        }
+        public DataTable GetCodeOptions(string ParentCode)
+        {
+            string sql = " select CODE,NAME FROM TS_DICTIONARY where PARENTCODE='" + ParentCode + "'";
             return db.GetDataTable(sql);
         }
     }

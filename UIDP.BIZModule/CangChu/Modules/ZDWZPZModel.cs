@@ -47,13 +47,13 @@ namespace UIDP.BIZModule.CangChu.Modules
             d.Add("ID", Guid.NewGuid().ToString());
             try
             {
-                DataTable dt = db.GetRepeat(d["WLZ_CODE"].ToString(), d["WL_CODE"].ToString());
-                if (dt.Rows.Count > 0)
-                {
-                    r["code"] = -1;
-                    r["message"] = "重复的信息！";
-                    return r;
-                }
+                //DataTable dt = db.GetRepeat(d["WLZ_CODE"].ToString(), d["WL_CODE"].ToString());
+                //if (dt.Rows.Count > 0)
+                //{
+                //    r["code"] = -1;
+                //    r["message"] = "重复的信息！";
+                //    return r;
+                //}
                 string b = db.CreateZDWZPZInfo(d);
                 if (b == "")
                 {

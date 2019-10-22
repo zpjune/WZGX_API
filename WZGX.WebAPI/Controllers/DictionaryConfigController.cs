@@ -58,5 +58,7 @@ namespace WZGX.WebAPI.Controllers
             Dictionary<string, object> res = DCM.delNode(d);
             return Json(res);
         }
+        [HttpGet("GetCodeOptions")]
+        public IActionResult GetCodeOptions(string ParentCode) => Ok(DCM.GetCodeOptions(ParentCode));
     }
 }

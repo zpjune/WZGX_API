@@ -11,10 +11,12 @@ namespace UIDP.ODS.CangChu
         DBTool db = new DBTool("");
         public DataTable GetZDWZWHInfo(string WL_LOCATIONCODE,string WLZ_CODE,string WL_CODE)
         {
-            string sql = " SELECT a.*,b.KCDD_NAME,c.WL_NAME FROM WZ_ZDWZWH a " +
+            string sql = " SELECT DISTINCT a.*,d.NAME,b.KCDD_NAME FROM WZ_ZDWZWH a " +
                 "LEFT JOIN WZ_KCDD b ON a.WL_LOCATIONCODE = b.KCDD_CODE " +
-                "LEFT JOIN WZ_ZDWZPZ c ON a.WL_CODE = c.WL_CODE" +
-                " WHERE 1=1";
+                //"LEFT JOIN WZ_ZDWZPZ c ON a.WL_CODE = c.WL_CODE" +
+                "LEFT JOIN TS_DICTIONARY d ON a.KC_CODE=d.CODE" +
+                " WHERE 1=1"+
+                " AND d.PARENTCODE='TOTAL'";
             if (!String.IsNullOrEmpty(WL_LOCATIONCODE))
             {
                 sql += " AND a.WL_LOCATIONCODE='" + WL_LOCATIONCODE + "'";
@@ -32,14 +34,14 @@ namespace UIDP.ODS.CangChu
 
         public string CreateZDWZWHInfo(Dictionary<string,string> d)
         {
-            string sql = "INSERT INTO WZ_ZDWZWH (ID,WLZ_CODE,WL_CODE,WL_LOCATIONCODE,MAXHAVING,MINHAVING)VALUES('" +
-                d["ID"] + "','" + d["WLZ_CODE"] + "','"+d["WL_CODE"]+"','" + d["WL_LOCATIONCODE"] + "','" + d["MAXHAVING"] + "','" + d["MINHAVING"] + "')";
+            string sql = "INSERT INTO WZ_ZDWZWH (ID,WLZ_CODE,WL_CODE,WL_LOCATIONCODE,MAXHAVING,MINHAVING,KC_CODE,WL_NAME)VALUES('" +
+                d["ID"] + "','" + d["WLZ_CODE"] + "','"+d["WL_CODE"]+"','" + d["WL_LOCATIONCODE"] + "','" + d["MAXHAVING"] + "','" + d["MINHAVING"] + "','"+d["KC_CODE"]+ "','"+d["WL_NAME"]+"')";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditZDWZWHInfo(Dictionary<string,string> d)
         {
-            string sql = "UPDATE WZ_ZDWZWH SET WLZ_CODE='" + d["WLZ_CODE"] + "',WL_LOCATIONCODE='" + d["WL_LOCATIONCODE"] + "',MAXHAVING='" + d["MAXHAVING"] + "',MINHAVING='" + d["MINHAVING"] + "',WL_CODE='"+d["WL_CODE"]+"' ";
+            string sql = "UPDATE WZ_ZDWZWH SET WLZ_CODE='" + d["WLZ_CODE"] + "',WL_LOCATIONCODE='" + d["WL_LOCATIONCODE"] + "',MAXHAVING='" + d["MAXHAVING"] + "',MINHAVING='" + d["MINHAVING"] + "',WL_CODE='"+d["WL_CODE"]+ "',KC_CODE= '"+d["KC_CODE"]+ "',WL_NAME='"+d["WL_NAME"]+"'";
             sql += " WHERE ID='" + d["ID"] + "'";
             return db.ExecutByStringResult(sql);
         }
@@ -66,5 +68,7 @@ namespace UIDP.ODS.CangChu
             string sql = "SELECT WL_CODE,WL_NAME FROM WZ_ZDWZPZ WHERE WLZ_CODE='" + WLZ_CODE + "'";
             return db.GetDataTable(sql);
         }
+
+        
     }
 }

@@ -12,7 +12,9 @@ namespace UIDP.ODS.CangChu
 
         public DataTable GetZDWZPZInfo(string WLZ_CODE, string WL_CODE,string WL_NAME)
         {
-            string sql = "select a.*,b.PMNAME from WZ_ZDWZPZ a left join WZ_WLZ b on a.WLZ_CODE=b.PMCODE where 1=1";
+            string sql = "select a.* from WZ_ZDWZPZ a " +
+                //"left join WZ_WLZ b on a.WLZ_CODE=b.PMCODE " +
+                "where 1=1";
             if (!String.IsNullOrEmpty(WLZ_CODE))
             {
                 sql += " AND a.WLZ_CODE='" + WLZ_CODE + "'";
@@ -30,13 +32,13 @@ namespace UIDP.ODS.CangChu
 
         public string CreateZDWZPZInfo(Dictionary<string, string> d)
         {
-            string sql = "insert into WZ_ZDWZPZ(WLZ_CODE,WL_CODE,WL_NAME,ID)VALUES('" + d["WLZ_CODE"] + "','" + d["WL_CODE"] + "','"+d["WL_NAME"]+"','"+d["ID"]+"')";
+            string sql = "insert into WZ_ZDWZPZ(WL_CODE,WL_NAME,ID)VALUES('"+ d["WL_CODE"] + "','"+d["WL_NAME"]+"','"+d["ID"]+"')";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditZDWZPZInfo(Dictionary<string, string> d)
         {
-            string sql = " UPDATE WZ_ZDWZPZ SET WL_CODE='" + d["WL_CODE"] + "', WL_NAME='"+d["WL_NAME"]+"'" +", WLZ_CODE='" + d["WLZ_CODE"] + "'WHERE ID='"+d["ID"]+"'";
+            string sql = " UPDATE WZ_ZDWZPZ SET WL_CODE='" + d["WL_CODE"] + "', WL_NAME='"+d["WL_NAME"]+"'" +" WHERE ID='"+d["ID"]+"'";
             return db.ExecutByStringResult(sql);
         }
         public string DelZDWZPZInfo(Dictionary<string, object> d)
@@ -95,8 +97,6 @@ namespace UIDP.ODS.CangChu
             list.Add("XLsql", XLsql);
             list.Add("PMsql", PMsql);
             return db.GetDataSet(list);
-
-
         }
     }
 }

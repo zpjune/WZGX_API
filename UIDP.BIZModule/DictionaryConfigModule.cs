@@ -142,5 +142,34 @@ namespace UIDP.BIZModule
             }
             return r;
         }
+
+
+        public Dictionary<string,object> GetCodeOptions(string ParentCode)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetCodeOptions(ParentCode);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success";
+                    r["items"] = dt;
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2001;
+                    r["message"] = "success but no info";
+                }
+
+            }
+            catch(Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
     }
 }
