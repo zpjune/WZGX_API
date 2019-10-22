@@ -80,5 +80,27 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("getBGYGZLDetail")]
         public IActionResult getBGYGZLDetail(string nianyue, string TZDType, string workerCode, int page, int limit) =>
           Ok(md.getBGYGZLDetail(nianyue,  TZDType,  workerCode, page, limit));
+        /// <summary>
+        /// 重点物资储备查询-总库页面
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        [HttpGet("getZDWZCB")]
+        public IActionResult getZDWZCB(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
+            Ok(md.getZDWZCB(WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
+        /// <summary>
+        /// 重点物资出入库查询-总库页面
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        [HttpGet("getZDWZCRK")]
+        public IActionResult getZDWZCRK(string month,string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
+            Ok(md.getZDWZCRK(month,WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
     }
 }
