@@ -189,14 +189,14 @@ namespace UIDP.BIZModule.CangChu.Modules
                         int i = 0;//判断下面是否有数据，有才会add到dtnew里
                         DataRow newRow = dtNew.NewRow();
                         DataRow[] rowRK = ds.Tables["RKJE_Detail"].Select("CKH_NAME='"+rowDKName["CKH_NAME"] +"'");
-                        if (rowRK.Length>1) {
+                        if (rowRK.Length>0) {
                             i = 1;
                             newRow["DKName"] = rowRK[0]["CKH_NAME"];
                             newRow["RKJE"] = rowRK[0]["RKJE"];
                             newRow["RKL"] = rowRK[0]["RKL"];
                         }
                         rowRK = ds.Tables["CKJE_Detail"].Select("CKH_NAME='" + rowDKName["CKH_NAME"] + "'");
-                        if (rowRK.Length > 1)
+                        if (rowRK.Length > 0)
                         {
                             i = 1;
                             newRow["DKName"] = rowRK[0]["CKH_NAME"];
@@ -211,6 +211,75 @@ namespace UIDP.BIZModule.CangChu.Modules
                     r["items"] = dtNew;//dt
                     r["message"] = "success";
                     r["total"] = 0;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        /// <summary>
+        /// 总库查询保管员工作量
+        /// </summary>
+        /// <param name="month"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> getBGYGZL(string month,string workerName, int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.getBGYGZL(month, workerName);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        /// <summary>
+        /// 总库存保管员工作量明细查询
+        /// </summary>
+        /// <param name="nianyue">年月</param>
+        /// <param name="TZDType">1 入库单 2 出库单</param>
+        /// <param name="workerCode">员工编号</param>
+        public Dictionary<string, object> getBGYGZLDetail(string nianyue, string TZDType, string workerCode, int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.getBGYGZLDetail(nianyue,  TZDType,  workerCode);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
                 }
                 else
                 {

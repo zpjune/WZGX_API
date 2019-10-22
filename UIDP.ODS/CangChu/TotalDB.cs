@@ -148,5 +148,49 @@ namespace UIDP.ODS.CangChu
             d.Add("RKJE_Detail", sql);//入库金额明细
             return db.GetDataSet(d);
         }
+        /// <summary>
+        /// 总库查询-保管员工作量
+        /// </summary>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public DataTable getBGYGZL(string month,string workerName) {
+            string sql = @"select ERNAME,WORKER_NAME,WERKS_NAME,COUNT(*)XMHJ,max(substr(ERDAT,1,6))NIANYUE,
+                            SUM(CASE WHEN JBJLDW='吨' then NSOLM ELSE 0 END ) HJ_DUN,
+                            SUM(CASE WHEN JBJLDW='米' then NSOLM ELSE 0 END ) HJ_MI,
+                            SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' then NSOLM ELSE 0 END ) HJ_QT,
+                            sum(CASE WHEN substr(TZD,1,1)='1' then 1 ELSE 0 END ) RKHJ,
+                            SUM(CASE WHEN JBJLDW='吨' and substr(TZD,1,1)='1' then NSOLM ELSE 0 END ) RK_DUN,
+                            SUM(CASE WHEN JBJLDW='米'  and substr(TZD,1,1)='1' then NSOLM ELSE 0 END ) RK_MI,
+                            SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' and substr(TZD,1,1)='1' then NSOLM ELSE 0 END ) RK_QT,
+                            sum(CASE WHEN substr(TZD,1,1)='2' then 1 ELSE 0 END ) CKHJ,
+                            SUM(CASE WHEN JBJLDW='吨' and substr(TZD,1,1)='2' then NSOLM ELSE 0 END ) CK_DUN,
+                            SUM(CASE WHEN JBJLDW='米'  and substr(TZD,1,1)='2' then NSOLM ELSE 0 END )  CK_MI,
+                            SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' and substr(TZD,1,1)='2' then NSOLM ELSE 0 END )  CK_QT
+
+                            from
+                            CONVERT_BGYGZL ";
+
+            sql += "   where substr(ERDAT,1,6)=substr('"+month+"',1,6)";
+            if (!string.IsNullOrEmpty(workerName)) {
+                sql += " and  WORKER_NAME like '%" + workerName + "%'";
+            }
+                          sql+="  group by ERNAME,WORKER_NAME,WERKS_NAME";
+            return db.GetDataTable(sql);
+        }
+        /// <summary>
+        /// 总库存保管员工作量明细查询
+        /// </summary>
+        /// <param name="nianyue">年月</param>
+        /// <param name="TZDType">1 入库单 2 出库单</param>
+        /// <param name="workerCode">员工编号</param>
+        /// <returns></returns>
+        public DataTable getBGYGZLDetail(string nianyue,string TZDType,string workerCode) {
+            string sql = "select * from CONVERT_BGYGZL ";
+            sql += " where substr(ERDAT,1,6)=substr('"+ nianyue + "',1,6) ";
+            sql += " and ERNAME='"+ workerCode + "' AND substr(TZD,1,1)='"+TZDType+"' ";
+            sql += " ORDER BY TZD,ITEMS ";
+            return db.GetDataTable(sql);
+           
+        }
     }
 }

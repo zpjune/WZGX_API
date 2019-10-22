@@ -61,5 +61,24 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("getCRKDetail")]
         public IActionResult getCRKDetail(string year,string month) =>
           Ok(md.getCRKDetail(year,month));
+        /// <summary>
+        /// 总库查询保管员工作量
+        /// </summary>
+        /// <param name="month"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("getBGYGZL")]
+        public IActionResult getBGYGZL(string month,string workerName, int page, int limit) =>
+          Ok(md.getBGYGZL( month, workerName,page, limit));
+        /// <summary>
+        /// 总库存保管员工作量明细查询
+        /// </summary>
+        /// <param name="nianyue">年月</param>
+        /// <param name="TZDType">1 入库单 2 出库单</param>
+        /// <param name="workerCode">员工编号</param>
+        [HttpGet("getBGYGZLDetail")]
+        public IActionResult getBGYGZLDetail(string nianyue, string TZDType, string workerCode, int page, int limit) =>
+          Ok(md.getBGYGZLDetail(nianyue,  TZDType,  workerCode, page, limit));
     }
 }
