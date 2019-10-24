@@ -341,13 +341,51 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public Dictionary<string, object> getZDWZCRK(string month,string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit)
+        public Dictionary<string, object> getZDWZCRK(string yearmonth, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataTable dt = db.getZDWZCRK(month,WERKS_NAME, LGORTNAME, MATNR, MATKL);
+                DataTable dt = db.getZDWZCRK(yearmonth, WERKS_NAME, LGORTNAME, MATNR, MATKL);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        /// <summary>
+        /// 重点物资出入库明细-去向明细
+        /// </summary>
+        /// <param name="MATNR"></param>
+        /// <param name="MONTH"></param>
+        /// <param name="MATKL"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> getZDWZCRKDetail(string MATNR, string MONTH,  int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataTable dt = db.getZDWZCRKDetail(MATNR,  MONTH);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

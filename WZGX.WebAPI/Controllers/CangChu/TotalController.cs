@@ -100,7 +100,19 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
         [HttpGet("getZDWZCRK")]
-        public IActionResult getZDWZCRK(string month,string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
-            Ok(md.getZDWZCRK(month,WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
+        public IActionResult getZDWZCRK(string yearmonth, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
+            Ok(md.getZDWZCRK(yearmonth, WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
+        /// <summary>
+        /// 重点物资出入库明细-去向明细
+        /// </summary>
+        /// <param name="MATNR"></param>
+        /// <param name="MONTH"></param>
+        /// <param name="MATKL"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("getZDWZCRKDetail")]
+        public IActionResult getZDWZCRKDetail(string MATNR, string MONTH, string MATKL, int page, int limit) =>
+            Ok(md.getZDWZCRKDetail(MATNR, MONTH, page, limit));
     }
 }

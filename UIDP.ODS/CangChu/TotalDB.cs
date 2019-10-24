@@ -113,7 +113,8 @@ namespace UIDP.ODS.CangChu
             d.Add("RKJE", sql);
             return db.GetDataSet(d);
         }
-        public DataSet getCRKDetail(string year,string month) {
+        public DataSet getCRKDetail(string year, string month)
+        {
             Dictionary<string, string> d = new Dictionary<string, string>();//以万为单位
             string sql = @" select DISTINCT B.CKH_NAME
                             from CONVERT_CKJE A 
@@ -122,7 +123,7 @@ namespace UIDP.ODS.CangChu
             sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
             sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
             sql += " UNION ";
-            sql+= @"  select DISTINCT B.CKH_NAME
+            sql += @"  select DISTINCT B.CKH_NAME
                             from CONVERT_RKJE A
                             join WZ_KCDD B on A.WERKS = B.DWCODE AND A.LGORT = B.KCDD_CODE
                             LEFT JOIN WZ_CRKL C ON DK_CODE = B.CKH  AND ";
@@ -136,7 +137,7 @@ namespace UIDP.ODS.CangChu
                     LEFT JOIN WZ_CRKL C ON DK_CODE=B.CKH  AND ";
             sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
             sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
-            sql +="   GROUP BY  B.CKH";
+            sql += "   GROUP BY  B.CKH";
             d.Add("CKJE_Detail", sql);//出库金额明细
             sql = @"select MAX(B.CKH_NAME) CKH_NAME,sum(JE)/10000 RKJE,SUM(C.RKL) RKL
                     from CONVERT_RKJE A
@@ -153,7 +154,8 @@ namespace UIDP.ODS.CangChu
         /// </summary>
         /// <param name="month"></param>
         /// <returns></returns>
-        public DataTable getBGYGZL(string month,string workerName) {
+        public DataTable getBGYGZL(string month, string workerName)
+        {
             string sql = @"select ERNAME,WORKER_NAME,WERKS_NAME,COUNT(*)XMHJ,max(substr(ERDAT,1,6))NIANYUE,
                             SUM(CASE WHEN JBJLDW='吨' then NSOLM ELSE 0 END ) HJ_DUN,
                             SUM(CASE WHEN JBJLDW='米' then NSOLM ELSE 0 END ) HJ_MI,
@@ -170,11 +172,12 @@ namespace UIDP.ODS.CangChu
                             from
                             CONVERT_BGYGZL ";
 
-            sql += "   where substr(ERDAT,1,6)=substr('"+month+"',1,6)";
-            if (!string.IsNullOrEmpty(workerName)) {
+            sql += "   where substr(ERDAT,1,6)=substr('" + month + "',1,6)";
+            if (!string.IsNullOrEmpty(workerName))
+            {
                 sql += " and  WORKER_NAME like '%" + workerName + "%'";
             }
-                          sql+="  group by ERNAME,WORKER_NAME,WERKS_NAME";
+            sql += "  group by ERNAME,WORKER_NAME,WERKS_NAME";
             return db.GetDataTable(sql);
         }
         /// <summary>
@@ -184,13 +187,14 @@ namespace UIDP.ODS.CangChu
         /// <param name="TZDType">1 入库单 2 出库单</param>
         /// <param name="workerCode">员工编号</param>
         /// <returns></returns>
-        public DataTable getBGYGZLDetail(string nianyue,string TZDType,string workerCode) {
+        public DataTable getBGYGZLDetail(string nianyue, string TZDType, string workerCode)
+        {
             string sql = "select * from CONVERT_BGYGZL ";
-            sql += " where substr(ERDAT,1,6)=substr('"+ nianyue + "',1,6) ";
-            sql += " and ERNAME='"+ workerCode + "' AND substr(TZD,1,1)='"+TZDType+"' ";
+            sql += " where substr(ERDAT,1,6)=substr('" + nianyue + "',1,6) ";
+            sql += " and ERNAME='" + workerCode + "' AND substr(TZD,1,1)='" + TZDType + "' ";
             sql += " ORDER BY TZD,ITEMS ";
             return db.GetDataTable(sql);
-           
+
         }
         ///重点物资储备-总库存
         /// <param name="WERKS_NAME">工厂名称</param>
@@ -233,30 +237,71 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public DataTable getZDWZCRK(string month,string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
+        public DataTable getZDWZCRK(string yearmonth, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
         {
-            string sql = @" select sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
-                            '积压' ZT
-                               ,werks,matnr,lgort 
-                            from CONVERT_SWKC  ";//// zstatus 是表示上架还是质检（未上架）状态
-            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6";
-            if (!string.IsNullOrEmpty(WERKS_NAME))
-            {
-                sql += " and  WERKS_NAME like'%" + WERKS_NAME + "%'";
-            }
-            if (!string.IsNullOrEmpty(LGORTNAME))
-            {
-                sql += " and  LGORT_NAME like'%" + LGORTNAME + "%'";
-            }
+            string year = yearmonth.Substring(0, 4);
+            string _month = yearmonth.Substring(4, 2);
+            string sql = @" 
+                        select G.*,H.RKSL,I.RKSUMSL,J.CKSL,K.CKSUMSL,F.WL_CODE,'"+yearmonth+"' MONTH ";
+              sql += @"           from WZ_ZDWZPZ F
+                         LEFT JOIN (
+                        select sum(A.GESME) GESME，
+                        MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR,MAX(D.MAXHAVING)MAXHAVING,MAX(MINHAVING)MINHAVING
+                        from CONVERT_SWKC A
+                        JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR
+                        left join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS
+                        left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
+                         group by A.MATNR) G ON F.WL_CODE=G.MATNR
+                        LEFT JOIN 
+                        (
+                        select SUM(A.ZDHSL) RKSL,A.MATNR
+                        from ZC10MMDG072 A 
+                        JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
+            sql += "     WHERE A.ZSTATUS>'04' and  substr(A.ZCJRQ,1,6)='" + yearmonth + "'";
+            sql += @"         GROUP BY A.MATNR) H ON F.WL_CODE=H.MATNR
+
+                        LEFT JOIN 
+                        (
+                        select SUM(A.ZDHSL) RKSUMSL ,A.MATNR
+                        from ZC10MMDG072 A 
+                       JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
+            sql += "        WHERE A.ZSTATUS>'04' and  substr(A.ZCJRQ,1,4)='" + year + "' AND CAST( substr(A.ZCJRQ,5,2) AS INT)<=  CAST('" + _month + "' AS INT)";
+            sql += @"       GROUP BY A.MATNR) I ON F.WL_CODE=I.MATNR
+                        LEFT JOIN 
+                        (
+                        select SUM(A.ZFHSL) CKSL,A.MATNR
+                        from ZC10MMDG078 A 
+                        JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
+            sql += "             WHERE A.ZSTATUS>'03' and  substr(A.ZCJRQ,1,6)='" + yearmonth + "'";
+            sql += @"         GROUP BY A.MATNR) J ON F.WL_CODE=J.MATNR
+
+                        LEFT JOIN 
+                        (
+                        select SUM(A.ZFHSL) CKSUMSL ,A.MATNR
+                        from ZC10MMDG078 A 
+                        JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
+            sql += "          WHERE A.ZSTATUS>'03' and substr(A.ZCJRQ,1,4)='" + year + "' AND CAST( substr(A.ZCJRQ,5,2) AS INT)<=  CAST('" + _month + "' AS INT)";
+            sql += "         GROUP BY A.MATNR) K ON F.WL_CODE=K.MATNR ";
+
             if (!string.IsNullOrEmpty(MATNR))
             {
-                sql += " and  MATNR like'%" + MATNR + "%'";
+                sql += " where  F.MATNR like'%" + MATNR + "%'";
             }
-            if (!string.IsNullOrEmpty(MATKL))
-            {
-                sql += " and  MATKL like'%" + MATKL + "%'";
-            }
-            sql += "group by werks,matnr,lgort,zstatus,WERKS_NAME,LGORT_NAME ";//
+
+            return db.GetDataTable(sql);
+        }
+        /// <summary>
+        /// 重点物资出入库明细-去向明细
+        /// </summary>
+        /// <param name="MATNR"></param>
+        /// <param name="MONTH"></param>
+        /// <returns></returns>
+        public DataTable getZDWZCRKDetail(string MATNR, string MONTH) {
+            string sql = @" select MAX(CASE WHEN  C.DW_NAME IS NULL THEN B.WEMPF ELSE  C.DW_NAME  END)  WERKS_NAME,SUM(A.ZFHSL) SL
+                        from ZC10MMDG078 A
+                        JOIN MSEG B ON A.MBLNR=B.MBLNR AND A.ZEILE=B.ZEILE
+                        LEFT JOIN WZ_DW C ON C.DW_CODE=B.WEMPF";
+                   sql+="     where A.MATNR='"+MATNR+"'   and  substr(A.ZCJRQ,1,6)='"+MONTH+"'  group by B.WEMPF";
             return db.GetDataTable(sql);
         }
     }
