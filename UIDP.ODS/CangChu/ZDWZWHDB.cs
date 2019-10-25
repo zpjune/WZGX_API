@@ -28,7 +28,7 @@ namespace UIDP.ODS.CangChu
             if (!String.IsNullOrEmpty(WLZ_CODE))
             {
                 sql += " AND a.WLZ_CODE='" + WLZ_CODE + "'";
-            }
+            } 
             return db.GetDataTable(sql);
         }
 
