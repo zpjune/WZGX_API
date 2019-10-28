@@ -47,5 +47,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetFK_JYWZ")]
         public IActionResult GetFK_JYWZ(string DKCODE, string MATNR, string MATKL, int page, int limit) => Ok(ZXK.GetFK_JYWZ(DKCODE,  MATNR,  MATKL, page, limit));
+
+        [HttpGet("GetFacStatus")]
+        public IActionResult GetFacStatus(string FacCode) => Ok(ZXK.GetFacStatus(FacCode));
     }
 }

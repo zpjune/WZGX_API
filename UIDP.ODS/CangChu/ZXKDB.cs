@@ -133,5 +133,24 @@ namespace UIDP.ODS.CangChu
             sql += "group by werks,matnr,lgort,zstatus,WERKS_NAME,LGORT_NAME ";//
             return db.GetDataTable(sql);
         }
+
+        /// <summary>
+        /// 查询平面图仓位状态
+        /// </summary>
+        /// <param name="FacCode">大库编码</param>
+        /// <param name="Month_between">积压月份上限，默认为6</param>
+        /// <returns></returns>
+        public DataTable GetFacStatus(string FacCode, int Month_between = 6)
+        {
+            //查询是否积压sql，后续查询用union all 拼上
+            string sql = " SELECT SUBSTR(LGPLA,3,2) AS LG,MATNR,01 AS Status FROM CONVERT_SWKC a" +
+                " where 1=1" +
+                " AND SUBSTR(LGPLA,0,2)='" + FacCode + "'" +
+                " AND ZSTATUS='04'" +
+                " AND MONTHS_BETWEEN(TO_DATE('" + DateTime.Now.ToString("yyyyMMdd") + "','yyyyMMdd'),TO_DATE(ERDAT,'yyyyMMdd'))>" + Month_between +
+                " GROUP BY MATNR,SUBSTR(LGPLA,3,2)" +
+                " ORDER BY SUBSTR(LGPLA,3,2)";
+            return db.GetDataTable(sql);
+        }
     }
 }
