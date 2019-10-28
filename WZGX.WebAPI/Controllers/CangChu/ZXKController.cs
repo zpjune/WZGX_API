@@ -46,6 +46,6 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet("GetFK_JYWZ")]
-        public IActionResult GetFK_JYWZ(string DKCODE, string MATNR, string MATKL, int page, int limit) => Ok(ZXK.GetDCKInfo(DKCODE,  MATNR,  MATKL, page, limit));
+        public IActionResult GetFK_JYWZ(string DKCODE, string MATNR, string MATKL, int page, int limit) => Ok(ZXK.GetFK_JYWZ(DKCODE,  MATNR,  MATKL, page, limit));
     }
 }
