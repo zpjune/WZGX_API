@@ -36,5 +36,16 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetDCKInfo")]
         public IActionResult GetDCKInfo(string MATNR, string info,string FacCode,int page, int limit) => Ok(ZXK.GetDCKInfo(MATNR, info, FacCode,page, limit));
+        /// <summary>
+        /// 查询积压物资-分库查询
+        /// </summary>
+        /// <param name="DKCODE"></param>
+        /// <param name="MATNR"></param>
+        /// <param name="MATKL"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("GetFK_JYWZ")]
+        public IActionResult GetFK_JYWZ(string DKCODE, string MATNR, string MATKL, int page, int limit) => Ok(ZXK.GetDCKInfo(DKCODE,  MATNR,  MATKL, page, limit));
     }
 }
