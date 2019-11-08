@@ -50,5 +50,39 @@ namespace WZGX.WebAPI.Controllers.CangChu
 
         [HttpGet("GetFacStatus")]
         public IActionResult GetFacStatus(string FacCode) => Ok(ZXK.GetFacStatus(FacCode));
+        /// <summary>
+        /// 重点物资储备查询-分库页面
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        [HttpGet("getZDWZCB")]
+        public IActionResult getZDWZCB(string DKCODE, string WERKS_NAME, string MATNR, string MATKL, int page, int limit) =>
+            Ok(ZXK.getZDWZCB(DKCODE,WERKS_NAME, MATNR, MATKL, page, limit));
+        /// <summary>
+        /// 重点物资出入库查询-分库页面
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        [HttpGet("getZDWZCRK")]
+        public IActionResult getZDWZCRK(string DKCODE, string yearmonth,string MATNR, int page, int limit) =>
+            Ok(ZXK.getZDWZCRK(DKCODE,yearmonth, MATNR,  page, limit));
+        /// <summary>
+        /// 重点物资出入库明细-去向明细 分库页面
+        /// </summary>
+        /// <param name="MATNR"></param>
+        /// <param name="MONTH"></param>
+        /// <param name="MATKL"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("getZDWZCRKDetail")]
+        public IActionResult getZDWZCRKDetail(string DKCODE, string MATNR, string MONTH, int page, int limit) =>
+            Ok(ZXK.getZDWZCRKDetail(DKCODE,MATNR, MONTH, page, limit));
     }
 }

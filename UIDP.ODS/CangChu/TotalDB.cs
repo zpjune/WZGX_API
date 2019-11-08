@@ -39,7 +39,7 @@ namespace UIDP.ODS.CangChu
                             CASE WHEN ZSTATUS='04' THEN CASE WHEN months_between(sysdate,to_date(MIN(ERDAT),'yyyy-mm-dd'))>6 then '01' else '100' end   ELSE '100' END ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
-            sql += "where 1=1 ";
+            sql += "where  KCTYPE<>3 ";
             if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  WERKS_NAME like'%" + WERKS_NAME + "%'";
@@ -73,7 +73,7 @@ namespace UIDP.ODS.CangChu
                             '积压' ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
-            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6";
+            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6 AND A.KCTYPE<>3  ";
             if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  WERKS_NAME like'%" + WERKS_NAME + "%'";
@@ -211,7 +211,7 @@ namespace UIDP.ODS.CangChu
                         left join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS
                         left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
                         ";// zstatus 是表示上架还是质检（未上架）状态
-            sql += "where 1=1 ";
+            sql += "where  A.KCTYPE<>3  ";
             if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  A.WERKS_NAME like'%" + WERKS_NAME + "%'";
@@ -248,7 +248,7 @@ namespace UIDP.ODS.CangChu
                         select sum(A.GESME) GESME，
                         MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR,MAX(D.MAXHAVING)MAXHAVING,MAX(MINHAVING)MINHAVING
                         from CONVERT_SWKC A
-                        JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR
+                        JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR AND A.KCTYPE<>3 
                         left join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS
                         left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
                          group by A.MATNR) G ON F.WL_CODE=G.MATNR
