@@ -42,6 +42,7 @@ namespace UIDP.BIZModule
                     clsOrgInfo.ORG_SHORT_NAME = dr["ORG_SHORT_NAME"].ToString();
                     clsOrgInfo.ORG_CODE_UPPER = dr["ORG_CODE_UPPER"].ToString();
                     clsOrgInfo.ISINVALID = dr["ISINVALID"].ToString();
+                    clsOrgInfo.DW_CODE = dr["DW_CODE"].ToString();
                     clsOrgInfo.children = new List<ClsOrgInfo>();
                     GetHierarchicalChildItem(_RptsDepartList, clsOrgInfo);
                     clsOrgInfo.children = clsOrgInfo.children.OrderBy(o => o.ORG_CODE).Distinct().ToList();
@@ -77,7 +78,7 @@ namespace UIDP.BIZModule
                 clsOrgInfo.ORG_SHORT_NAME = dr["ORG_SHORT_NAME"].ToString();
                 clsOrgInfo.ORG_CODE_UPPER = dr["ORG_CODE_UPPER"].ToString();
                 clsOrgInfo.ISINVALID = dr["ISINVALID"].ToString();
-
+                clsOrgInfo.DW_CODE = dr["DW_CODE"].ToString();
                 clsOrgInfo.children = new List<ClsOrgInfo>();
                 GetHierarchicalChildItem(_RptsDepartList, clsOrgInfo);
                 clsOrgInfo.children = clsOrgInfo.children.OrderBy(o => o.ORG_CODE).ToList();
@@ -327,7 +328,8 @@ namespace UIDP.BIZModule
                     sb.AppendFormat("\"orgShortName\":\"{0}\",", dr["ORG_SHORT_NAME"] == null ? "" : dr["ORG_SHORT_NAME"]);
                     sb.AppendFormat("\"parentId\":\"{0}\",", dr["ORG_ID_UPPER"] == null ? "" : dr["ORG_ID_UPPER"]);
                     sb.AppendFormat("\"ISINVALID\":\"{0}\",", dr["ISINVALID"] == null ? "" : dr["ISINVALID"]);
-                    sb.AppendFormat("\"remark\":\"{0}\"", dr["REMARK"] == null ? "" : dr["REMARK"]);
+                    sb.AppendFormat("\"remark\":\"{0}\",", dr["REMARK"] == null ? "" : dr["REMARK"]);
+                    sb.AppendFormat("\"DW_CODE\":\"{0}\"", dr["DW_CODE"] == null ? "" : dr["DW_CODE"]);
                     sb.Append(",\"children\":[");
                     sb.Append(GetSubMenu(id, dt, isAdmin));
                     sb.Append("]");

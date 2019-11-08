@@ -21,7 +21,7 @@ namespace UIDP.ODS
         /// <returns></returns>
         public string createOrgArticle(Dictionary<string, object> d)
         {
-            string sql = "INSERT INTO ts_uidp_org(ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_ID_UPPER,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) VALUES(";
+            string sql = "INSERT INTO ts_uidp_org(ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_ID_UPPER,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK,DW_CODE) VALUES(";
             sql += "'" + GetIsNullStr(d["id"]) + "',";
             sql += "'" + GetIsNullStr(d["orgCode"]) + "',";
             sql += "'" + GetIsNullStr(d["orgName"]) + "',";
@@ -30,7 +30,8 @@ namespace UIDP.ODS
             sql += "'" + GetIsNullStr(d["orgpCode"]) + "',";
             sql += "'" + GetIsNullStr(d["ISINVALID"]) + "',";
             sql += "'1',";//伪删除 1正常，0伪删除
-            sql += "'" + GetIsNullStr(d["remark"]) + "')";
+            sql += "'" + GetIsNullStr(d["remark"]) + "',";
+            sql += "'" + GetIsNullStr(d["DW_CODE"]) + "')";
             return db.ExecutByStringResult(sql);
         }
 
@@ -81,7 +82,8 @@ namespace UIDP.ODS
             sql += " ORG_ID_UPPER='" + GetIsNullStr(d["parentId"]) + "',";
             sql += " ORG_CODE_UPPER='" + GetIsNullStr(d["orgpCode"]) + "',";
             sql += " ISINVALID='" + GetIsNullStr(d["ISINVALID"]) + "',";
-            sql += " REMARK='" + GetIsNullStr(d["remark"]) + "'";
+            sql += " REMARK='" + GetIsNullStr(d["remark"]) + "',";
+            sql += " DW_CODE='" + GetIsNullStr(d["DW_CODE"]) + "'";
             sql += " where ORG_ID='" + d["id"].ToString() + "'";
             return db.ExecutByStringResult(sql);
         }

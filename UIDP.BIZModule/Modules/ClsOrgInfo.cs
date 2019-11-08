@@ -15,7 +15,7 @@ namespace UIDP.BIZModule
         public string ORG_ID_UPPER { get; set; }
         public string REMARK { get; set; }
         public string ISINVALID { get; set; }
-
+        public string DW_CODE { get; set; }
         public List<ClsOrgInfo> children { get; set; }
 
 
