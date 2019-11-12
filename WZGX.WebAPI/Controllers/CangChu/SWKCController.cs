@@ -56,5 +56,27 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetChildrenList")]
         public IActionResult GetChildrenList(string code, int level) => Ok(SWKC.GetChildrenList(code, level));
+
+
+        /// <summary>
+        /// 物料查询
+        /// </summary>
+        /// <param name="MATNR"></param>
+        /// <param name="MAKTX"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("GetWLTotalInfo")]
+        public IActionResult GetWLTotalInfo(string MATNR, string MAKTX, int page, int limit) => Ok(SWKC.GetWLTotalInfo(MATNR, MAKTX, page, limit));
+
+        /// <summary>
+        /// 物料详情查询
+        /// </summary>
+        /// <param name="MATNR"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("GetWLDetail")]
+        public IActionResult GetWLDetail(string MATNR, int page, int limit) => Ok(SWKC.GetWLDetail(MATNR,page, limit));
     }
 }
