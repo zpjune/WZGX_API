@@ -11,7 +11,7 @@ namespace UIDP.ODS.CangChu
         DBTool db = new DBTool("");
         public DataTable GetFacInfo(string WERKS,string LGORT,string LGORT_NAME)
         {
-            string sql = " SELECT WERKS,MEINS,SUM(GESME)AS GESME,ZSTATUS,LGORT_NAME FROM CONVERT_SWKC where KCTYPE IS NULL OR KCTYPE<>3";
+            string sql = " SELECT WERKS,MEINS,SUM(GESME)AS GESME,ZSTATUS,LGORT_NAME FROM CONVERT_SWKC where (KCTYPE IS NULL OR KCTYPE<>3)";
             if (!string.IsNullOrEmpty(WERKS))
             {
                 sql += " AND WERKS='" + WERKS + "'";
@@ -30,7 +30,7 @@ namespace UIDP.ODS.CangChu
 
         public DataTable GetCompositeInfo(string WERKS,string LGORT, string LGORT_NAME,string MATNR,string MAKTX)
         {
-            string sql = " select * from CONVERT_SWKC where KCTYPE IS NULL OR KCTYPE<>3";
+            string sql = " select * from CONVERT_SWKC where (KCTYPE IS NULL OR KCTYPE<>3)";
             if (!string.IsNullOrEmpty(WERKS))
             {
                 sql += " AND WERKS='" + WERKS + "'";
@@ -67,7 +67,7 @@ namespace UIDP.ODS.CangChu
                 switch (level)
                 {
                     case 0:
-                        sql = string.Format(sql, "b.DLCODE,b.DLNAME", "KCTYPE IS NULL OR KCTYPE<>3", "b.DLCODE,b. DLNAME", "b.DLCODE");
+                        sql = string.Format(sql, "b.DLCODE,b.DLNAME", "(KCTYPE IS NULL OR KCTYPE<>3)", "b.DLCODE,b. DLNAME", "b.DLCODE");
                         break;
                     case 1:
                         sql= string.Format(sql, "b.ZLCODE,b.ZLNAME", "b.DLCODE='" + code + "'","b.ZLCODE,b.ZLNAME", "b.ZLCODE");
@@ -85,27 +85,27 @@ namespace UIDP.ODS.CangChu
 
         public DataSet GetWLTotalInfo(string MATNR,string MAKTX,int page,int limit)
         {
-            string Mainsql = " SELECT MATNR,MAKTX,SUM(GESME) AS GESME,ZSTATUS FROM CONVERT_SWKC WHERE KCTYPE IS NULL OR KCTYPE<>3";
+            string Mainsql = " SELECT MATNR,MAKTX,SUM(GESME) AS GESME,MEINS,ZSTATUS FROM CONVERT_SWKC WHERE (KCTYPE IS NULL OR KCTYPE<>3)";
             if (!string.IsNullOrEmpty(MATNR))
             {
                 Mainsql += " AND MATNR='" + MATNR + "'";
             }
             if (!string.IsNullOrEmpty(MAKTX))
             {
-                Mainsql += " AND MATNR like'%" + MAKTX + "%'";
+                Mainsql += " AND MAKTX like'%" + MAKTX + "%'";
             }
-            Mainsql += " GROUP BY MATNR,MAKTX,ZSTATUS ORDER BY MATNR";
+            Mainsql += " GROUP BY MATNR,MAKTX,MEINS,ZSTATUS ORDER BY MATNR";
             string TotalSql = "SELECT {0} FROM (SELECT ROWNUM AS RN,t.* FROM({1})t {2} )tt {3}";
             Dictionary<string, string> list = new Dictionary<string, string>();
-            list.Add("DataSql", string.Format(TotalSql, "*", Mainsql, " WHERE ROWNUM<=" + (page * limit), " WHERE tt.RN>=" + ((page - 1) * limit)));
+            list.Add("DataSql", string.Format(TotalSql, "*", Mainsql, " WHERE ROWNUM<" + ((page * limit)+1), " WHERE tt.RN>" + ((page - 1) * limit)));
             list.Add("CountSql", string.Format(TotalSql, "COUNT(*) AS TOTOAL", Mainsql, "", ""));
             return db.GetDataSet(list);
         }
 
         public DataTable GetWLDetail(string MATNR)
         {
-            string sql = " SELECT WERKS_NAME,LGORT_NAME,SUM(GESME) AS GESME,ZSTATUS FROM CONVERT_SWKC WHERE KCTYPE IS NULL OR KCTYPE<>3 " +
-                "AND MATNR='" + MATNR + "' GROUP BY WERKS_NAME,LGORT_NAME,ZSTATUS ORDER BY WERKS_NAME";
+            string sql = " SELECT WERKS_NAME,LGORT_NAME,SUM(GESME) AS GESME,MEINS,ZSTATUS FROM CONVERT_SWKC WHERE (KCTYPE IS NULL OR KCTYPE<>3) " +
+                "AND MATNR='" + MATNR + "' GROUP BY WERKS_NAME,LGORT_NAME,MEINS,ZSTATUS ORDER BY WERKS_NAME";
             return db.GetDataTable(sql);
         }
     }
