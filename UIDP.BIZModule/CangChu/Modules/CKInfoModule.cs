@@ -25,8 +25,9 @@ namespace UIDP.BIZModule.CangChu
                 }
                 else
                 {
-                    r["code"] = 2001;
+                    r["code"] = 2000;
                     r["message"] = "成功,但是没有数据！";
+                    r["items"] = new DataTable();
                     r["total"] = 0;
                 }
             }

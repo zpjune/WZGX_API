@@ -29,6 +29,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["message"] = "成功！但是没有数据";
+                    r["items"] = new DataTable();
                 }
             }
             catch(Exception e)
@@ -44,18 +45,19 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetCompositeInfo(WERKS, LGORT, LGORT_NAME, MATNR, MAKTX);
-                if (dt.Rows.Count > 0)
+                DataSet ds = db.GetCompositeInfo(WERKS, LGORT, LGORT_NAME, MATNR, MAKTX,page,limit);
+                if (ds.Tables[0].Rows.Count > 0)
                 {
                     r["code"] = 2000;
-                    r["items"] = KVTool.GetPagedTable(dt, page, limit);
+                    r["items"] = ds.Tables[0];
                     r["message"] = "成功！";
-                    r["total"] = dt.Rows.Count;
+                    r["total"] = ds.Tables[1].Rows[0]["TOTAL"];
                 }
                 else
                 {
                     r["code"] = 2000;
                     r["message"] = "成功，但是没有数据！";
+                    r["items"] = new DataTable();
                 }
             }
             catch (Exception e)
@@ -110,8 +112,9 @@ namespace UIDP.BIZModule.CangChu.Modules
                 else
                 {
                     r["code"] = 2001;
-                    r["message"] = "成功！,but no info";
-                    r["totoal"] = list.Count;
+                    r["message"] = "成功！但是没有数据";
+                    r["items"] = new DataTable();
+                    r["total"] = list.Count;
                 }
             }
             catch(Exception e)
@@ -201,6 +204,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["message"] = "成功！但是没有数据";
+                    r["items"] = new DataTable();
                 }
             }
             catch (Exception e)
@@ -228,6 +232,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["message"] = "成功！但是没有数据";
+                    r["items"] = new DataTable();
                 }
             }
             catch (Exception e)

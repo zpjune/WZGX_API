@@ -28,30 +28,35 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
 
-        public DataTable GetCompositeInfo(string WERKS,string LGORT, string LGORT_NAME,string MATNR,string MAKTX)
+        public DataSet GetCompositeInfo(string WERKS,string LGORT, string LGORT_NAME,string MATNR,string MAKTX,int page,int limit)
         {
-            string sql = " select * from CONVERT_SWKC where (KCTYPE IS NULL OR KCTYPE<>3)";
+            string Mainsql = " select * from CONVERT_SWKC where (KCTYPE IS NULL OR KCTYPE<>3)";
             if (!string.IsNullOrEmpty(WERKS))
             {
-                sql += " AND WERKS='" + WERKS + "'";
+                Mainsql += " AND WERKS='" + WERKS + "'";
             }
             if (!string.IsNullOrEmpty(LGORT))
             {
-                sql += " AND LGORT='" + LGORT + "'";
+                Mainsql += " AND LGORT='" + LGORT + "'";
             }
             if (!string.IsNullOrEmpty(LGORT_NAME))
             {
-                sql += " AND LGORT_NAME='" + LGORT_NAME + "'";
+                Mainsql += " AND LGORT_NAME='" + LGORT_NAME + "'";
             }
             if (!string.IsNullOrEmpty(MATNR))
             {
-                sql += " AND MATNR='" + MATNR + "'";
+                Mainsql += " AND MATNR='" + MATNR + "'";
             }
             if (!string.IsNullOrEmpty(MAKTX))
             {
-                sql += " AND MAKTX like'" + MAKTX + "%'";
+                Mainsql += " AND MAKTX like'" + MAKTX + "%'";
             }
-            return db.GetDataTable(sql);
+            string PartSql = "SELECT {0} FROM (SELECT t.*,ROWNUM AS rn FROM ({1})t {2})tt {3}";
+            Dictionary<string, string> d = new Dictionary<string, string>();
+            d.Add("DataSql", string.Format(PartSql, "*", Mainsql, " WHERE ROWNUM<" + ((page * limit) + 1), " WHERE tt.rn>" + ((page - 1) * limit)));
+            d.Add("TotalSql", string.Format(PartSql, "COUNT(*) AS TOTAL", Mainsql,"",""));
+            
+            return db.GetDataSet(d);
         }
 
         public DataTable GetAllInfo(string MATKL,string code,int level=0)

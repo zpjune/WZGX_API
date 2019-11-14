@@ -89,7 +89,7 @@ namespace UIDP.ODS.CangChu
                 }
             }
             string CompleteSql = " SELECT ROWNUM,t.* FROM(" + PartSql + ")t where ROWNUM<" + page * limit
-                + "minus" + " SELECT ROWNUM,t.* FROM(" + PartSql + ")t where ROWNUM<" + (page - 1) * limit+1;
+                + "minus" + " SELECT ROWNUM,t.* FROM(" + PartSql + ")t where ROWNUM<" + ((page - 1) * limit+1);
             
             Dictionary<string, string> d = new Dictionary<string, string>();
             d.Add("CompleteSql", CompleteSql);

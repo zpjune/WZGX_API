@@ -28,6 +28,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["message"] = "成功,没有数据";
+                    r["items"] = new DataTable();
                     r["total"] = 0;
                 }
             }
@@ -138,6 +139,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["message"] = "成功,没有数据";
+                    r["items"] = new DataTable();
                     r["total"] = 0;
                 }
             }
@@ -167,6 +169,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["message"] = "成功,没有数据";
+                    r["items"] = new DataTable();
                     r["total"] = 0;
                 }
             }
@@ -195,6 +198,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     r["code"] = 2000;
                     r["message"] = "成功,没有数据";
+                    r["items"] = new DataTable();
                     r["total"] = 0;
                 }
             }

@@ -32,6 +32,7 @@ namespace UIDP.BIZModule.CangChu
                     {
                         r["code"] = 2000;
                         r["message"] = "成功！,但是没有数据";
+                        r["items"] = new DataTable();
                         r["total"] = 0;
                     }
                 }
@@ -48,6 +49,7 @@ namespace UIDP.BIZModule.CangChu
                     {
                         r["code"] = 2000;
                         r["message"] = "成功！,但是没有数据";
+                        r["items"] = new DataTable();
                         r["total"] = 0;
                     }
                 }            
@@ -251,6 +253,7 @@ namespace UIDP.BIZModule.CangChu
                 {
                     r["code"] = -1;
                     r["message"] = "成功！,但是没有数据";
+                    r["items"] = new DataTable();
                 }
             }
             catch(Exception e)
@@ -277,6 +280,7 @@ namespace UIDP.BIZModule.CangChu
                 {
                     r["code"] = -1;
                     r["message"] = "成功！,但是没有数据";
+                    r["items"] = new DataTable();
                 }
             }
             catch (Exception e)
@@ -303,6 +307,7 @@ namespace UIDP.BIZModule.CangChu
                 {
                     r["code"] = -1;
                     r["message"] = "成功！,但是没有数据";
+                    r["items"] = new DataTable();
                 }
             }
             catch (Exception e)
