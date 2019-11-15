@@ -34,6 +34,9 @@ namespace UIDP.BIZModule.CangChu.Modules
                     d["C27G"] = dt.Select("WERKS='C27G'")[0][0];
                     d["C279"] = dt.Select("WERKS='C279'")[0][0];
                     d["C27B"] = dt.Select("WERKS='C27B'")[0][0];
+                    d["C274"] = dt.Select("WERKS='C274'")[0][0];
+                    d["C275"] = dt.Select("WERKS='C275'")[0][0];
+                    d["C271"] = dt.Select("WERKS='C271'")[0][0];
                     r["code"] = 2000;
                     r["items"] = d;//dt
                     r["message"] = "成功";

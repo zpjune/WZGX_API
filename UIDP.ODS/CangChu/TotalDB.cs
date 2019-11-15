@@ -16,12 +16,15 @@ namespace UIDP.ODS.CangChu
         /// <returns></returns>
         public DataTable GetKCZJ()
         {
-            string sql = @"select round(SUM(SALK3)/10000,2)  as SALK3,'TOTAL' as WERKS from CONVERT_ZWKC WHERE BWKEY IN('C27B','C27C','C27D','C27G''C279','C27B')
+            string sql = @"select round(SUM(SALK3)/10000,2)  as SALK3,'TOTAL' as WERKS from CONVERT_ZWKC WHERE BWKEY IN('C27C','C27D','C27G''C279','C27B','C275','C274','C271')
                 union 
             select round(SUM(SALK3)/10000,2) , 'C27C' from CONVERT_ZWKC WHERE BWKEY = 'C27C' union 
             select round(SUM(SALK3)/10000,2) ,'C27D' from CONVERT_ZWKC WHERE BWKEY = 'C27D' union 
             select round(SUM(SALK3)/10000,2) ,'C27G' from CONVERT_ZWKC WHERE BWKEY = 'C27G' union 
             select round(SUM(SALK3)/10000,2) ,'C279' from CONVERT_ZWKC WHERE BWKEY = 'C279' union 
+            select round(SUM(SALK3)/10000,2) ,'C274' from CONVERT_ZWKC WHERE BWKEY = 'C274' union
+            select round(SUM(SALK3)/10000,2) ,'C275' from CONVERT_ZWKC WHERE BWKEY = 'C275' union
+            select round(SUM(SALK3)/10000,2) ,'C271' from CONVERT_ZWKC WHERE BWKEY = 'C271' union
             select round(SUM(SALK3)/10000,2) ,'C27B' from CONVERT_ZWKC WHERE BWKEY = 'C27B' ";//拼装datatable  以万为单位 四舍五入
             return db.GetDataTable(sql);
         }
