@@ -6,7 +6,7 @@ using UIDP.UTILITY;
 
 namespace UIDP.ODS.CangChu
 {
-    public class ZXKDB
+    public class CXZGKDB
     {
         DBTool db = new DBTool("");
         /// <summary>
@@ -28,10 +28,10 @@ namespace UIDP.ODS.CangChu
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
-                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE " +
+                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE" +
                 " WHERE a.ZSTATUS='01'" +
                 " AND a.LGORT=g.KCDD_CODE" +
-                " AND g.CKH='"+FacCode+"'";
+                " AND g.CKH NOT IN('01','02','03','04','05','06','07','08')";
             if (!string.IsNullOrEmpty(MATNR))
             {
                 MainSql += " AND a.MATNR='" + MATNR + "'";
@@ -41,7 +41,7 @@ namespace UIDP.ODS.CangChu
                 MainSql += " AND e.MAKTX like'" + info + "%'";
             }
 
-            //string KCDDSql = "SELECT KCDD_CODE,DWCODE FROM WZ_KCDD WHERE CKH='" + FacCode + "'";
+            //string KCDDSql = "SELECT KCDD_CODE,DWCODE FROM WZ_KCDD WHERE CKH NOT IN('01','02','03','04','05','06','07','08')";
             //DataTable KCDDData = db.GetDataTable(KCDDSql);
             //if (KCDDData.Rows.Count > 0)
             //{
@@ -79,7 +79,7 @@ namespace UIDP.ODS.CangChu
                 " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE" +
                 " WHERE a.ZSTATUS='01'"+
                 " AND a.LGORT=g.KCDD_CODE" +
-                " AND g.CKH='" + FacCode + "'";
+                " AND g.CKH NOT IN('01','02','03','04','05','06','07','08')";
             if (!string.IsNullOrEmpty(MATNR))
             {
                 MainSql += " AND a.MATNR='" + MATNR + "'";
@@ -89,22 +89,22 @@ namespace UIDP.ODS.CangChu
                 MainSql += " AND e.MAKTX like'" + info + "%'";
             }
 
-            string KCDDSql = "SELECT KCDD_CODE,DWCODE FROM WZ_KCDD WHERE CKH='" + FacCode + "'";
-            DataTable KCDDData = db.GetDataTable(KCDDSql);
-            if (KCDDData.Rows.Count > 0)
-            {
-                MainSql += " AND(";
-                foreach (DataRow dr in KCDDData.Rows)
-                {
-                    MainSql += " (a.WERKS='" + dr["DWCODE"] + "'";
-                    MainSql += "  AND a.LGORT='" + dr["KCDD_CODE"] + "')";
-                    if (!dr.Equals(KCDDData.Rows[KCDDData.Rows.Count - 1]))
-                    {
-                        MainSql += " OR";
-                    }
-                }
-                MainSql += ")";
-            }
+            //string KCDDSql = "SELECT KCDD_CODE,DWCODE FROM WZ_KCDD WHERE  CKH NOT IN('01','02','03','04','05','06','07','08')";
+            //DataTable KCDDData = db.GetDataTable(KCDDSql);
+            //if (KCDDData.Rows.Count > 0)
+            //{
+            //    MainSql += " AND(";
+            //    foreach (DataRow dr in KCDDData.Rows)
+            //    {
+            //        MainSql += " (a.WERKS='" + dr["DWCODE"] + "'";
+            //        MainSql += "  AND a.LGORT='" + dr["KCDD_CODE"] + "')";
+            //        if (!dr.Equals(KCDDData.Rows[KCDDData.Rows.Count - 1]))
+            //        {
+            //            MainSql += " OR";
+            //        }
+            //    }
+            //    MainSql += ")";
+            //}
             MainSql += " GROUP BY a.ZCKTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,c.ERNAM,a.WERKS,c.NAME1,f.DW_NAME ORDER BY a.ZCKTZD DESC)t";
             string DetailSql = string.Format(PartSql, " SELECT * FROM ( ", "ROWNUM rn, t.*", MainSql + " WHERE ROWNUM<" + ((page * limit) + 1) + ")WHERE rn>" + ((page - 1) * limit));
             string TotailSql = string.Format(PartSql, "", "COUNT(*) AS TOTAL", MainSql);
@@ -126,7 +126,7 @@ namespace UIDP.ODS.CangChu
                             '积压' ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
-            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6 AND substr(LGPLA,1,2)='" + DKCODE + "' ";
+            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6 AND substr(LGPLA,1,2) NOT IN('01','02','03','04','05','06','07','08')";
 
             if (!string.IsNullOrEmpty(MATNR))
             {
@@ -151,7 +151,7 @@ namespace UIDP.ODS.CangChu
             //查询是否积压sql，后续查询用union all 拼上
             string sql = " SELECT SUBSTR(LGPLA,3,2) AS LG,01 AS Status FROM CONVERT_SWKC a" +
                 " where ZSTATUS='04'" +
-                " AND SUBSTR(LGPLA,0,2)='" + FacCode + "'" +
+                " AND SUBSTR(LGPLA,0,2)NOT IN('01','02','03','04','05','06','07','08')" +
                 " AND MONTHS_BETWEEN(TO_DATE('" + DateTime.Now.ToString("yyyyMMdd") + "','yyyyMMdd'),TO_DATE(ERDAT,'yyyyMMdd'))>" + Month_between +
                 " GROUP BY SUBSTR(LGPLA,3,2)" +
                 " ORDER BY SUBSTR(LGPLA,3,2)";
@@ -172,7 +172,7 @@ namespace UIDP.ODS.CangChu
                         join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS 
                         left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
                         ";// zstatus 是表示上架还是质检（未上架）状态
-            sql += "where A.KCTYPE<>3 AND C.CKH='" + DKCODE + "'";
+            sql += "where A.KCTYPE<>3 AND C.CKH NOT IN('01','02','03','04','05','06','07','08')";
             if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  A.WERKS_NAME like'%" + WERKS_NAME + "%'";
@@ -206,7 +206,7 @@ namespace UIDP.ODS.CangChu
                         MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR,MAX(D.MAXHAVING)MAXHAVING,MAX(MINHAVING)MINHAVING
                         from CONVERT_SWKC A
                         JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR";
-            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND A.KCTYPE<>3 AND  C.CKH='" + DKCODE + "'";
+            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND A.KCTYPE<>3 AND  C.CKH NOT IN('01','02','03','04','05','06','07','08')";
 
             sql += @"        left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
                          group by A.MATNR) G ON F.WL_CODE=G.MATNR
@@ -223,14 +223,14 @@ namespace UIDP.ODS.CangChu
                         select SUM(A.ZDHSL) RKSUMSL ,A.MATNR
                         from ZC10MMDG072 A 
                        JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
-            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND C.CKH='" + DKCODE + "'";
+            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND C.CKH NOT IN('01','02','03','04','05','06','07','08')";
             sql += "        WHERE A.ZSTATUS>'04' and  substr(A.ZCJRQ,1,4)='" + year + "' AND CAST( substr(A.ZCJRQ,5,2) AS INT)<=  CAST('" + _month + "' AS INT)";
             sql += @"       GROUP BY A.MATNR) I ON F.WL_CODE=I.MATNR
                         LEFT JOIN 
                         (
                         select SUM(A.ZFHSL) CKSL,A.MATNR
                         from ZC10MMDG078 A ";
-sql += "           join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERKS AND C.CKH = '" + DKCODE + "'";
+            sql += "           join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERKS AND C.CKH NOT IN('01','02','03','04','05','06','07','08')";
             sql += "           JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
             sql += "             WHERE A.ZSTATUS>'03' and  substr(A.ZCJRQ,1,6)='" + yearmonth + "'";
             sql += @"         GROUP BY A.MATNR) J ON F.WL_CODE=J.MATNR
@@ -240,7 +240,7 @@ sql += "           join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERK
                         select SUM(A.ZFHSL) CKSUMSL ,A.MATNR
                         from ZC10MMDG078 A 
                         JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
-            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND  C.CKH='" + DKCODE + "'";
+            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND  C.CKH NOT IN('01','02','03','04','05','06','07','08')";
             sql += "          WHERE A.ZSTATUS>'03' and substr(A.ZCJRQ,1,4)='" + year + "' AND CAST( substr(A.ZCJRQ,5,2) AS INT)<=  CAST('" + _month + "' AS INT)";
             sql += "         GROUP BY A.MATNR) K ON F.WL_CODE=K.MATNR ";
 
@@ -262,7 +262,7 @@ sql += "           join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERK
             string sql = @" select MAX(CASE WHEN  C.DW_NAME IS NULL THEN B.WEMPF ELSE  C.DW_NAME  END)  WERKS_NAME,SUM(A.ZFHSL) SL
                         from ZC10MMDG078 A
                         JOIN MSEG B ON A.MBLNR=B.MBLNR AND A.ZEILE=B.ZEILE";
-            sql += "     join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERKS AND C.CKH = '" + DKCODE + "'";
+            sql += "     join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERKS AND C.CKH NOT IN('01','02','03','04','05','06','07','08')";
             sql += "      LEFT JOIN WZ_DW C ON C.DW_CODE=B.WEMPF";
             sql += "     where A.MATNR='" + MATNR + "'   and  substr(A.ZCJRQ,1,6)='" + MONTH + "'  group by B.WEMPF";
             return db.GetDataTable(sql);

@@ -15,7 +15,16 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataSet ds = db.GetDRKInfo(MATNR, info, FacCode,page, limit);
+                DataSet ds = new DataSet();
+                if (FacCode == "09")
+                {
+                    CXZGKDB db1 = new CXZGKDB();
+                    ds = db1.GetDRKInfo(MATNR, info, FacCode, page, limit);
+                }
+                else
+                {
+                    ds = db.GetDRKInfo(MATNR, info, FacCode, page, limit);
+                }               
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -45,7 +54,17 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataSet ds = db.GetDCKInfo(MATNR, info, FacCode,page, limit);
+                DataSet ds = new DataSet();
+                if (FacCode == "09")
+                {
+                    CXZGKDB db1 = new CXZGKDB();
+                    ds = db1.GetDCKInfo(MATNR, info, FacCode, page, limit);
+                }
+                else
+                {
+                    ds = db.GetDCKInfo(MATNR, info, FacCode, page, limit);
+                }
+                //DataSet ds = db.GetDCKInfo(MATNR, info, FacCode,page, limit);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -81,8 +100,17 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-
-                DataTable dt = db.GetFK_JYWZ(DKCODE, MATNR, MATKL);
+                DataTable dt = new DataTable();
+                if (DKCODE == "09")
+                {
+                    CXZGKDB db1 = new CXZGKDB();
+                    dt=db1.GetFK_JYWZ(DKCODE, MATNR, MATKL);
+                }
+                else
+                {
+                    dt = db.GetFK_JYWZ(DKCODE, MATNR, MATKL);
+                }
+                //DataTable dt = db.GetFK_JYWZ(DKCODE, MATNR, MATKL);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -122,7 +150,17 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetFacStatus(FacCode);
+                DataTable dt = new DataTable();
+                if (FacCode == "09")
+                {
+                    CXZGKDB db1 = new CXZGKDB();
+                    dt=db1.GetFacStatus(FacCode);
+                }
+                else
+                {
+                    dt = db.GetFacStatus(FacCode);
+                }
+                //DataTable dt = db.GetFacStatus(FacCode);
                 int MaxFacCode;
                 int.TryParse(dt.Rows[dt.Rows.Count-1]["LG"].ToString(), out MaxFacCode);
                 string StatusStr = string.Empty;
@@ -169,8 +207,18 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
+                DataTable dt = new DataTable();
+                if (DKCODE == "09")
+                {
+                    CXZGKDB db1 = new CXZGKDB();
+                    dt=db1.getZDWZCB(DKCODE, WERKS_NAME, MATNR, MATKL);
+                }
+                else
+                {
+                    dt = db.getZDWZCB(DKCODE, WERKS_NAME, MATNR, MATKL);
+                }
 
-                DataTable dt = db.getZDWZCB(DKCODE,WERKS_NAME, MATNR, MATKL);
+                //DataTable dt = db.getZDWZCB(DKCODE,WERKS_NAME, MATNR, MATKL);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -206,8 +254,17 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-
-                DataTable dt = db.getZDWZCRK(DKCODE,yearmonth, MATNR);
+                DataTable dt = new DataTable();
+                if (DKCODE == "09")
+                {
+                    CXZGKDB db1 = new CXZGKDB();
+                    dt = db1.getZDWZCRK(DKCODE, yearmonth, MATNR);
+                }
+                else
+                {
+                    dt = db.getZDWZCRK(DKCODE, yearmonth, MATNR);
+                }
+                //DataTable dt = db.getZDWZCRK(DKCODE,yearmonth, MATNR);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -244,8 +301,17 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-
-                DataTable dt = db.getZDWZCRKDetail(DKCODE,MATNR, MONTH);
+                DataTable dt = new DataTable();
+                if (DKCODE == "09")
+                {
+                    CXZGKDB db1 = new CXZGKDB();
+                    dt = db1.getZDWZCRKDetail(DKCODE, MATNR, MONTH);
+                }
+                else
+                {
+                    dt = db.getZDWZCRKDetail(DKCODE, MATNR, MONTH);
+                }
+                //DataTable dt = db.getZDWZCRKDetail(DKCODE,MATNR, MONTH);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

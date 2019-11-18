@@ -15,11 +15,11 @@ namespace UIDP.ODS.CangChu
             sql += " left join WZ_DW b on a.WORKER_DP=b.DW_CODE where 1=1";
             if (!String.IsNullOrEmpty(WORKER_CODE))
             {
-                sql += " AND WORKERCODE='" + WORKER_CODE + "'";
+                sql += " AND WORKER_CODE='" + WORKER_CODE + "'";
             }
             if (!String.IsNullOrEmpty(WORKER_NAME))
             {
-                sql += " AND WORKERNAME='" + WORKER_NAME + "'";
+                sql += " AND WORKER_NAME='" + WORKER_NAME + "'";
             }
             if (!String.IsNullOrEmpty(WORKER_DP))
             {
@@ -31,18 +31,18 @@ namespace UIDP.ODS.CangChu
 
         public string CreateBGYInfo(Dictionary<string,object> d)
         {
-            string sql = "insert into WZ_BGY (WORKER_CODE,WORKER_NAME,WORKER_DP) VALUES('" + d["WORKER_CODE"] + "','" + d["WORKER_NAME"] + "','" + d["WORKER_DP"] + "')";
+            string sql = "insert into WZ_BGY (WORKER_CODE,WORKER_NAME,WORKER_DP,ID) VALUES('" + d["WORKER_CODE"] + "','" + d["WORKER_NAME"] + "','" + d["WORKER_DP"] + "','"+Guid.NewGuid()+"')";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditBGYInfo(Dictionary<string,object> d)
         {
-            string sql = "update WZ_BGY SET WORKER_NAME='" + d["WORKER_NAME"] + "',WORKER_DP='" + d["WORKER_DP"] + "' WHERE WORKER_CODE='" + d["WORKER_CODE"] + "'";
+            string sql = "update WZ_BGY SET WORKER_NAME='" + d["WORKER_NAME"] + "',WORKER_DP='" + d["WORKER_DP"] + "',WORKER_CODE='" + d["WORKER_CODE"] + "' WHERE ID='"+d["ID"]+"'";
             return db.ExecutByStringResult(sql);
         }
         public string DelBGYInfo(Dictionary<string, object> d)
         {
-            string sql = "delete from WZ_BGY where WORKER_CODE='" + d["WORKER_CODE"] + "'";
+            string sql = "delete from WZ_BGY where ID='" + d["ID"] + "'";
             return db.ExecutByStringResult(sql);
         }
         public DataTable GetGCInfo()
