@@ -89,22 +89,22 @@ namespace UIDP.ODS.CangChu
                 MainSql += " AND e.MAKTX like'" + info + "%'";
             }
 
-            string KCDDSql = "SELECT KCDD_CODE,DWCODE FROM WZ_KCDD WHERE CKH='" + FacCode + "'";
-            DataTable KCDDData = db.GetDataTable(KCDDSql);
-            if (KCDDData.Rows.Count > 0)
-            {
-                MainSql += " AND(";
-                foreach (DataRow dr in KCDDData.Rows)
-                {
-                    MainSql += " (a.WERKS='" + dr["DWCODE"] + "'";
-                    MainSql += "  AND a.LGORT='" + dr["KCDD_CODE"] + "')";
-                    if (!dr.Equals(KCDDData.Rows[KCDDData.Rows.Count - 1]))
-                    {
-                        MainSql += " OR";
-                    }
-                }
-                MainSql += ")";
-            }
+            //string KCDDSql = "SELECT KCDD_CODE,DWCODE FROM WZ_KCDD WHERE CKH='" + FacCode + "'";
+            //DataTable KCDDData = db.GetDataTable(KCDDSql);
+            //if (KCDDData.Rows.Count > 0)
+            //{
+            //    MainSql += " AND(";
+            //    foreach (DataRow dr in KCDDData.Rows)
+            //    {
+            //        MainSql += " (a.WERKS='" + dr["DWCODE"] + "'";
+            //        MainSql += "  AND a.LGORT='" + dr["KCDD_CODE"] + "')";
+            //        if (!dr.Equals(KCDDData.Rows[KCDDData.Rows.Count - 1]))
+            //        {
+            //            MainSql += " OR";
+            //        }
+            //    }
+            //    MainSql += ")";
+            //}
             MainSql += " GROUP BY a.ZCKTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,c.ERNAM,a.WERKS,c.NAME1,f.DW_NAME ORDER BY a.ZCKTZD DESC)t";
             string DetailSql = string.Format(PartSql, " SELECT * FROM ( ", "ROWNUM rn, t.*", MainSql + " WHERE ROWNUM<" + ((page * limit) + 1) + ")WHERE rn>" + ((page - 1) * limit));
             string TotailSql = string.Format(PartSql, "", "COUNT(*) AS TOTAL", MainSql);
