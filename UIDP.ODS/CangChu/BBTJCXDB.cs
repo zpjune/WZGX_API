@@ -30,5 +30,57 @@ namespace UIDP.ODS.CangChu
                 " GROUP BY WERKS,WERKS_NAME ORDER BY WERKS";
             return db.GetDataTable(sql);
         }
+
+        public DataTable GetJYWZTJInfo(string FacCode,string MATNR)
+        {
+            string StrNow=DateTime.Now.ToString("yyyyMMdd");
+            string sql = " SELECT SUM(a.SCJE) AS BENNIAN,a.MATNR,b.CKH," +
+                //1年到3年金额子查询开始
+                "( SELECT  SUM(c.SCJE) AS BENNIAN FROM CONVERT_SWKCDETAIL c " +
+                " JOIN WZ_KCDD d ON c.WERKS = d.DWCODE " +
+                " WHERE c.LGORT = d.KCDD_CODE" +
+                " AND MONTHS_BETWEEN(TO_DATE('" + StrNow + "','yyyyMMdd'),TO_DATE(c.ERDATE,'yyyyMMdd'))>12" +
+                " AND MONTHS_BETWEEN(TO_DATE('" + StrNow + "','yyyyMMdd'),TO_DATE(c.ERDATE,'yyyyMMdd'))<=36" +
+                " AND c.MATNR = a.MATNR " +
+                " AND d.CKH = b.CKH " +
+                "{0}" +
+                " GROUP BY c.MATNR,d.CKH)" +
+                //子查询结束
+                " AS SANNIAN," +
+                //三年以上金额子查询开始
+                " (SELECT SUM( e.SCJE ) AS BENNIAN FROM CONVERT_SWKCDETAIL e" +
+                " LEFT JOIN WZ_KCDD f ON e.WERKS = f.DWCODE " +
+                " WHERE e.LGORT = f.KCDD_CODE" +
+                " AND MONTHS_BETWEEN(TO_DATE('" + StrNow + "','yyyyMMdd'),TO_DATE(e.ERDATE,'yyyyMMdd'))>36" +
+                " AND e.MATNR = a.MATNR" +
+                " AND f.CKH = b.CKH " +
+                "{1}" +
+                " GROUP BY e.MATNR,f.CKH )" +
+                //子查询结束
+                " AS SANNIANYISHANG " +
+                " FROM CONVERT_SWKCDETAIL a" +
+                " LEFT JOIN WZ_KCDD b ON a.WERKS = b.DWCODE " +
+                " WHERE a.LGORT = b.KCDD_CODE " +
+                " AND MONTHS_BETWEEN(TO_DATE('" + StrNow + "','yyyyMMdd'),TO_DATE(a.ERDATE,'yyyyMMdd'))<=12" +
+                " {2}" +
+                " GROUP BY a.MATNR,b.CKH ORDER BY b.CKH";
+            if (!string.IsNullOrEmpty(FacCode))
+            {
+                sql = string.Format(sql, " AND d.CKH='" + FacCode + "'{0}", " AND f.CKH='" + FacCode + "'{1}", " AND b.CKH='" + FacCode + "'{2}");
+            }
+            else
+            {
+                sql = string.Format(sql, "{0}", "{1}", "{2}");
+            }
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                sql = string.Format(sql, " AND c.MATNR='" + MATNR + "'", " AND e.MATNR='" + MATNR + "'", " AND a.MATNR='" + MATNR + "'");
+            }
+            else
+            {
+                sql = string.Format(sql, "", "", "");
+            }
+            return db.GetDataTable(sql);
+        }
     }
 }
