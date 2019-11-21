@@ -84,5 +84,15 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("getZDWZCRKDetail")]
         public IActionResult getZDWZCRKDetail(string DKCODE, string MATNR, string MONTH, int page, int limit) =>
             Ok(ZXK.getZDWZCRKDetail(DKCODE,MATNR, MONTH, page, limit));
+
+        /// <summary>
+        /// 平面图详情查询
+        /// </summary>
+        /// <param name="LGPLA">编码</param>
+        /// <param name="page">页数</param>
+        /// <param name="limit">每页条数</param>
+        /// <returns></returns>
+        [HttpGet("GetStatusDetail")]
+        public IActionResult GetStatusDetail(string LGPLA, int page, int limit) => Ok(ZXK.GetStatusDetail(LGPLA, page, limit));
     }
 }

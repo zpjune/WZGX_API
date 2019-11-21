@@ -267,5 +267,12 @@ sql += "           join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERK
             sql += "     where A.MATNR='" + MATNR + "'   and  substr(A.ZCJRQ,1,6)='" + MONTH + "'  group by B.WEMPF";
             return db.GetDataTable(sql);
         }
+
+        public DataTable GetStatusDetail(string LGPLA)
+        {
+            string sql = " SELECT ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS,SUM(GESME) AS GESME FROM CONVERT_SWKC WHERE LGPLA='" + LGPLA + "'" +
+                "GROUP BY  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS ORDER BY ZSTATUS";
+            return db.GetDataTable(sql);
+        }
     }
 }
