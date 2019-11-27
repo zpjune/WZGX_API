@@ -270,8 +270,14 @@ sql += "           join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERK
 
         public DataTable GetStatusDetail(string LGPLA)
         {
-            string sql = " SELECT ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS,SUM(GESME) AS GESME FROM CONVERT_SWKC WHERE LGPLA='" + LGPLA + "'" +
-                "GROUP BY  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS ORDER BY ZSTATUS";
+            string date = DateTime.Now.ToString("yyyyMMdd");
+            string sql = " SELECT ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS,SUM(GESME) AS GESME," +
+                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" +date+ " ','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 6 THEN 01 ELSE 02 END ) AS status "+
+                " FROM CONVERT_SWKC" +
+                " WHERE LGPLA='" + LGPLA + "'" +
+                "GROUP BY  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS," +
+                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" +date+ "','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 6 THEN 01 ELSE 02 END )"+
+                " ORDER BY ZSTATUS";
             return db.GetDataTable(sql);
         }
     }
