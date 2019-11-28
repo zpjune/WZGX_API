@@ -12,11 +12,11 @@ namespace UIDP.ODS.CangChu
         /// <summary>
         /// 查询库存总资金-饼图
         /// 港东C27C  港西 C27D 油区C27G  港狮C279 港华C27B
-        /// </summary>
+        /// </summary>WHERE BWKEY IN('C27C','C27D','C27G''C279','C27B','C275','C274','C271')
         /// <returns></returns>
         public DataTable GetKCZJ()
         {
-            string sql = @"select round(SUM(SALK3)/10000,2)  as SALK3,'TOTAL' as WERKS from CONVERT_ZWKC WHERE BWKEY IN('C27C','C27D','C27G''C279','C27B','C275','C274','C271')
+            string sql = @"select round(SUM(SALK3)/10000,2)  as SALK3,'TOTAL' as WERKS from CONVERT_ZWKC 
                 union 
             select round(SUM(SALK3)/10000,2) , 'C27C' from CONVERT_ZWKC WHERE BWKEY = 'C27C' union 
             select round(SUM(SALK3)/10000,2) ,'C27D' from CONVERT_ZWKC WHERE BWKEY = 'C27D' union 
@@ -76,7 +76,7 @@ namespace UIDP.ODS.CangChu
                             '积压' ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
-            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6 AND A.KCTYPE<>3  ";
+            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6 AND KCTYPE=0  ";
             if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  WERKS_NAME like'%" + WERKS_NAME + "%'";
