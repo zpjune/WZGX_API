@@ -304,7 +304,7 @@ namespace UIDP.ODS.CangChu
                         from ZC10MMDG078 A
                         JOIN MSEG B ON A.MBLNR=B.MBLNR AND A.ZEILE=B.ZEILE
                         LEFT JOIN WZ_DW C ON C.DW_CODE=B.WEMPF";
-                   sql+="     where A.MATNR='"+MATNR+"'   and  substr(A.ZCJRQ,1,6)='"+MONTH+"'  group by B.WEMPF";
+                   sql+="     WHERE  A.MATNR='"+MATNR+"'   and  substr(A.ZCJRQ,1,4)=substr('"+MONTH+ "',1,4) and substr(A.ZCJRQ,5,2)<=substr('" + MONTH + "',5,2)   group by B.WEMPF";
             return db.GetDataTable(sql);
         }
     }
