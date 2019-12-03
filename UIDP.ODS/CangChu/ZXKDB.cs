@@ -264,7 +264,7 @@ sql += "           join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERK
                         JOIN MSEG B ON A.MBLNR=B.MBLNR AND A.ZEILE=B.ZEILE";
             sql += "     join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERKS AND C.CKH = '" + DKCODE + "'";
             sql += "      LEFT JOIN WZ_DW C ON C.DW_CODE=B.WEMPF";
-            sql += "     where A.MATNR='" + MATNR + "'   and  substr(A.ZCJRQ,1,6)='" + MONTH + "'  group by B.WEMPF";
+            sql += "     where A.MATNR='" + MATNR + "'  and  substr(A.ZCJRQ,1,4)=substr('" + MONTH + "',1,4) and substr(A.ZCJRQ,5,2)<=substr('" + MONTH + "',5,2)  group by B.WEMPF";
             return db.GetDataTable(sql);
         }
 
