@@ -172,17 +172,19 @@ where USER_ID = '{0}'
             // string[] array = d["multipleSelection"].ToString().Split(',');
             var array = (JArray)d["arr"];
             string fengefu = "";
-            string sql = " insert into ts_uidp_login_user(LOGIN_ID,USER_ID)values ";
             string delSql = "delete from ts_uidp_login_user where LOGIN_ID='"+ d["LOGIN_ID"].ToString() + "' and  USER_ID in (";
             string userid = "";
+            List<string> list = new List<string>();
             foreach (var item in array)
             {
+                string sql = "";
                 userid += fengefu + "'" + item.ToString() + "'";
                 delSql += fengefu + "'" + item.ToString() + "'";
-                sql += fengefu + "(";
+                sql += " insert into ts_uidp_login_user(LOGIN_ID,USER_ID)values (";
                 sql += "'" + d["LOGIN_ID"].ToString() + "','" + item.ToString() + "'";
                 sql += ")";
-                fengefu = ",";
+                list.Add(sql);
+                
             }
             delSql += ")";
             string sqlUser = "select USER_DOMAIN from ts_uidp_userinfo where USER_ID in(" + userid + ") ";
@@ -197,10 +199,8 @@ where USER_ID = '{0}'
             }
             // string sqlUpdateUserInfo = "  update ts_uidp_userinfo set ASSOCIATED_ACCOUNT= case when ASSOCIATED_ACCOUNT<>'' or ASSOCIATED_ACCOUNT is not null then CONCAT(ASSOCIATED_ACCOUNT,'," + userid + "') else '"+ userid + "' where USER_ID='"+ d["LOGIN_ID"].ToString()+"'";
             string sqlUpdateUserInfo = " update ts_uidp_userinfo set ASSOCIATED_ACCOUNT='" + userid + "' where USER_ID='" + d["LOGIN_ID"].ToString() + "'";
-            List<string> list = new List<string>();
-            list.Add(delSql);
-            list.Add(sql);
             list.Add(sqlUpdateUserInfo);
+            list.Insert(0, delSql);
             return db.Executs(list);
         }
         /// <summary>
