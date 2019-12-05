@@ -31,8 +31,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
         [HttpGet("GetSWKC")]
-        public IActionResult GetSWKC(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) => 
-            Ok(md.GetSWKC( WERKS_NAME,  LGORTNAME,  MATNR,  MATKL,  page,  limit));
+        public IActionResult GetSWKC(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) => 
+            Ok(md.GetSWKC( ISWZ,  WERKS, WERKS_NAME,  LGORTNAME,  MATNR,  MATKL,  page,  limit));
         /// <summary>
         /// 查询实物库存-总库页面
         /// </summary>
@@ -42,8 +42,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
         [HttpGet("GetJYWZ")]
-        public IActionResult GetJYWZ(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
-            Ok(md.GetJYWZ(WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
+        public IActionResult GetJYWZ(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
+            Ok(md.GetJYWZ( ISWZ,  WERKS, WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
         /// <summary>
         /// 总库存查询出入库金额 按年 按月分组统计
         /// </summary>
@@ -81,7 +81,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
         public IActionResult getBGYGZLDetail(string nianyue, string TZDType, string workerCode, int page, int limit) =>
           Ok(md.getBGYGZLDetail(nianyue,  TZDType,  workerCode, page, limit));
         /// <summary>
-        /// 重点物资储备查询-总库页面
+        /// 重点物资储备查询-左侧菜单
         /// </summary>
         /// <param name="WERKS_NAME">工厂名称</param>
         /// <param name="LGORTNAME">库存地点名称</param>
@@ -91,6 +91,28 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("getZDWZCB")]
         public IActionResult getZDWZCB(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
             Ok(md.getZDWZCB(WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
+        /// <summary>
+        /// 重点物资储备查询-总库存
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        [HttpGet("getZDWZCBTOTAL")]
+        public IActionResult getZDWZCBTOTAL( string MATNR, string MATKL, int page, int limit) =>
+            Ok(md.getZDWZCBTOTAL( MATNR, MATKL, page, limit));
+        /// <summary>
+        /// 重点物资储备明细查询-总库存
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        [HttpGet("getZDWZCBTOTALDETAIL")]
+        public IActionResult getZDWZCBTOTALDETAIL(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
+            Ok(md.getZDWZCBTOTALDETAIL(WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
         /// <summary>
         /// 重点物资出入库查询-总库页面
         /// </summary>

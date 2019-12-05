@@ -29,14 +29,17 @@ namespace UIDP.BIZModule.CangChu.Modules
                 {
                     Dictionary<string, object> d = new Dictionary<string, object>();
                     d["TOTAL"] = dt.Select("WERKS='TOTAL'")[0][0];
+                    d["TOTALWZ"] = dt.Select("WERKS='TOTALWZ'")[0][0];
+                    d["C271"] = dt.Select("WERKS='C271'")[0][0];
+                    d["C274"] = dt.Select("WERKS='C274'")[0][0];
+                    d["C275"] = dt.Select("WERKS='C275'")[0][0];
+                    d["C277"] = dt.Select("WERKS='C277'")[0][0];
+                    d["C279"] = dt.Select("WERKS='C279'")[0][0];
+                    d["C27B"] = dt.Select("WERKS='C27B'")[0][0];
                     d["C27C"] = dt.Select("WERKS='C27C'")[0][0];
                     d["C27D"] = dt.Select("WERKS='C27D'")[0][0];
                     d["C27G"] = dt.Select("WERKS='C27G'")[0][0];
-                    d["C279"] = dt.Select("WERKS='C279'")[0][0];
-                    d["C27B"] = dt.Select("WERKS='C27B'")[0][0];
-                    d["C274"] = dt.Select("WERKS='C274'")[0][0];
-                    d["C275"] = dt.Select("WERKS='C275'")[0][0];
-                    d["C271"] = dt.Select("WERKS='C271'")[0][0];
+                    d["C27I"] = dt.Select("WERKS='C27I'")[0][0];
                     r["code"] = 2000;
                     r["items"] = d;//dt
                     r["message"] = "成功";
@@ -63,13 +66,13 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public Dictionary<string, object> GetSWKC(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL,int page,int limit)
+        public Dictionary<string, object> GetSWKC(string ISWZ,string WERKS,string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL,int page,int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataTable dt = db.GetSWKC(WERKS_NAME,  LGORTNAME,  MATNR,  MATKL);
+                DataTable dt = db.GetSWKC( ISWZ,  WERKS, WERKS_NAME,  LGORTNAME,  MATNR,  MATKL);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -100,13 +103,13 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public Dictionary<string, object> GetJYWZ(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit)
+        public Dictionary<string, object> GetJYWZ(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataTable dt = db.GetJYWZ(WERKS_NAME, LGORTNAME, MATNR, MATKL);
+                DataTable dt = db.GetJYWZ( ISWZ,  WERKS, WERKS_NAME, LGORTNAME, MATNR, MATKL);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -300,7 +303,7 @@ namespace UIDP.BIZModule.CangChu.Modules
             return r;
         }
         /// <summary>
-        /// 重点物资储备查询-总库页面
+        /// 重点物资储备查询-左侧菜单
         /// </summary>
         /// <param name="WERKS_NAME">工厂名称</param>
         /// <param name="LGORTNAME">库存地点名称</param>
@@ -314,6 +317,79 @@ namespace UIDP.BIZModule.CangChu.Modules
             {
 
                 DataTable dt = db.getZDWZCB(WERKS_NAME, LGORTNAME, MATNR, MATKL);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        /// <summary>
+        /// 重点物资储备查询-总库存
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        public Dictionary<string, object> getZDWZCBTOTAL( string MATNR, string MATKL, int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataTable dt = db.getZDWZCBTOTAL( MATNR, MATKL);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        } /// <summary>
+          /// 重点物资储备明细查询-总库存
+          /// </summary>
+          /// <param name="WERKS_NAME">工厂名称</param>
+          /// <param name="LGORTNAME">库存地点名称</param>
+          /// <param name="MATNR">物料编码</param>
+          /// <param name="MATKL">物料组编码</param>
+          /// <returns></returns>
+        public Dictionary<string, object> getZDWZCBTOTALDETAIL(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataTable dt = db.getZDWZCBTOTALDETAIL(WERKS_NAME, LGORTNAME, MATNR, MATKL);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

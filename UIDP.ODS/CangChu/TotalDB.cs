@@ -18,14 +18,20 @@ namespace UIDP.ODS.CangChu
         {
             string sql = @"select round(SUM(SALK3)/10000,2)  as SALK3,'TOTAL' as WERKS from CONVERT_ZWKC 
                 union 
-            select round(SUM(SALK3)/10000,2) , 'C27C' from CONVERT_ZWKC WHERE BWKEY = 'C27C' union 
-            select round(SUM(SALK3)/10000,2) ,'C27D' from CONVERT_ZWKC WHERE BWKEY = 'C27D' union 
-            select round(SUM(SALK3)/10000,2) ,'C27G' from CONVERT_ZWKC WHERE BWKEY = 'C27G' union 
-            select round(SUM(SALK3)/10000,2) ,'C279' from CONVERT_ZWKC WHERE BWKEY = 'C279' union 
-            select round(SUM(SALK3)/10000,2) ,'C274' from CONVERT_ZWKC WHERE BWKEY = 'C274' union
-            select round(SUM(SALK3)/10000,2) ,'C275' from CONVERT_ZWKC WHERE BWKEY = 'C275' union
-            select round(SUM(SALK3)/10000,2) ,'C271' from CONVERT_ZWKC WHERE BWKEY = 'C271' union
-            select round(SUM(SALK3)/10000,2) ,'C27B' from CONVERT_ZWKC WHERE BWKEY = 'C27B' ";//拼装datatable  以万为单位 四舍五入
+                        select round(SUM(SALK3)/10000,2)  as SALK3,'TOTALWZ' as WERKS from CONVERT_ZWKC  WHERE substr(BWKEY,1,3)='C27'
+                union 
+            select nvl(round(SUM(SALK3)/10000,2),0) , 'C271' from CONVERT_ZWKC WHERE BWKEY = 'C271' union 
+            select nvl(round(SUM(SALK3)/10000,2),0) ,'C274' from CONVERT_ZWKC WHERE BWKEY = 'C274' union 
+            select nvl(round(SUM(SALK3)/10000,2),0) ,'C275' from CONVERT_ZWKC WHERE BWKEY = 'C275' union
+            select nvl(round(SUM(SALK3)/10000,2),0) ,'C277' from CONVERT_ZWKC WHERE BWKEY = 'C277' union
+            select nvl(round(SUM(SALK3)/10000,2),0) ,'C279' from CONVERT_ZWKC WHERE BWKEY = 'C279'  union
+            select nvl(round(SUM(SALK3)/10000,2),0) ,'C27B' from CONVERT_ZWKC WHERE BWKEY = 'C27B'  union
+            select nvl(round(SUM(SALK3)/10000,2),0) ,'C27C' from CONVERT_ZWKC WHERE BWKEY = 'C27C'  union
+            select nvl(round(SUM(SALK3)/10000,2),0) ,'C27D' from CONVERT_ZWKC WHERE BWKEY = 'C27D'  union
+            select nvl(round(SUM(SALK3)/10000,2),0) ,'C27G' from CONVERT_ZWKC WHERE BWKEY = 'C27G'  union
+            select nvl(round(SUM(SALK3)/10000,2),0) ,'C27I' from CONVERT_ZWKC WHERE BWKEY in('C27I','C27J','C27K','C27L')  
+
+            ";//拼装datatable  以万为单位 四舍五入
             return db.GetDataTable(sql);
         }
         /// <summary>
@@ -36,13 +42,20 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public DataTable GetSWKC(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
+        public DataTable GetSWKC(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
         {
-            string sql = @" select sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
+            string sql = @" select row_number()over(order by werks,matnr asc),sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
                             CASE WHEN ZSTATUS='04' THEN CASE WHEN months_between(sysdate,to_date(MIN(ERDAT),'yyyy-mm-dd'))>6 then '01' else '100' end   ELSE '100' END ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
             sql += "where  KCTYPE<>3 ";
+            if (ISWZ=="1") {
+                sql += "  and substr(WERKS,1,3)='C27' ";
+            }
+            if (!string.IsNullOrEmpty(WERKS))
+            {
+                sql += " and  WERKS ='" + WERKS + "'";
+            }
             if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  WERKS_NAME like'%" + WERKS_NAME + "%'";
@@ -59,7 +72,7 @@ namespace UIDP.ODS.CangChu
             {
                 sql += " and  MATKL like'%" + MATKL + "%'";
             }
-            sql += "group by werks,matnr,lgort,zstatus,WERKS_NAME,LGORT_NAME ";//
+            sql += "group by werks,matnr,lgort,zstatus,WERKS_NAME,LGORT_NAME  ";//
             return db.GetDataTable(sql);
         }
         /// <summary>
@@ -70,13 +83,21 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public DataTable GetJYWZ(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
+        public DataTable GetJYWZ(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
         {
-            string sql = @" select sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
+            string sql = @" select row_number()over(order by werks,matnr asc),sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
                             '积压' ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
             sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6 AND KCTYPE=0  ";
+            if (ISWZ == "1")
+            {
+                sql += "  and substr(WERKS,1,3)='C27' ";
+            }
+            if (!string.IsNullOrEmpty(WERKS))
+            {
+                sql += " and  WERKS ='" + WERKS + "'";
+            }
             if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  WERKS_NAME like'%" + WERKS_NAME + "%'";
@@ -199,7 +220,7 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
 
         }
-        ///重点物资储备-总库存
+        ///重点物资储备-左侧菜单
         /// <param name="WERKS_NAME">工厂名称</param>
         /// <param name="LGORTNAME">库存地点名称</param>
         /// <param name="MATNR">物料编码</param>
@@ -215,6 +236,67 @@ namespace UIDP.ODS.CangChu
                         left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
                         ";// zstatus 是表示上架还是质检（未上架）状态
             sql += "where  A.KCTYPE<>3  ";
+            if (!string.IsNullOrEmpty(WERKS_NAME))
+            {
+                sql += " and  A.WERKS_NAME like'%" + WERKS_NAME + "%'";
+            }
+            if (!string.IsNullOrEmpty(LGORTNAME))
+            {
+                sql += " and  A.LGORT_NAME like'%" + LGORTNAME + "%'";
+            }
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                sql += " and  A.MATNR like'%" + MATNR + "%'";
+            }
+            if (!string.IsNullOrEmpty(MATKL))
+            {
+                sql += " and  A.MATKL like'%" + MATKL + "%'";
+            }
+            sql += "  group by A.WERKS,A.MATNR,A.LGORT,A.WERKS_NAME,A.LGORT_NAME ,A.ZSTATUS  ";//
+            return db.GetDataTable(sql);
+        }
+        ///重点物资储备-总库存
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        public DataTable getZDWZCBTOTAL( string MATNR, string MATKL)
+        {
+            string sql = @" select sum(A.GESME) GESME,
+                        MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR
+                        from CONVERT_SWKC A
+                        JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR
+                        ";// zstatus 是表示上架还是质检（未上架）状态
+            sql += "where  A.KCTYPE<>3 AND substr(werks,0,3)='C27' ";
+           
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                sql += " and  A.MATNR like'%" + MATNR + "%'";
+            }
+            if (!string.IsNullOrEmpty(MATKL))
+            {
+                sql += " and  A.MATKL like'%" + MATKL + "%'";
+            }
+            sql += "  group by A.MATNR ";//
+            return db.GetDataTable(sql);
+        }
+        ///重点物资储备明细-总库存
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        public DataTable getZDWZCBTOTALDETAIL(string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
+        {
+            string sql = @" select sum(A.GESME) GESME,A.WERKS,A.WERKS_NAME,A.LGORT_NAME,A.LGORT,
+                        MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR,A.ZSTATUS,MAX(D.MAXHAVING)MAXHAVING,MAX(MINHAVING)MINHAVING
+                        from CONVERT_SWKC A
+                        JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR
+                        left join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS
+                        left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
+                        ";// zstatus 是表示上架还是质检（未上架）状态
+            sql += "where  A.KCTYPE<>3  AND substr(werks,0,3)='C27'";
             if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  A.WERKS_NAME like'%" + WERKS_NAME + "%'";

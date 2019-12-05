@@ -95,7 +95,7 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR"></param>
         /// <param name="MATKL"></param>
         /// <returns></returns>
-        public Dictionary<string, object> GetFK_JYWZ(string DKCODE, string MATNR, string MATKL, int page, int limit)
+        public Dictionary<string, object> GetFK_JYWZ(string ISWZ, string WERKS, string DKCODE, string MATNR, string MATKL, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
@@ -108,7 +108,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 }
                 else
                 {
-                    dt = db.GetFK_JYWZ(DKCODE, MATNR, MATKL);
+                    dt = db.GetFK_JYWZ( ISWZ,  WERKS, DKCODE, MATNR, MATKL);
                 }
                 //DataTable dt = db.GetFK_JYWZ(DKCODE, MATNR, MATKL);
                 if (dt.Rows.Count > 0)

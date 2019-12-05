@@ -120,14 +120,21 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR"></param>
         /// <param name="MATKL"></param>
         /// <returns></returns>
-        public DataTable GetFK_JYWZ(string DKCODE, string MATNR, string MATKL)
+        public DataTable GetFK_JYWZ(string ISWZ, string WERKS, string DKCODE, string MATNR, string MATKL)
         {
-            string sql = @" select sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
+            string sql = @" select row_number()over(order by werks,matnr asc),sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
                             '积压' ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
             sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6 AND substr(LGPLA,1,2)='" + DKCODE + "' ";
-
+            if (ISWZ == "1")
+            {
+                sql += "  and substr(WERKS,1,3)='C27' ";
+            }
+            if (!string.IsNullOrEmpty(WERKS))
+            {
+                sql += " and  WERKS ='" + WERKS + "'";
+            }
             if (!string.IsNullOrEmpty(MATNR))
             {
                 sql += " and  MATNR like'%" + MATNR + "%'";
