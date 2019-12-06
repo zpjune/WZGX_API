@@ -195,7 +195,7 @@ namespace UIDP.BIZModule.CangChu.Modules
             return r;
         }
         /// <summary>
-        /// 重点物资储备查询-分库
+        /// 重点物资储备查询-分库（停用）
         /// </summary>
         /// <param name="WERKS_NAME">工厂名称</param>
         /// <param name="LGORTNAME">库存地点名称</param>
@@ -219,6 +219,84 @@ namespace UIDP.BIZModule.CangChu.Modules
                 }
 
                 //DataTable dt = db.getZDWZCB(DKCODE,WERKS_NAME, MATNR, MATKL);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        /// <summary>
+        /// 重点物资储备查询-分库
+        /// </summary>
+        /// <param name="DKCODE"></param>
+        /// <param name="MATNR"></param>
+        /// <param name="MATKL"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> getDetailZDWZCBTOTAL(string DKCODE,  string MATNR, string MATKL, int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = new DataTable();
+                dt = db.getDetailZDWZCBTOTAL(DKCODE,  MATNR, MATKL);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        /// <summary>
+        /// 重点物资储备查询-分库明细
+        /// </summary>
+        /// <param name="WERKS"></param>
+        /// <param name="DKCODE"></param>
+        /// <param name="WERKS_NAME"></param>
+        /// <param name="MATNR"></param>
+        /// <param name="MATKL"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> getDetailZDWZCBTOTALDETAIL(string WERKS,string DKCODE, string WERKS_NAME, string MATNR, string MATKL, int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = new DataTable();
+                dt = db.getDetailZDWZCBTOTALDETAIL(WERKS,DKCODE, WERKS_NAME, MATNR, MATKL);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

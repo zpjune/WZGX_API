@@ -164,7 +164,7 @@ namespace UIDP.ODS.CangChu
                 " ORDER BY SUBSTR(LGPLA,3,2)";
             return db.GetDataTable(sql);
         }
-        ///重点物资储备-分库
+        ///重点物资储备-分库(赞停用)
         /// <param name="WERKS_NAME">工厂名称</param>
         /// <param name="LGORTNAME">库存地点名称</param>
         /// <param name="MATNR">物料编码</param>
@@ -193,6 +193,67 @@ namespace UIDP.ODS.CangChu
                 sql += " and  A.MATKL like'%" + MATKL + "%'";
             }
             sql += "  group by A.WERKS,A.MATNR,A.WERKS_NAME ";//
+            return db.GetDataTable(sql);
+        }
+        ///重点物资储备-分库
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        public DataTable getDetailZDWZCBTOTAL(string DKCODE, string MATNR, string MATKL)
+        {
+            string sql = @" select sum(A.GESME) GESME,
+                        MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR
+                        from CONVERT_SWKC A
+                        JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR
+                        join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS 
+                        ";// zstatus 是表示上架还是质检（未上架）状态
+            sql += "where A.KCTYPE<>3 AND  C.CKH='" + DKCODE + "'  and substr(WERKS,1,3)='C27'  ";
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                sql += " and  A.MATNR like'%" + MATNR + "%'";
+            }
+            if (!string.IsNullOrEmpty(MATKL))
+            {
+                sql += " and  A.MATKL like'%" + MATKL + "%'";
+            }
+            sql += "  group by A.MATNR ";//
+            return db.GetDataTable(sql);
+        }
+        ///重点物资储备-分库明细
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <param name="LGORTNAME">库存地点名称</param>
+        /// <param name="MATNR">物料编码</param>
+        /// <param name="MATKL">物料组编码</param>
+        /// <returns></returns>
+        public DataTable getDetailZDWZCBTOTALDETAIL(string WERKS,string DKCODE, string WERKS_NAME, string MATNR, string MATKL)
+        {
+            string sql = @" select sum(A.GESME) GESME,A.WERKS,A.WERKS_NAME,A.ZSTATUS,
+                        MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR,MAX(D.MAXHAVING)MAXHAVING,MAX(MINHAVING)MINHAVING
+                        from CONVERT_SWKC A
+                        JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR
+                        join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS 
+                        left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
+                        ";// zstatus 是表示上架还是质检（未上架）状态
+            sql += "where A.KCTYPE<>3 AND C.CKH='" + DKCODE + "'  and substr(WERKS,1,3)='C27' ";
+            if (!string.IsNullOrEmpty(WERKS))
+            {
+                sql += " and  A.WERKS ='" + WERKS + "'";
+            }
+            if (!string.IsNullOrEmpty(WERKS_NAME))
+            {
+                sql += " and  A.WERKS_NAME like'%" + WERKS_NAME + "%'";
+            }
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                sql += " and  A.MATNR like'%" + MATNR + "%'";
+            }
+            if (!string.IsNullOrEmpty(MATKL))
+            {
+                sql += " and  A.MATKL like'%" + MATKL + "%'";
+            }
+            sql += "  group by A.WERKS,A.MATNR,A.WERKS_NAME，A.ZSTATUS ";//
             return db.GetDataTable(sql);
         }
         ///重点物资出入库查询-分库

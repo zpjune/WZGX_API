@@ -51,7 +51,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("GetFacStatus")]
         public IActionResult GetFacStatus(string FacCode) => Ok(ZXK.GetFacStatus(FacCode));
         /// <summary>
-        /// 重点物资储备查询-分库页面
+        /// 重点物资储备查询-分库页面（停用）
         /// </summary>
         /// <param name="WERKS_NAME">工厂名称</param>
         /// <param name="LGORTNAME">库存地点名称</param>
@@ -61,6 +61,32 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("getZDWZCB")]
         public IActionResult getZDWZCB(string DKCODE, string WERKS_NAME, string MATNR, string MATKL, int page, int limit) =>
             Ok(ZXK.getZDWZCB(DKCODE,WERKS_NAME, MATNR, MATKL, page, limit));
+        /// <summary>
+        /// 重点物资储备查询-分库页面
+        /// </summary>
+        /// <param name="DKCODE"></param>
+        /// <param name="MATNR"></param>
+        /// <param name="MATKL"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("getDetailZDWZCBTOTAL")]
+        public IActionResult getDetailZDWZCBTOTAL(string DKCODE, string MATNR, string MATKL, int page, int limit) =>
+           Ok(ZXK.getDetailZDWZCBTOTAL(DKCODE, MATNR, MATKL, page, limit));
+        /// <summary>
+        /// 重点物资储备查询-分库页面明细
+        /// </summary>
+        /// <param name="WERKS"></param>
+        /// <param name="DKCODE"></param>
+        /// <param name="WERKS_NAME"></param>
+        /// <param name="MATNR"></param>
+        /// <param name="MATKL"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("getDetailZDWZCBTOTALDETAIL")]
+        public IActionResult getDetailZDWZCBTOTALDETAIL(string WERKS,string DKCODE, string WERKS_NAME, string MATNR, string MATKL, int page, int limit) =>
+           Ok(ZXK.getDetailZDWZCBTOTALDETAIL(WERKS,DKCODE, WERKS_NAME, MATNR, MATKL, page, limit));
         /// <summary>
         /// 重点物资出入库查询-分库页面
         /// </summary>
