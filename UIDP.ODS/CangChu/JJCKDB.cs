@@ -66,6 +66,7 @@ namespace UIDP.ODS.CangChu
                         " JOIN TS_UIDP_ORG_USER m ON l.ORG_ID = m.ORG_ID" +
                         " JOIN TS_UIDP_USERINFO n ON n.USER_ID = m.USER_ID " +
                         " WHERE m.USER_ID = '" + userid + "')";
+                    sql += " AND e.CKH IN (SELECT a.CKH FROM WZ_BGY a JOIN TS_UIDP_USERINFO b ON a.WORKER_CODE=b.USER_CODE WHERE b.USER_ID='" + userid + "')";
                     break;
                 default:
                     throw new Exception("错误的参数！");

@@ -21,7 +21,7 @@ namespace UIDP.ODS.CangChu
         /// <returns></returns>
         public DataTable GetRKInfo(string CODE,string MATNR,string MATNX,string ParentCode,string userid,int type)
         {
-            string sql = " SELECT a.*,(CASE WHEN b.NAME IS NULL THEN Translate(a.REASON USING NCHAR_CS) ELSE b.NAME END)AS NAME," +
+            string sql = " SELECT DISTINCT a.*,(CASE WHEN b.NAME IS NULL THEN Translate(a.REASON USING NCHAR_CS) ELSE b.NAME END)AS NAME," +
                 " c.ORG_SHORT_NAME,e.KCDD_NAME,h.USER_NAME from JJRK a " +
                 " left join TS_DICTIONARY b on a.REASON=b.CODE AND b.PARENTCODE='" + ParentCode + "'" +
                 " left join TS_UIDP_ORG c on a.DW_CODE=c.ORG_CODE " +
@@ -66,6 +66,13 @@ namespace UIDP.ODS.CangChu
                         " JOIN TS_UIDP_ORG_USER m ON l.ORG_ID = m.ORG_ID" +
                         " JOIN TS_UIDP_USERINFO n ON n.USER_ID = m.USER_ID " +
                         " WHERE m.USER_ID = '" + userid + "')";
+                    sql += " AND e.CKH IN (SELECT a.CKH FROM WZ_BGY a JOIN TS_UIDP_USERINFO b ON a.WORKER_CODE=b.USER_CODE WHERE b.USER_ID='" + userid + "')";
+                    //sql += " AND o.CKH IN (" +
+                    //    " SELECT p.CKH FROM WZ_BGY p " +
+                    //    " WHERE p.WORKER_CODE IN (" +
+                    //    " SELECT q.USER_CODE FROM TS_UIDP_USERINFO q JOIN TS_UIDP_ORG_USER r ON q.USER_ID = r.USER_ID" +
+                    //    " JOIN TS_UIDP_ORG s ON r.ORG_ID = s.ORG_ID " +
+                    //    " WHERE q.USER_ID = '" + userid + "'))";
                     break;
                 default:
                     throw new Exception("错误的参数！");

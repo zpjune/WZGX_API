@@ -11,8 +11,10 @@ namespace UIDP.ODS.CangChu
         DBTool db = new DBTool("");
         public DataTable GetBGYInfo(string WORKER_CODE,string WORKER_NAME,string WORKER_DP)
         {
-            string sql = "select * from WZ_BGY a";
-            sql += " left join WZ_DW b on a.WORKER_DP=b.DW_CODE where 1=1";
+            string sql = "select distinct a.*,b.DW_NAME,c.KCDD_NAME from WZ_BGY a";
+            sql += " left join WZ_DW b on a.WORKER_DP=b.DW_CODE" +
+                " LEFT JOIN WZ_KCDD c on a.CKH=c.CKH" +
+                "  where 1=1";
             if (!String.IsNullOrEmpty(WORKER_CODE))
             {
                 sql += " AND WORKER_CODE='" + WORKER_CODE + "'";
@@ -31,13 +33,14 @@ namespace UIDP.ODS.CangChu
 
         public string CreateBGYInfo(Dictionary<string,object> d)
         {
-            string sql = "insert into WZ_BGY (WORKER_CODE,WORKER_NAME,WORKER_DP,ID) VALUES('" + d["WORKER_CODE"] + "','" + d["WORKER_NAME"] + "','" + d["WORKER_DP"] + "','"+Guid.NewGuid()+"')";
+            string sql = "insert into WZ_BGY (WORKER_CODE,WORKER_NAME,WORKER_DP,ID,CKH) VALUES('" + d["WORKER_CODE"] + "','" + d["WORKER_NAME"] + "','" + d["WORKER_DP"] + "','"+Guid.NewGuid()+"','"+d["CKH"]+"')";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditBGYInfo(Dictionary<string,object> d)
         {
-            string sql = "update WZ_BGY SET WORKER_NAME='" + d["WORKER_NAME"] + "',WORKER_DP='" + d["WORKER_DP"] + "',WORKER_CODE='" + d["WORKER_CODE"] + "' WHERE ID='"+d["ID"]+"'";
+            string sql = "update WZ_BGY SET WORKER_NAME='" + d["WORKER_NAME"] + "',WORKER_DP='" + d["WORKER_DP"] + "',WORKER_CODE='" + d["WORKER_CODE"] + "',CKH='"+d["CKH"]+"'" +
+                " WHERE ID='"+d["ID"]+"'";
             return db.ExecutByStringResult(sql);
         }
         public string DelBGYInfo(Dictionary<string, object> d)
@@ -48,6 +51,12 @@ namespace UIDP.ODS.CangChu
         public DataTable GetGCInfo()
         {
             string sql = "select * from WZ_DW";
+            return db.GetDataTable(sql);
+        }
+
+        public DataTable GetCKHInfo()
+        {
+            string sql = "SELECT DISTINCT CKH,KCDD_NAME FROM WZ_KCDD ORDER BY CKH";
             return db.GetDataTable(sql);
         }
     }
