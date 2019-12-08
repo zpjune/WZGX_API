@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using UIDP.BIZModule.CangChu.Modules;
 using UIDP.BIZModule.Modules;
 
 namespace WZGX.WebAPI.Controllers.CangChu
@@ -86,12 +87,34 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpPost("CancelRK")]
         public IActionResult CancelRK([FromBody]JObject value) => Ok(JJRK.CancelRK(value.ToObject<Dictionary<string, object>>()));
-
+        /// <summary>
+        /// 获取组织机构接口
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetOrgInfo")]
         public IActionResult GetOrgInfo() => Ok(JJRK.GetOrgInfo());
 
+        /// <summary>
+        /// 获取库存地点接口
+        /// </summary>
+        /// <param name="orgCode"></param>
+        /// <returns></returns>
         [HttpGet("GetKCDDInfo")]
         public IActionResult GetKCDDInfo(string orgCode) => Ok(JJRK.GetKCDDInfo(orgCode));
+        /// <summary>
+        /// 保管员更新表单接口
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("BGYUpdate")]
+        public IActionResult BGYUpdate([FromBody]JObject value) => Ok(JJRK.BGYUpdate(value.ToObject<Dictionary<string, object>>()));
+        /// <summary>
+        /// 保管员提交表单接口
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("BGYSendForm")]
+        public IActionResult BGYSendForm([FromBody]JObject value) => Ok(JJRK.BGYSendForm(value.ToObject<Dictionary<string, object>>()));
 
     }
 }

@@ -15,7 +15,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
     {
         JJCKModule JJCK = new JJCKModule();
         /// <summary>
-        /// 紧急入库单查询
+        /// 紧急出库单查询
         /// </summary>
         /// <param name="CODE">单号</param>
         /// <param name="MATNR">物料编码</param>
@@ -29,14 +29,14 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("GetCKInfo")]
         public IActionResult GetCKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int limit, int page) => Ok(JJCK.GetRKInfo(CODE, MATNR, MATNX, ParentCode, userid, type, limit, page));
         /// <summary>
-        /// 创建紧急入库单
+        /// 创建紧急出库单
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
         [HttpPost("CreateJJCKInfo")]
         public IActionResult CreateJJCKInfo([FromBody]JObject value) => Ok(JJCK.CreateJJCKInfo(value.ToObject<Dictionary<string, object>>()));
         /// <summary>
-        /// 修改紧急入库单
+        /// 修改紧急出库单
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -45,7 +45,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
 
 
         /// <summary>
-        /// 删除紧急入库单
+        /// 删除紧急出库单
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -54,7 +54,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
 
 
         /// <summary>
-        /// 发起紧急入库流程
+        /// 发起紧急出库流程
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -62,7 +62,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
         public IActionResult StartProcess([FromBody]JObject value) => Ok(JJCK.StartProcess(value.ToObject<Dictionary<string, object>>()));
 
         /// <summary>
-        /// 紧急入库撤回
+        /// 紧急出库撤回
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -71,7 +71,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
 
 
         /// <summary>
-        /// 紧急入库审批
+        /// 紧急出库审批
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -80,7 +80,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
 
 
         /// <summary>
-        /// 紧急入库数据从ERP再次录入到系统中时，保管员调用此方法将模型表和入库表中的数据置为无效
+        /// 紧急出库数据从ERP再次录出到系统中时，保管员调用此方法将模型表和出库表中的数据置为无效
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -92,5 +92,20 @@ namespace WZGX.WebAPI.Controllers.CangChu
 
         [HttpGet("GetKCDDInfo")]
         public IActionResult GetKCDDInfo(string orgCode) => Ok(JJCK.GetKCDDInfo(orgCode));
+
+        /// <summary>
+        /// 保管员更新表单接口
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("BGYUpdate")]
+        public IActionResult BGYUpdate([FromBody]JObject value) => Ok(JJCK.BGYUpdate(value.ToObject<Dictionary<string, object>>()));
+        /// <summary>
+        /// 保管员提交表单接口
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("BGYSendForm")]
+        public IActionResult BGYSendForm([FromBody]JObject value) => Ok(JJCK.BGYSendForm(value.ToObject<Dictionary<string, object>>()));
     }
 }

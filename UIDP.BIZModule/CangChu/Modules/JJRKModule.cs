@@ -5,7 +5,7 @@ using System.Text;
 using UIDP.ODS.CangChu;
 using UIDP.UTILITY;
 
-namespace UIDP.BIZModule.Modules
+namespace UIDP.BIZModule.CangChu.Modules
 {
     public class JJRKModule
     {
@@ -309,6 +309,56 @@ namespace UIDP.BIZModule.Modules
                     r["code"] = 2000;
                     r["message"] = "成功但是没有数据!";
                     r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
+        public Dictionary<string,object> BGYUpdate(Dictionary<string, object> d)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.BGYUpdate(d);
+                if (b == "")
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！";
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = b;
+                }
+            }
+            catch(Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> BGYSendForm(Dictionary<string, object> d)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.BGYSendForm(d);
+                if (b == "")
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！";
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = b;
                 }
             }
             catch (Exception e)

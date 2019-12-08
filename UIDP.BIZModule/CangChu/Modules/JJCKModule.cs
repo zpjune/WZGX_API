@@ -11,7 +11,7 @@ namespace UIDP.BIZModule.CangChu.Modules
     {
         JJCKDB db = new JJCKDB();
         /// <summary>
-        /// 紧急入库单查询
+        /// 紧急出库单查询
         /// </summary>
         /// <param name="CODE">单号</param>
         /// <param name="MATNR">物料编码</param>
@@ -51,7 +51,7 @@ namespace UIDP.BIZModule.CangChu.Modules
             return r;
         }
         /// <summary>
-        /// 创建紧急入库单
+        /// 创建紧急出库单
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
@@ -81,7 +81,7 @@ namespace UIDP.BIZModule.CangChu.Modules
         }
 
         /// <summary>
-        /// 修改紧急入库单
+        /// 修改紧急出库单
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
@@ -112,7 +112,7 @@ namespace UIDP.BIZModule.CangChu.Modules
 
 
         /// <summary>
-        /// 删除紧急入库单
+        /// 删除紧急出库单
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
@@ -143,7 +143,7 @@ namespace UIDP.BIZModule.CangChu.Modules
 
 
         /// <summary>
-        /// 发起紧急入库单流程
+        /// 发起紧急出库单流程
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
@@ -174,7 +174,7 @@ namespace UIDP.BIZModule.CangChu.Modules
 
 
         /// <summary>
-        /// 撤回紧急入库单
+        /// 撤回紧急出库单
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
@@ -205,7 +205,7 @@ namespace UIDP.BIZModule.CangChu.Modules
 
 
         /// <summary>
-        /// 审批紧急入库单
+        /// 审批紧急出库单
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
@@ -236,7 +236,7 @@ namespace UIDP.BIZModule.CangChu.Modules
 
 
         /// <summary>
-        /// 紧急入库数据从ERP再次录入到系统中时，保管员调用此方法将模型表和入库表中的数据置为无效
+        /// 紧急出库数据从ERP再次录出到系统中时，保管员调用此方法将模型表和出库表中的数据置为无效
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
@@ -312,6 +312,55 @@ namespace UIDP.BIZModule.CangChu.Modules
                     r["message"] = "成功但是没有数据!";
                     r["items"] = new DataTable();
                     r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        public Dictionary<string, object> BGYUpdate(Dictionary<string, object> d)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.BGYUpdate(d);
+                if (b == "")
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！";
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = b;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> BGYSendForm(Dictionary<string, object> d)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = db.BGYSendForm(d);
+                if (b == "")
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！";
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = b;
                 }
             }
             catch (Exception e)
