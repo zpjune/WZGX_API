@@ -21,7 +21,7 @@ namespace UIDP.ODS.CangChu
         /// <returns></returns>
         public DataTable GetCKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type)
         {
-            string sql = " SELECT a.*,(CASE WHEN b.NAME IS NULL THEN Translate(a.REASON USING NCHAR_CS) ELSE b.NAME END)AS NAME," +
+            string sql = " SELECT DISTINCT a.*,(CASE WHEN b.NAME IS NULL THEN Translate(a.REASON USING NCHAR_CS) ELSE b.NAME END)AS NAME," +
                 " c.ORG_SHORT_NAME,e.KCDD_NAME,h.USER_NAME from JJCK a " +
                 " left join TS_DICTIONARY b on a.REASON=b.CODE AND b.PARENTCODE='" + ParentCode + "'" +
                 " left join TS_UIDP_ORG c on a.DW_CODE=c.ORG_CODE " +
@@ -56,17 +56,17 @@ namespace UIDP.ODS.CangChu
 
 
                     //第二版 保管员可以查看自己单位且自己管理的大库内的已通过审批的紧急入库单，限制条件有两个 一个是KCDD_CODE 一个是DW_CODE(JJCK表内的DW_CODE实际上存的是ORG_CODE)
-                    sql += " AND a.APPROVAL_STATUS>=2 AND a.APPROVAL_STATUS<>3";
-                    sql += " AND a.KCDD IN (SELECT i.KCDD_CODE FROM WZ_KCDD i" +
+                    sql += " AND a.APPROVAL_STATUS>=2 AND a.APPROVAL_STATUS<>3";//通过审批部门审批
+                    sql += " AND a.KCDD IN (SELECT i.KCDD_CODE FROM WZ_KCDD i" +//表单录入的库存地点是对应库存地点表所配置的地区
                         " JOIN WZ_BGY j ON i.DWCODE = j.WORKER_DP" +
                         " JOIN TS_UIDP_USERINFO k ON j.WORKER_CODE = k.USER_CODE" +
                         " WHERE 1=1" +
                         " AND k.USER_ID='" + userid + "')";
-                    sql += " AND a.DW_CODE=( SELECT ORG_CODE l FROM TS_UIDP_ORG l" +
+                    sql += " AND a.DW_CODE=( SELECT ORG_CODE l FROM TS_UIDP_ORG l" +//表单申请的单位是保管员所在单位
                         " JOIN TS_UIDP_ORG_USER m ON l.ORG_ID = m.ORG_ID" +
                         " JOIN TS_UIDP_USERINFO n ON n.USER_ID = m.USER_ID " +
                         " WHERE m.USER_ID = '" + userid + "')";
-                    sql += " AND e.CKH IN (SELECT a.CKH FROM WZ_BGY a JOIN TS_UIDP_USERINFO b ON a.WORKER_CODE=b.USER_CODE WHERE b.USER_ID='" + userid + "')";
+                    sql += " AND e.CKH IN (SELECT a.CKH FROM WZ_BGY a JOIN TS_UIDP_USERINFO b ON a.WORKER_CODE=b.USER_CODE WHERE b.USER_ID='" + userid + "')";//保管员所管理的大库
                     break;
                 default:
                     throw new Exception("错误的参数！");
