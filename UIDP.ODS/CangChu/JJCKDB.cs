@@ -23,15 +23,15 @@ namespace UIDP.ODS.CangChu
         {
             string sql = " SELECT DISTINCT a.*,(CASE WHEN b.NAME IS NULL THEN Translate(a.REASON USING NCHAR_CS) ELSE b.NAME END)AS NAME," +
                 " c.ORG_SHORT_NAME,e.KCDD_NAME,h.USER_NAME from JJCK a " +
-                " left join TS_DICTIONARY b on a.REASON=b.CODE AND b.PARENTCODE='" + ParentCode + "'" +
-                " left join TS_UIDP_ORG c on a.DW_CODE=c.ORG_CODE " +
-                " left join WZ_KCDD e on a.KCDD=e.KCDD_CODE" +
+                " join TS_DICTIONARY b on a.REASON=b.CODE AND b.PARENTCODE='" + ParentCode + "'" +
+                " join TS_UIDP_ORG c on a.DW_CODE=c.ORG_CODE " +
+                " join WZ_KCDD e ON EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND e.DWCODE=DW_CODE ) AND a.KCDD = e.KCDD_CODE" +
                 " JOIN TS_UIDP_ORG_USER f ON a.CREATEBY=f.USER_ID" +
                 " JOIN TS_UIDP_ORG g ON f.ORG_ID=g.ORG_ID" +
                 " JOIN TS_UIDP_USERINFO h on a.CREATEBY=h.USER_ID" +
                 //" left join WZ_KCDD d on a.KCDD=d.KCDD_CODE" +
-                " where 1=1" +
-                " AND e.DWCODE=(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE=a.DW_CODE)";
+                " where 1=1";
+            //" AND e.DWCODE=(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE=a.DW_CODE)";筛选去重条件，先合并到join中
             //" AND c.ISINVALID=1";
             switch (type)
             {
@@ -62,11 +62,23 @@ namespace UIDP.ODS.CangChu
                         " JOIN TS_UIDP_USERINFO k ON j.WORKER_CODE = k.USER_CODE" +
                         " WHERE 1=1" +
                         " AND k.USER_ID='" + userid + "')";
-                    sql += " AND a.DW_CODE=( SELECT ORG_CODE l FROM TS_UIDP_ORG l" +//表单申请的单位是保管员所在单位
-                        " JOIN TS_UIDP_ORG_USER m ON l.ORG_ID = m.ORG_ID" +
-                        " JOIN TS_UIDP_USERINFO n ON n.USER_ID = m.USER_ID " +
-                        " WHERE m.USER_ID = '" + userid + "')";
-                    sql += " AND e.CKH IN (SELECT a.CKH FROM WZ_BGY a JOIN TS_UIDP_USERINFO b ON a.WORKER_CODE=b.USER_CODE WHERE b.USER_ID='" + userid + "')";//保管员所管理的大库
+                    //sql += " AND a.DW_CODE=( SELECT ORG_CODE l FROM TS_UIDP_ORG l" +//表单申请的单位是保管员所在单位
+                    //    " JOIN TS_UIDP_ORG_USER m ON l.ORG_ID = m.ORG_ID" +
+                    //    " JOIN TS_UIDP_USERINFO n ON n.USER_ID = m.USER_ID " +
+                    //    " WHERE m.USER_ID = '" + userid + "')";
+                    //sql += " AND e.CKH IN (SELECT a.CKH FROM WZ_BGY a JOIN TS_UIDP_USERINFO b ON a.WORKER_CODE=b.USER_CODE WHERE b.USER_ID='" + userid + "')";//保管员所管理的大库
+                    sql += "AND a.DW_CODE IN (" +//查询管理员所管理的单位
+                        " SELECT ORG_CODE FROM TS_UIDP_ORG " +
+                        " WHERE DW_CODE IN (" +
+                        " SELECT WORKER_DP FROM WZ_BGY a" +
+                        " JOIN TS_UIDP_USERINFO b " +
+                        " ON a.WORKER_CODE = b.USER_CODE" +
+                        " WHERE b.USER_ID = '" + userid + "'))";
+                    sql += " AND e.CKH IN (" +//查询当前登录人所管理的大库
+                        " SELECT o.CKH FROM WZ_BGY o" +
+                        " JOIN TS_UIDP_USERINFO p ON o.WORKER_CODE = p.USER_CODE " +
+                        " WHERE p.USER_ID = '" + userid + "'" +
+                        " AND o.WORKER_DP = ( SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE ))";
                     break;
                 default:
                     throw new Exception("错误的参数！");
