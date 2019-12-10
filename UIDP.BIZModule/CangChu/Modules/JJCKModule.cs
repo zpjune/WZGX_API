@@ -21,13 +21,15 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="type">查询类型，0为非审批查询，1为审批待办，2为已办</param>
         /// <param name="limit">每页条数</param>
         /// <param name="page">页数</param>
+        /// <param name="SortType">排序方向，0为正序，1位倒叙</param>
+        /// <param name="GroupType">排序方式，0为申请单位，1为出库原因，2为库存地点，3为单据状态，4为供应商</param>
         /// <returns></returns>
-        public Dictionary<string, object> GetRKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int limit, int page)
+        public Dictionary<string, object> GetRKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int limit, int page,int SortType = 0, int GroupType = 0)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetCKInfo(CODE, MATNR, MATNX, ParentCode, userid, type);
+                DataTable dt = db.GetCKInfo(CODE, MATNR, MATNX, ParentCode, userid, type,SortType,GroupType);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

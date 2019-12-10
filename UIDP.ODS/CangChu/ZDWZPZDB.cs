@@ -53,9 +53,9 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
 
-        public DataTable GetRepeat(string WLZ_CODE,string WL_CODE)
+        public DataTable GetRepeat(string WL_CODE)
         {
-            string sql = "SELECT 1 FROM WZ_ZDWZPZ WHERE WLZ_CODE='" + WLZ_CODE + "' AND WL_CODE='"+ WL_CODE+"'";
+            string sql = "SELECT 1 FROM WZ_ZDWZPZ WHERE WL_CODE='"+ WL_CODE+"'";
             return db.GetDataTable(sql);
         }
 
@@ -98,5 +98,6 @@ namespace UIDP.ODS.CangChu
             list.Add("PMsql", PMsql);
             return db.GetDataSet(list);
         }
+
     }
 }

@@ -17,10 +17,13 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNX">物料描述</param>
         /// <param name="MATNX">字典表父节点code</param>
         /// <param name="userid">登录人id</param>
-        /// <param name="type">查询类型，0为申请查询，1为审批待办，2保管员补充录入</param>
+        /// <param name="type">查询类型，0为申请查询，1为审批待办，2保管员补充录出,3为领导查询</param>
+        /// <param name="SortType">排序方向，0为正序，1位倒叙</param>
+        /// <param name="GroupType">排序方式，0为申请单位，1为出库原因，2为库存地点，3为单据状态，4为供应商</param>
         /// <returns></returns>
-        public DataTable GetRKInfo(string CODE,string MATNR,string MATNX,string ParentCode,string userid,int type)
+        public DataTable GetRKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int SortType = 0, int GroupType = 0)
         {
+            string PartOfSqlSort = " ORDER BY a.CODE DESC";
             string sql = " SELECT DISTINCT a.*,(CASE WHEN b.NAME IS NULL THEN Translate(a.REASON USING NCHAR_CS) ELSE b.NAME END)AS NAME," +
                 " c.ORG_SHORT_NAME,e.KCDD_NAME,h.USER_NAME from JJRK a " +
                 " join TS_DICTIONARY b on a.REASON=b.CODE AND b.PARENTCODE='" + ParentCode + "'" +
@@ -31,8 +34,8 @@ namespace UIDP.ODS.CangChu
                 " JOIN TS_UIDP_USERINFO h on a.CREATEBY=h.USER_ID" +
                 //" left join WZ_KCDD d on a.KCDD=d.KCDD_CODE" +
                 " where 1=1";
-                //" AND e.DWCODE=(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE=a.DW_CODE)";筛选去重条件，先合并到join中
-                //" AND c.ISINVALID=1";
+            //" AND e.DWCODE=(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE=a.DW_CODE)";筛选去重条件，先合并到join中
+            //" AND c.ISINVALID=1";
             switch (type)
             {
                 case 0:
@@ -55,9 +58,9 @@ namespace UIDP.ODS.CangChu
                     //    "LEFT JOIN TS_UIDP_USERINFO c ON b.USER_ID=c.USER_ID WHERE c.USER_ID='" + userid + "')";
 
 
-                    //第二版 保管员可以查看自己单位且自己管理的大库内的已通过审批的紧急入库单，限制条件有两个 一个是KCDD_CODE 一个是DW_CODE(JJRK表内的DW_CODE实际上存的是ORG_CODE)
+                    //第二版 保管员可以查看自己单位且自己管理的大库内的已通过审批的紧急出库单，限制条件有两个 一个是KCDD_CODE 一个是DW_CODE(JJRK表内的DW_CODE实际上存的是ORG_CODE)
                     sql += " AND a.APPROVAL_STATUS>=2 AND a.APPROVAL_STATUS<>3";//通过审批部门审批
-                    sql += " AND a.KCDD IN (SELECT i.KCDD_CODE FROM WZ_KCDD i" +//表单录入的库存地点是对应库存地点表所配置的地区
+                    sql += " AND a.KCDD IN (SELECT i.KCDD_CODE FROM WZ_KCDD i" +//表单录出的库存地点是对应库存地点表所配置的地区
                         " JOIN WZ_BGY j ON i.DWCODE = j.WORKER_DP" +
                         " JOIN TS_UIDP_USERINFO k ON j.WORKER_CODE = k.USER_CODE" +
                         " WHERE 1=1" +
@@ -80,6 +83,36 @@ namespace UIDP.ODS.CangChu
                         " WHERE p.USER_ID = '" + userid + "'" +
                         " AND o.WORKER_DP = ( SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE ))";
                     break;
+                case 3:
+                    switch (GroupType)
+                    {
+                        case 0:
+                            PartOfSqlSort = " ORDER BY a.CODE ";
+                            break;
+                        case 1:
+                            PartOfSqlSort = " ORDER BY c.ORG_SHORT_NAME";
+                            break;
+                        case 2:
+                            PartOfSqlSort = " ORDER BY a.REASON";
+                            break;
+                        case 3:
+                            //因为KCDD_CODE同一个值可能匹配多个KCDD_NAME，所以在排序时虽然KCDD_CODE相同,但是匹配出的名称缺不同，因为WZ_KCDD表关联时需要KCDD_CODE和DWCODE才能确定唯一值
+                            PartOfSqlSort = " ORDER BY e.KCDD_NAME";
+                            break;
+                        case 4:
+                            PartOfSqlSort = " ORDER BY a.APPROVAL_STATUS";
+                            break;
+                        case 5:
+                            PartOfSqlSort = " ORDER BY a.GYS";
+                            break;
+                        default:
+                            break;
+                    }
+                    if (SortType != 0)
+                    {
+                        PartOfSqlSort += " DESC";
+                    }
+                    break;
                 default:
                     throw new Exception("错误的参数！");
             }
@@ -95,7 +128,7 @@ namespace UIDP.ODS.CangChu
             {
                 sql += "AND a.MATNX like '%" + MATNX + "%'";
             }
-            sql += " ORDER BY a.CODE DESC";
+            sql = sql + PartOfSqlSort;
             return db.GetDataTable(sql);
         }
         /// <summary>

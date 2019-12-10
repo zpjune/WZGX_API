@@ -26,9 +26,12 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="type">查询类型，0为非审批查询，1为审批待办，2为已办</param>
         /// <param name="limit">每页条数</param>
         /// <param name="page">页数</param>
+        /// <param name="SortType">排序方向，0为正序，1位倒叙</param>
+        /// <param name="GroupType">排序方式，0为申请单位，1为出库原因，2为库存地点，3为单据状态，4为供应商</param>
         /// <returns></returns>
         [HttpGet("GetRKInfo")]
-        public IActionResult GetRKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int limit, int page) => Ok(JJRK.GetRKInfo(CODE, MATNR, MATNX, ParentCode, userid, type,limit,page));
+        public IActionResult GetRKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int limit, int page, int SortType = 0, int GroupType = 0)
+            => Ok(JJRK.GetRKInfo(CODE, MATNR, MATNX, ParentCode, userid, type, limit, page, SortType, GroupType));
         /// <summary>
         /// 创建紧急入库单
         /// </summary>
