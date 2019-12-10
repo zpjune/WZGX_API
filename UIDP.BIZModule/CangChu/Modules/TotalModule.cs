@@ -412,6 +412,7 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+
         /// <summary>
         /// 重点物资出入库查询-总库页面
         /// </summary>
@@ -420,26 +421,28 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public Dictionary<string, object> getZDWZCRK(string yearmonth, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit)
+        public Dictionary<string, object> getZDWZCRK(string year, string MATNR)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-
-                DataTable dt = db.getZDWZCRK(yearmonth, WERKS_NAME, LGORTNAME, MATNR, MATKL);
-                if (dt.Rows.Count > 0)
+                Result res = new Result();
+                DataSet ds = db.getZDWZCRK( year,  MATNR);
+                if (ds.Tables.Count > 0)
                 {
+                    res.ZGCB = ds.Tables["zgcb"];
+                    res.KC= ds.Tables["kc"];
+                    res.RK = ds.Tables["rk"];
+                    res.CK = ds.Tables["ck"];
                     r["code"] = 2000;
-                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["items"] = res;//dt
                     r["message"] = "success";
-                    r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
                     r["message"] = "success,but no info";
                     r["items"] = new DataTable();//dt
-                    r["total"] = 0;
                 }
             }
             catch (Exception e)
@@ -487,5 +490,43 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+        /// <summary>
+        /// 重点物资配置查询
+        /// </summary>
+        public Dictionary<string, object> getZDWZPZ(string WL_NAME)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataTable dt = db.getZDWZPZ(WL_NAME);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = dt;
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+    }
+    public class Result {
+       public DataTable ZGCB { get; set; }
+        public DataTable KC { get; set; }
+        public DataTable RK { get; set; }
+        public DataTable CK { get; set; }
     }
 }
