@@ -22,23 +22,72 @@ namespace UIDP.ODS.CangChu
         {
 
             string PartSql = " {0} SELECT {1} FROM {2}";
-            string MainSql = "（SELECT a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,SUM(a.MENGE) AS MENGE,c.ERNAM,a.WERKS,SUM(d.GESME)AS GESME,c.NAME1,f.DW_NAME FROM ZC10MMDG072 a " +
+            //string MainSql = "（SELECT a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,SUM(a.MENGE) AS MENGE,a.WERKS,SUM(d.GESME)AS GESME,c.NAME1,f.DW_NAME " +
+            string MainSql= "(SELECT CAST(a.ZDHTZD AS NVARCHAR2(100)) AS ZDHTZD," +
+                " CAST(a.MATKL AS NVARCHAR2(100)) AS MATKL," +//从个cast开始到cast结束为上面字段，只不过强制转换了类型
+                " CAST(a.MATNR AS NVARCHAR2(100)) AS MATNR," +
+                " CAST(e.MAKTX AS NVARCHAR2(100)) AS MAKTX," +
+                " CAST(b.JBJLDW AS NVARCHAR2(100)) AS JBJLDW," +
+                " CAST(SUM( a.MENGE )AS DECIMAL(18,2)) AS MENGE," +
+                " CAST(a.WERKS AS NVARCHAR2(100)) AS WERKS," +
+                " CAST(SUM( d.GESME )AS DECIMAL(18,2)) AS GESME," +
+                " CAST(c.NAME1 AS NVARCHAR2(100)) AS NAME1," +
+                " CAST(f.DW_NAME  AS NVARCHAR2(100)) AS DW_NAME	" +
+                " FROM ZC10MMDG072 a " +//入库单表名
                 " JOIN WZ_WLZ b ON a.MATKL=b.PMCODE" +
                 " JOIN LFA1 c ON a.LIFNR=c.LIFNR" +
-                " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR" +
+                " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
                 " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE " +
                 " WHERE a.ZSTATUS='01'" +
                 " AND a.LGORT=g.KCDD_CODE" +
-                " AND g.CKH='"+FacCode+"'";
+                " AND SUBSTR( a.WERKS, 0, 3 ) = 'C27'" +
+                " AND a.ZCJRQ > trunc('" +DateTime.Now.ToString("yyyyMMdd")+"'-7)"+
+                " AND g.CKH='"+FacCode+"'" +
+                " {0}" +
+                " {1}" +
+                " GROUP BY a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,a.WERKS,c.NAME1,f.DW_NAME " +
+                //以上是入库单表查询出的数据，union all下面的是紧急入库单查询出来的数据
+                " UNION ALL " +
+                " SELECT" +
+                " CAST(a.CODE AS NVARCHAR2(100)) AS ZDHTZD," +//入库单号，紧急入库单自动生成
+                " CAST('' AS NVARCHAR2(100)) AS MATKL," +//物料组，紧急入库单不存在此字段
+                " CAST(a.MATNR AS NVARCHAR2(100)) AS MATNR," +//物料编码
+                " CAST(a.MATNX AS NVARCHAR2(100)) AS MAKTX," +//物料描述
+                " CAST(a.MEINS AS NVARCHAR2(100)) AS JBJLDW," +//计量单位
+                " CAST(a.RKNUMBER AS DECIMAL(18,2)) AS MENGE," +//待入库数量
+                " CAST(b.DW_CODE AS NVARCHAR2(100)) AS WERKS," +//工厂编号
+                " CAST(SUM(d.GESME) AS DECIMAL(18,2)) AS GESME," +//库存数量 
+                " CAST(a.GYS  AS NVARCHAR2(100)) AS NAME1," +//供应商名称
+                " CAST(b.ORG_NAME  AS NVARCHAR2(100)) AS DW_NAME" +//单位名称
+                " FROM JJRK a" +//紧急入库单表名
+                " JOIN TS_UIDP_ORG b ON a.DW_CODE=b.ORG_CODE" +
+                " JOIN WZ_KCDD c ON a.KCDD=c.KCDD_CODE AND EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE )" +
+                " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
+                " WHERE a.APPROVAL_STATUS = '2'" +
+                " AND c.CKH='"+FacCode+"'" +
+                " {2}" +
+                " {3}" +
+                " GROUP BY a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME" +
+                " ORDER BY ZDHTZD DESC)t";
             if (!string.IsNullOrEmpty(MATNR))
             {
-                MainSql += " AND a.MATNR='" + MATNR + "'";
+                //MainSql += " AND a.MATNR='" + MATNR + "'";
+                MainSql = string.Format(MainSql, "AND a.MATNR like'%" + MATNR+"%'", "{0}", "AND a.MATNR like'%" + MATNR + "%'", "{1}");
+            }
+            else
+            {
+                MainSql = string.Format(MainSql, "", "{0}", "", "{1}");
             }
             if (!string.IsNullOrEmpty(info))
             {
-                MainSql += " AND e.MAKTX like'" + info + "%'";
+                MainSql = string.Format(MainSql, "AND e.MAKTX LIKE'%" + info + "%'", "AND a.MATNX like'%" + info + "%'");
+                //MainSql += " AND e.MAKTX like'" + info + "%'";
+            }
+            else
+            {
+                MainSql = string.Format(MainSql, "", "");
             }
 
             //string KCDDSql = "SELECT KCDD_CODE,DWCODE FROM WZ_KCDD WHERE CKH='" + FacCode + "'";
@@ -57,7 +106,7 @@ namespace UIDP.ODS.CangChu
             //    }
             //    MainSql += ")";
             //}
-            MainSql += " GROUP BY a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,c.ERNAM,a.WERKS,c.NAME1,f.DW_NAME ORDER BY a.ZDHTZD DESC)t";
+            //MainSql += " GROUP BY a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,c.ERNAM,a.WERKS,c.NAME1,f.DW_NAME ORDER BY a.ZDHTZD DESC)t";
             string DetailSql = string.Format(PartSql, " SELECT * FROM ( ", "ROWNUM rn, t.*", MainSql + " WHERE ROWNUM<" + ((page * limit) + 1) + ")WHERE rn>" + ((page - 1) * limit));
             string TotailSql = string.Format(PartSql, "", "COUNT(*) AS TOTAL", MainSql);
             Dictionary<string, string> list = new Dictionary<string, string>();
@@ -70,23 +119,72 @@ namespace UIDP.ODS.CangChu
         public DataSet GetDCKInfo(string MATNR, string info, string FacCode, int page, int limit)
         {
             string PartSql = " {0} SELECT {1} FROM {2}";
-            string MainSql = "（SELECT a.ZCKTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,SUM(a.ZFHSL) AS ZFHSL,c.ERNAM,a.WERKS,SUM(d.GESME)AS GESME,c.NAME1,f.DW_NAME FROM ZC10MMDG078 a " +
+            //string MainSql = "（SELECT a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,SUM(a.MENGE) AS MENGE,a.WERKS,SUM(d.GESME)AS GESME,c.NAME1,f.DW_NAME " +
+            string MainSql = "(SELECT CAST(a.ZCKTZD AS NVARCHAR2(100)) AS ZCKTZD," +
+                " CAST(a.MATKL AS NVARCHAR2(100)) AS MATKL," +//从个cast开始到cast结束为上面字段，只不过强制转换了类型
+                " CAST(a.MATNR AS NVARCHAR2(100)) AS MATNR," +
+                " CAST(e.MAKTX AS NVARCHAR2(100)) AS MAKTX," +
+                " CAST(b.JBJLDW AS NVARCHAR2(100)) AS JBJLDW," +
+                " CAST(SUM( a.ZFHSL )AS DECIMAL(18,2)) AS ZFHSL," +
+                " CAST(a.WERKS AS NVARCHAR2(100)) AS WERKS," +
+                " CAST(SUM( d.GESME )AS DECIMAL(18,2)) AS GESME," +
+                " CAST(c.NAME1 AS NVARCHAR2(100)) AS NAME1," +
+                " CAST(f.DW_NAME  AS NVARCHAR2(100)) AS DW_NAME	" +
+                " FROM ZC10MMDG078 a " +//出库单表名
                 " JOIN WZ_WLZ b ON a.MATKL=b.PMCODE" +
                 " JOIN LFA1 c ON a.LIFNR=c.LIFNR" +
-                " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR" +
+                " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
-                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE" +
-                " WHERE a.ZSTATUS='01'"+
+                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE " +
+                " WHERE a.ZSTATUS='01'" +
                 " AND a.LGORT=g.KCDD_CODE" +
-                " AND g.CKH='" + FacCode + "'";
+                " AND SUBSTR( a.WERKS, 0, 3 ) = 'C27'" +
+                " AND a.ZCJRQ > trunc('" + DateTime.Now.ToString("yyyyMMdd") + "'-7)" +
+                " AND g.CKH='" + FacCode + "'" +
+                " {0}" +
+                " {1}" +
+                " GROUP BY a.ZCKTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,a.WERKS,c.NAME1,f.DW_NAME " +
+                //以上是入出库单表查询出的数据，union all下面的是紧急出库单查询出来的数据
+                " UNION ALL " +
+                " SELECT" +
+                " CAST(a.CODE AS NVARCHAR2(100)) AS ZCKTZD," +//出库单号，紧急入库单自动生成
+                " CAST(''AS NVARCHAR2(100)) AS MATKL," +//物料组，紧急出库单不存在此字段
+                " CAST(a.MATNR AS NVARCHAR2(100)) AS MATNR," +//物料编码
+                " CAST(a.MATNX AS NVARCHAR2(100)) AS MAKTX," +//物料描述
+                " CAST(a.MEINS AS NVARCHAR2(100)) AS JBJLDW," +//计量单位
+                " CAST(a.RKNUMBER AS DECIMAL(18,2)) AS ZFHSL," +//待出库数量
+                " CAST(b.DW_CODE AS NVARCHAR2(100)) AS WERKS," +//工厂编号
+                " CAST(SUM(d.GESME) AS DECIMAL(18,2)) AS GESME," +//库存数量 
+                " CAST(a.GYS  AS NVARCHAR2(100)) AS NAME1," +//供应商名称
+                " CAST(b.ORG_NAME  AS NVARCHAR2(100)) AS DW_NAME" +//单位名称
+                " FROM JJCK a" +//紧急出库单表名
+                " JOIN TS_UIDP_ORG b ON a.DW_CODE=b.ORG_CODE" +
+                " JOIN WZ_KCDD c ON a.KCDD=c.KCDD_CODE AND EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE )" +
+                " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
+                " WHERE a.APPROVAL_STATUS = '2'" +
+                " AND c.CKH='" + FacCode + "'" +
+                " {2}" +
+                " {3}" +
+                " GROUP BY a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME" +
+                " ORDER BY ZCKTZD DESC)t";
             if (!string.IsNullOrEmpty(MATNR))
             {
-                MainSql += " AND a.MATNR='" + MATNR + "'";
+                //MainSql += " AND a.MATNR='" + MATNR + "'";
+                MainSql = string.Format(MainSql, "AND a.MATNR like'%" + MATNR + "%'", "{0}", "AND a.MATNR like'%" + MATNR + "%'", "{1}");
+            }
+            else
+            {
+                MainSql = string.Format(MainSql, "", "{0}", "", "{1}");
             }
             if (!string.IsNullOrEmpty(info))
             {
-                MainSql += " AND e.MAKTX like'" + info + "%'";
+                MainSql = string.Format(MainSql, "AND e.MAKTX LIKE'%" + info + "%'", "AND a.MATNX like'%" + info + "%'");
+                //MainSql += " AND e.MAKTX like'" + info + "%'";
+            }
+            else
+            {
+                MainSql = string.Format(MainSql, "", "");
             }
 
             //string KCDDSql = "SELECT KCDD_CODE,DWCODE FROM WZ_KCDD WHERE CKH='" + FacCode + "'";
@@ -105,7 +203,7 @@ namespace UIDP.ODS.CangChu
             //    }
             //    MainSql += ")";
             //}
-            MainSql += " GROUP BY a.ZCKTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,c.ERNAM,a.WERKS,c.NAME1,f.DW_NAME ORDER BY a.ZCKTZD DESC)t";
+            //MainSql += " GROUP BY a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,c.ERNAM,a.WERKS,c.NAME1,f.DW_NAME ORDER BY a.ZDHTZD DESC)t";
             string DetailSql = string.Format(PartSql, " SELECT * FROM ( ", "ROWNUM rn, t.*", MainSql + " WHERE ROWNUM<" + ((page * limit) + 1) + ")WHERE rn>" + ((page - 1) * limit));
             string TotailSql = string.Format(PartSql, "", "COUNT(*) AS TOTAL", MainSql);
             Dictionary<string, string> list = new Dictionary<string, string>();
