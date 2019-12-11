@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -20,8 +21,11 @@ namespace UIDP.ODS.CangChu
         /// <param name="type">查询类型，0为申请查询，1为审批待办，2保管员补充录出,3为领导查询</param>
         /// <param name="SortType">排序方向，0为正序，1位倒叙</param>
         /// <param name="GroupType">排序方式，0为申请单位，1为出库原因，2为库存地点，3为单据状态，4为供应商</param>
+        /// <param name="time">日期范围</param>
+        /// <param name="OrgCode">部门编码</param>
         /// <returns></returns>
-        public DataTable GetRKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int SortType = 0, int GroupType = 0)
+        public DataTable GetRKInfo
+            (string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int SortType = 0, int GroupType = 0,string OrgCode = null, string starttime = null, string endtime = null)
         {
             string PartOfSqlSort = " ORDER BY a.CODE DESC";
             string sql = " SELECT DISTINCT a.*,(CASE WHEN b.NAME IS NULL THEN Translate(a.REASON USING NCHAR_CS) ELSE b.NAME END)AS NAME," +
@@ -127,6 +131,18 @@ namespace UIDP.ODS.CangChu
             if (!string.IsNullOrEmpty(MATNX))
             {
                 sql += "AND a.MATNX like '%" + MATNX + "%'";
+            }
+            if (!string.IsNullOrEmpty(starttime))
+            {
+                sql += " AND TO_CHAR(a.CREATEDATE, 'yyyyMMdd')>='" + starttime + "'";
+            }
+            if (!string.IsNullOrEmpty(endtime))
+            {
+                sql += " AND TO_CHAR(a.CREATEDATE, 'yyyyMMdd')<='" + endtime + "'";
+            }
+            if (!string.IsNullOrEmpty(OrgCode))
+            {
+                sql += "AND c.ORG_CODE='" + OrgCode + "'";
             }
             sql = sql + PartOfSqlSort;
             return db.GetDataTable(sql);

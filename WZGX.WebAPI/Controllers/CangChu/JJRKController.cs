@@ -30,8 +30,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="GroupType">排序方式，0为申请单位，1为出库原因，2为库存地点，3为单据状态，4为供应商</param>
         /// <returns></returns>
         [HttpGet("GetRKInfo")]
-        public IActionResult GetRKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int limit, int page, int SortType = 0, int GroupType = 0)
-            => Ok(JJRK.GetRKInfo(CODE, MATNR, MATNX, ParentCode, userid, type, limit, page, SortType, GroupType));
+        public IActionResult GetRKInfo(string CODE, string MATNR, string MATNX, string ParentCode, string userid, int type, int limit, int page, int SortType = 0, int GroupType = 0,string OrgCode = null, string starttime = null, string endtime = null )
+            => Ok(JJRK.GetRKInfo(CODE, MATNR, MATNX, ParentCode, userid, type, limit, page, SortType, GroupType,OrgCode,starttime,endtime));
         /// <summary>
         /// 创建紧急入库单
         /// </summary>
