@@ -139,5 +139,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("getZDWZPZ")]
         public IActionResult getZDWZPZ(string WL_NAME) =>
             Ok(md.getZDWZPZ(WL_NAME));
+
+
     }
 }

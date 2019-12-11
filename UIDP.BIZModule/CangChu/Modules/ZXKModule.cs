@@ -35,6 +35,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 else
                 {
                     r["code"] = 2000;
+                    r["items"] = new DataTable();
                     r["message"] = "成功,但是没有数据";
                     r["total"] = 0;
 

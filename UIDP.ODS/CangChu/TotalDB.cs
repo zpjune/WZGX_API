@@ -410,9 +410,11 @@ namespace UIDP.ODS.CangChu
         /// </summary>
         /// <param name="WL_NAME"></param>
         /// <returns></returns>
-        public DataTable getZDWZPZ(string WL_NAME) {
+        public DataTable getZDWZPZ(string WL_NAME)
+        {
             string SQL = "select WL_CODE,WL_NAME from WZ_ZDWZPZ ";
-            if (string.IsNullOrWhiteSpace(WL_NAME)) {
+            if (string.IsNullOrWhiteSpace(WL_NAME))
+            {
                 SQL += " WHERE WL_NAME LIKE '%" + WL_NAME + "%'";
             }
             SQL += " ORDER BY  WL_CODE ";
