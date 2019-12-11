@@ -127,13 +127,15 @@ namespace UIDP.ODS.CangChu
             Dictionary<string, string> d = new Dictionary<string, string>();//以万为单位
             string sql = @"select sum(JE)/10000 JE,substr(BUDAT_MKPF,5,2) Month
                             from CONVERT_CKJE
-                            WHERE  substr(BUDAT_MKPF,1,4)='";
-            sql += year + "'  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
+                            WHERE  substr(BUDAT_MKPF,1,4)='"+year+"'";
+            sql += " AND SUBSTR(WERKS, 0, 3)='C27'";
+            sql +="  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
             d.Add("CKJE", sql);
             sql = @"select sum(JE)/10000 JE,substr(BUDAT_MKPF,5,2) Month
                     from CONVERT_RKJE
-                    WHERE  substr(BUDAT_MKPF,1,4)='";
-            sql += year + "'  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
+                    WHERE  substr(BUDAT_MKPF,1,4)='"+year+"'";
+            sql += " AND SUBSTR(WERKS, 0, 3)='C27'";
+            sql +="  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
             d.Add("RKJE", sql);
             return db.GetDataSet(d);
         }
@@ -237,6 +239,7 @@ namespace UIDP.ODS.CangChu
                 " CAST(ERDAT as NVARCHAR2(100)) AS ERDAT" +
                 " FROM CONVERT_BGYGZL" +
                 " WHERE substr( TZD, 1, 1 ) ='" + TZDType + "'" +
+                " AND SUBSTR(WERKS,0,3)='C27'" +
                 " {0} {1}" +//两个where条件 下面的union拼出来的sql也要用到
                 " UNION ALL" +//上面为保管员工作量模型表，下面为紧急出入库表
                 " SELECT" +
@@ -252,7 +255,7 @@ namespace UIDP.ODS.CangChu
                 " JOIN TS_UIDP_USERINFO b ON a.BGY_ID = b.USER_ID" +
                 " JOIN TS_UIDP_ORG c ON a.DW_CODE = c.ORG_CODE" +
                 " WHERE a.APPROVAL_STATUS >= 5" +//保管员提交或者撤销订单状态
-                " AND c.DW_CODE LIKE 'C27'" +
+                " AND SUBSTR(c.DW_CODE,0,3)='C27'" +
                 " {3} {4}";
             sql = string.Format(sql, "AND substr( ERDAT, 1, 6 ) = substr( '"+nianyue+"',0,6)", " AND ERNAME='"+workerCode+"'", UnionTableName, " AND b.USER_CODE='"+workerCode+"'", " AND TO_CHAR( BGY_DATE, 'yyyyMM' ) = SUBSTR('"+nianyue+"',0,6)");
             return db.GetDataTable(sql);
