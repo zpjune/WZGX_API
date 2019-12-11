@@ -96,8 +96,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
         [HttpGet("getZDWZCRK")]
-        public IActionResult getZDWZCRK(string DKCODE, string yearmonth,string MATNR, int page, int limit) =>
-            Ok(ZXK.getZDWZCRK(DKCODE,yearmonth, MATNR,  page, limit));
+        public IActionResult getZDWZCRK(string DKCODE, string year,string MATNR) =>
+            Ok(ZXK.getZDWZCRK(DKCODE, year, MATNR));
         /// <summary>
         /// 重点物资出入库明细-去向明细 分库页面
         /// </summary>

@@ -360,62 +360,87 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public DataTable getZDWZCRK(string DKCODE, string yearmonth, string MATNR)
+        public DataSet getZDWZCRK(string DKCODE, string year, string MATNR)
         {
-            string year = yearmonth.Substring(0, 4);
-            string _month = yearmonth.Substring(4, 2);
-            string sql = @" 
-                        select G.*,H.RKSL,I.RKSUMSL,J.CKSL,K.CKSUMSL,F.WL_CODE,'" + yearmonth + "' MONTH ";
-            sql += @"           from WZ_ZDWZPZ F
-                         LEFT JOIN (
-                        select sum(A.GESME) GESME，
-                        MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR,MAX(D.MAXHAVING)MAXHAVING,MAX(MINHAVING)MINHAVING
-                        from CONVERT_SWKC A
-                        JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR";
-            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND A.KCTYPE<>3 AND  C.CKH='" + DKCODE + "'";
 
-            sql += @"        left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
-                         group by A.MATNR) G ON F.WL_CODE=G.MATNR
-                        LEFT JOIN 
-                        (
-                        select SUM(A.ZDHSL) RKSL,A.MATNR
-                        from ZC10MMDG072 A 
-                        JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
-            sql += "     WHERE A.ZSTATUS>'04' and  substr(A.ZCJRQ,1,6)='" + yearmonth + "'";
-            sql += @"         GROUP BY A.MATNR) H ON F.WL_CODE=H.MATNR
+            Dictionary<string, string> dc = new Dictionary<string, string>();
+            string sql = "select SUM(MAXHAVING)MAXHAVING,SUM(MINHAVING)MINHAVING";
+            sql += " FROM WZ_ZDWZWH WHERE WL_CODE = '" + MATNR + "'";
+            sql += "  GROUP BY WL_CODE ";
+            dc.Add("zgcb", sql);
+            sql = "  select SUM(A.GESME)GESME";
+            sql += " FROM CONVERT_SWKC_RECORD A WHERE substr(A.LGPLA,0,2)='"+DKCODE+"' and A.MATNR = '" + MATNR + "'  and A.KCTYPE<>3 AND substr(A.WERKS,0,3)= 'C27' and substr(A.DLDATE,0,4)='" + year + "'";
+            sql += "  GROUP BY A.DLDATE ";
+            dc.Add("kc", sql);
+            sql = "select sum(ZSJDHSL)ZSJDHSL,to_char(to_date(B.ERDAT,'yyyy-mm-dd'),'ww')WEEK";
+            sql += " from ZC10MMDG072 A";
+            sql += " join ZC10MMDG085A B on A.ZDHTZD = B.ZDHTZD AND A.ZITEM = B.ZITEM";
+            sql += " JOIN WZ_KCDD C ON C.DWCODE=A.WERKS AND C.KCDD_CODE=A.LGORT AND C.CKH='"+DKCODE+"' ";
+            sql += " WHERE A.ZSTATUS > '03' and substr(A.ZCJRQ,1,4)= '" + year + "' and A.MATNR = '" + MATNR + "' AND substr(A.WERKS,0,3)= 'C27'";
+            sql += " GROUP BY   to_char(to_date(B.ERDAT, 'yyyy-mm-dd'), 'ww')";
+            dc.Add("rk", sql);
+            sql = " select sum(ZSJFHSL)ZSJFHSL,to_char(to_date(B.ERDAT,'yyyy-mm-dd'),'ww')WEEK";
+            sql += "   from ZC10MMDG078 A";
+            sql += "   join ZC10MMDG085A B on A.ZCKTZD = B.ZCKTZD AND A.ZCITEM = B.ZCITEM";
+            sql += " JOIN WZ_KCDD C ON C.DWCODE=A.WERKS AND C.KCDD_CODE=A.LGORT AND C.CKH='" + DKCODE + "' ";
+            sql += "   WHERE A.ZSTATUS > '02' and substr(A.ZCJRQ,1,4)= '" + year + "' and A.MATNR = '" + MATNR + "' AND substr(A.WERKS,0,3)= 'C27'";
+            sql += "   GROUP BY   to_char(to_date(B.ERDAT, 'yyyy-mm-dd'), 'ww')";
+            dc.Add("ck", sql);
+            return db.GetDataSet(dc);
 
-                        LEFT JOIN 
-                        (
-                        select SUM(A.ZDHSL) RKSUMSL ,A.MATNR
-                        from ZC10MMDG072 A 
-                       JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
-            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND C.CKH='" + DKCODE + "'";
-            sql += "        WHERE A.ZSTATUS>'04' and  substr(A.ZCJRQ,1,4)='" + year + "' AND CAST( substr(A.ZCJRQ,5,2) AS INT)<=  CAST('" + _month + "' AS INT)";
-            sql += @"       GROUP BY A.MATNR) I ON F.WL_CODE=I.MATNR
-                        LEFT JOIN 
-                        (
-                        select SUM(A.ZFHSL) CKSL,A.MATNR
-                        from ZC10MMDG078 A ";
-sql += "           join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERKS AND C.CKH = '" + DKCODE + "'";
-            sql += "           JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
-            sql += "             WHERE A.ZSTATUS>'03' and  substr(A.ZCJRQ,1,6)='" + yearmonth + "'";
-            sql += @"         GROUP BY A.MATNR) J ON F.WL_CODE=J.MATNR
 
-                        LEFT JOIN 
-                        (
-                        select SUM(A.ZFHSL) CKSUMSL ,A.MATNR
-                        from ZC10MMDG078 A 
-                        JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
-            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND  C.CKH='" + DKCODE + "'";
-            sql += "          WHERE A.ZSTATUS>'03' and substr(A.ZCJRQ,1,4)='" + year + "' AND CAST( substr(A.ZCJRQ,5,2) AS INT)<=  CAST('" + _month + "' AS INT)";
-            sql += "         GROUP BY A.MATNR) K ON F.WL_CODE=K.MATNR ";
+            //            string sql = @" 
+            //                        select G.*,H.RKSL,I.RKSUMSL,J.CKSL,K.CKSUMSL,F.WL_CODE,'" + yearmonth + "' MONTH ";
+            //            sql += @"           from WZ_ZDWZPZ F
+            //                         LEFT JOIN (
+            //                        select sum(A.GESME) GESME，
+            //                        MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR,MAX(D.MAXHAVING)MAXHAVING,MAX(MINHAVING)MINHAVING
+            //                        from CONVERT_SWKC A
+            //                        JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR";
+            //            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND A.KCTYPE<>3 AND  C.CKH='" + DKCODE + "'";
 
-            if (!string.IsNullOrEmpty(MATNR))
-            {
-                sql += " where  F.MATNR like'%" + MATNR + "%'";
-            }
+            //            sql += @"        left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
+            //                         group by A.MATNR) G ON F.WL_CODE=G.MATNR
+            //                        LEFT JOIN 
+            //                        (
+            //                        select SUM(A.ZDHSL) RKSL,A.MATNR
+            //                        from ZC10MMDG072 A 
+            //                        JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
+            //            sql += "     WHERE A.ZSTATUS>'04' and  substr(A.ZCJRQ,1,6)='" + yearmonth + "'";
+            //            sql += @"         GROUP BY A.MATNR) H ON F.WL_CODE=H.MATNR
 
-            return db.GetDataTable(sql);
+            //                        LEFT JOIN 
+            //                        (
+            //                        select SUM(A.ZDHSL) RKSUMSL ,A.MATNR
+            //                        from ZC10MMDG072 A 
+            //                       JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
+            //            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND C.CKH='" + DKCODE + "'";
+            //            sql += "        WHERE A.ZSTATUS>'04' and  substr(A.ZCJRQ,1,4)='" + year + "' AND CAST( substr(A.ZCJRQ,5,2) AS INT)<=  CAST('" + _month + "' AS INT)";
+            //            sql += @"       GROUP BY A.MATNR) I ON F.WL_CODE=I.MATNR
+            //                        LEFT JOIN 
+            //                        (
+            //                        select SUM(A.ZFHSL) CKSL,A.MATNR
+            //                        from ZC10MMDG078 A ";
+            //sql += "           join WZ_KCDD C ON C.KCDD_CODE = A.LGORT AND C.DWCODE = A.WERKS AND C.CKH = '" + DKCODE + "'";
+            //            sql += "           JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
+            //            sql += "             WHERE A.ZSTATUS>'03' and  substr(A.ZCJRQ,1,6)='" + yearmonth + "'";
+            //            sql += @"         GROUP BY A.MATNR) J ON F.WL_CODE=J.MATNR
+
+            //                        LEFT JOIN 
+            //                        (
+            //                        select SUM(A.ZFHSL) CKSUMSL ,A.MATNR
+            //                        from ZC10MMDG078 A 
+            //                        JOIN WZ_ZDWZPZ B ON A.MATNR=B.WL_CODE";
+            //            sql += "           join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS AND  C.CKH='" + DKCODE + "'";
+            //            sql += "          WHERE A.ZSTATUS>'03' and substr(A.ZCJRQ,1,4)='" + year + "' AND CAST( substr(A.ZCJRQ,5,2) AS INT)<=  CAST('" + _month + "' AS INT)";
+            //            sql += "         GROUP BY A.MATNR) K ON F.WL_CODE=K.MATNR ";
+
+            //            if (!string.IsNullOrEmpty(MATNR))
+            //            {
+            //                sql += " where  F.MATNR like'%" + MATNR + "%'";
+            //            }
+
+            //            return db.GetDataTable(sql);
         }
         /// <summary>
         /// 重点物资出入库明细-分库

@@ -327,35 +327,28 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public Dictionary<string, object> getZDWZCRK(string DKCODE, string yearmonth, string MATNR, int page, int limit)
+        public Dictionary<string, object> getZDWZCRK(string DKCODE, string year, string MATNR)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = new DataTable();
-                if (DKCODE == "09")
+                Result res = new Result();
+                DataSet ds = db.getZDWZCRK(DKCODE,year, MATNR);
+                if (ds.Tables.Count > 0)
                 {
-                    CXZGKDB db1 = new CXZGKDB();
-                    dt = db1.getZDWZCRK(DKCODE, yearmonth, MATNR);
-                }
-                else
-                {
-                    dt = db.getZDWZCRK(DKCODE, yearmonth, MATNR);
-                }
-                //DataTable dt = db.getZDWZCRK(DKCODE,yearmonth, MATNR);
-                if (dt.Rows.Count > 0)
-                {
+                    res.ZGCB = ds.Tables["zgcb"];
+                    res.KC = ds.Tables["kc"];
+                    res.RK = ds.Tables["rk"];
+                    res.CK = ds.Tables["ck"];
                     r["code"] = 2000;
-                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["items"] = res;
                     r["message"] = "success";
-                    r["total"] = dt.Rows.Count;
                 }
                 else
                 {
                     r["code"] = 2000;
                     r["message"] = "success,but no info";
                     r["items"] = new DataTable();//dt
-                    r["total"] = 0;
                 }
             }
             catch (Exception e)
