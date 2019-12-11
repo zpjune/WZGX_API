@@ -213,10 +213,48 @@ namespace UIDP.ODS.CangChu
         /// <returns></returns>
         public DataTable getBGYGZLDetail(string nianyue, string TZDType, string workerCode)
         {
-            string sql = "select * from CONVERT_BGYGZL ";
-            sql += " where substr(ERDAT,1,6)=substr('" + nianyue + "',1,6) ";
-            sql += " and ERNAME='" + workerCode + "' AND substr(TZD,1,1)='" + TZDType + "' ";
-            sql += " ORDER BY TZD,ITEMS ";
+            //string sql = "select * from CONVERT_BGYGZL ";
+            //sql += " where substr(ERDAT,1,6)=substr('" + nianyue + "',1,6) ";
+            //sql += " and ERNAME='" + workerCode + "' AND substr(TZD,1,1)='" + TZDType + "' ";
+            //sql += " ORDER BY TZD,ITEMS ";
+            string UnionTableName = string.Empty;
+            if (TZDType == "1")
+            {
+                UnionTableName = "JJRK";
+            }
+            else
+            {
+                UnionTableName = "JJCK";
+            }
+            string sql = "SELECT " +
+                " CAST(WERKS as NVARCHAR2(100)) AS WERKS," +
+                " CAST(WERKS_NAME as NVARCHAR2(100)) AS WERKS_NAME," +
+                " CAST(TZD as NVARCHAR2(100)) AS TZD," +
+                " CAST(ITEMS as DECIMAL(18,2)) AS WERKS," +
+                " CAST(MAKTX as NVARCHAR2(100)) AS MAKTX," +
+                " CAST(JBJLDW as NVARCHAR2(100)) AS JBJLDW," +
+                " CAST(NSOLM as DECIMAL(18,2)) AS NSOLM," +
+                " CAST(ERDAT as NVARCHAR2(100)) AS ERDAT" +
+                " FROM CONVERT_BGYGZL" +
+                " WHERE substr( TZD, 1, 1 ) ='" + TZDType + "'" +
+                " {0} {1}" +//两个where条件 下面的union拼出来的sql也要用到
+                " UNION ALL" +//上面为保管员工作量模型表，下面为紧急出入库表
+                " SELECT" +
+                " CAST(c.DW_CODE as NVARCHAR2(100)) AS WERKS," +
+                " CAST(c.ORG_NAME as NVARCHAR2(100)) AS WERKS_NAME," +
+                " CAST(a.CODE  as NVARCHAR2(100)) AS TZD," +
+                " CAST('' as DECIMAL(18,2)) AS WERKS," +
+                " CAST(a.MATNX as NVARCHAR2(100)) AS MAKTX," +
+                " CAST(a.MEINS as NVARCHAR2(100)) AS JBJLDW," +
+                " CAST(a.RKNUMBER1 as DECIMAL(18,2)) AS NSOLM," +
+                " CAST(TO_CHAR( BGY_DATE, 'yyyyMMdd' ) as NVARCHAR2(100)) AS ERDAT" +
+                " FROM {2} a" +//紧急出入库表名
+                " JOIN TS_UIDP_USERINFO b ON a.BGY_ID = b.USER_ID" +
+                " JOIN TS_UIDP_ORG c ON a.DW_CODE = c.ORG_CODE" +
+                " WHERE a.APPROVAL_STATUS >= 5" +//保管员提交或者撤销订单状态
+                " AND c.DW_CODE LIKE 'C27'" +
+                " {3} {4}";
+            sql = string.Format(sql, "AND substr( ERDAT, 1, 6 ) = substr( '"+nianyue+"',0,6)", " AND ERNAME='"+workerCode+"'", UnionTableName, " AND b.USER_CODE='"+workerCode+"'", " AND TO_CHAR( BGY_DATE, 'yyyyMM' ) = SUBSTR('"+nianyue+"',0,6)");
             return db.GetDataTable(sql);
 
         }
