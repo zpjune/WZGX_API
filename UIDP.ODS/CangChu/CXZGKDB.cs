@@ -28,9 +28,8 @@ namespace UIDP.ODS.CangChu
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
-                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE" +
+                " JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
                 " WHERE a.ZSTATUS='01'" +
-                " AND a.LGORT=g.KCDD_CODE" +
                 " AND g.CKH NOT IN('01','02','03','04','05','06','07','08')";
             if (!string.IsNullOrEmpty(MATNR))
             {
@@ -76,9 +75,8 @@ namespace UIDP.ODS.CangChu
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
-                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE" +
+                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
                 " WHERE a.ZSTATUS='01'"+
-                " AND a.LGORT=g.KCDD_CODE" +
                 " AND g.CKH NOT IN('01','02','03','04','05','06','07','08')";
             if (!string.IsNullOrEmpty(MATNR))
             {

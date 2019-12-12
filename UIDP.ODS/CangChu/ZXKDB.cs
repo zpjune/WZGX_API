@@ -39,9 +39,8 @@ namespace UIDP.ODS.CangChu
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
-                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE " +
+                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
                 " WHERE a.ZSTATUS='01'" +
-                " AND a.LGORT=g.KCDD_CODE" +
                 " AND SUBSTR( a.WERKS, 0, 3 ) = 'C27'" +
                 " AND a.ZCJRQ > trunc('" + DateTime.Now.ToString("yyyyMMdd") + "'-7)";
             if (!string.IsNullOrEmpty(FacCode))
@@ -145,9 +144,8 @@ namespace UIDP.ODS.CangChu
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
-                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE " +
+                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
                 " WHERE a.ZSTATUS='01'" +
-                " AND a.LGORT=g.KCDD_CODE" +
                 " AND SUBSTR( a.WERKS, 0, 3 ) = 'C27'" +
                 " AND a.ZCJRQ > trunc('" + DateTime.Now.ToString("yyyyMMdd") + "'-7)";
             if (!string.IsNullOrEmpty(FacCode))

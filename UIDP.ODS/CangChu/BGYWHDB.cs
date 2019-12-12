@@ -13,7 +13,7 @@ namespace UIDP.ODS.CangChu
         {
             string sql = "select distinct a.*,b.DW_NAME,c.KCDD_NAME from WZ_BGY a";
             sql += " left join WZ_DW b on a.WORKER_DP=b.DW_CODE" +
-                " LEFT JOIN WZ_KCDD c on a.CKH=c.CKH" +
+                "  JOIN WZ_KCDD c on a.CKH=c.CKH AND a.WORKER_DP=c.DWCODE" +
                 "  where 1=1";
             if (!String.IsNullOrEmpty(WORKER_CODE))
             {

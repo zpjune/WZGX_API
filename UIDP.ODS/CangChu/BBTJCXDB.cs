@@ -37,8 +37,8 @@ namespace UIDP.ODS.CangChu
             string sql = " SELECT SUM(a.SCJE) AS BENNIAN,a.MATNR,b.CKH," +
                 //1年到3年金额子查询开始
                 "( SELECT  SUM(c.SCJE) AS BENNIAN FROM CONVERT_SWKCDETAIL c " +
-                " JOIN WZ_KCDD d ON c.WERKS = d.DWCODE " +
-                " WHERE c.LGORT = d.KCDD_CODE" +
+                " JOIN WZ_KCDD d ON c.WERKS = d.DWCODE AND c.LGORT = d.KCDD_CODE" +
+                " WHERE 1=1" +
                 " AND MONTHS_BETWEEN(TO_DATE('" + StrNow + "','yyyyMMdd'),TO_DATE(c.ERDATE,'yyyyMMdd'))>12" +
                 " AND MONTHS_BETWEEN(TO_DATE('" + StrNow + "','yyyyMMdd'),TO_DATE(c.ERDATE,'yyyyMMdd'))<=36" +
                 " AND c.MATNR = a.MATNR " +
@@ -49,8 +49,8 @@ namespace UIDP.ODS.CangChu
                 " AS SANNIAN," +
                 //三年以上金额子查询开始
                 " (SELECT SUM( e.SCJE ) AS BENNIAN FROM CONVERT_SWKCDETAIL e" +
-                " LEFT JOIN WZ_KCDD f ON e.WERKS = f.DWCODE " +
-                " WHERE e.LGORT = f.KCDD_CODE" +
+                " JOIN WZ_KCDD f ON e.WERKS = f.DWCODE AND e.LGORT = f.KCDD_CODE" +
+                " WHERE 1=1" +
                 " AND MONTHS_BETWEEN(TO_DATE('" + StrNow + "','yyyyMMdd'),TO_DATE(e.ERDATE,'yyyyMMdd'))>36" +
                 " AND e.MATNR = a.MATNR" +
                 " AND f.CKH = b.CKH " +
@@ -59,8 +59,8 @@ namespace UIDP.ODS.CangChu
                 //子查询结束
                 " AS SANNIANYISHANG " +
                 " FROM CONVERT_SWKCDETAIL a" +
-                " LEFT JOIN WZ_KCDD b ON a.WERKS = b.DWCODE " +
-                " WHERE a.LGORT = b.KCDD_CODE " +
+                " JOIN WZ_KCDD b ON a.WERKS = b.DWCODE AND a.LGORT = b.KCDD_CODE " +
+                " WHERE 1=1 " +
                 " AND MONTHS_BETWEEN(TO_DATE('" + StrNow + "','yyyyMMdd'),TO_DATE(a.ERDATE,'yyyyMMdd'))<=12" +
                 " {2}" +
                 " GROUP BY a.MATNR,b.CKH ORDER BY b.CKH";
