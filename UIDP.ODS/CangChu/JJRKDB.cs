@@ -30,7 +30,7 @@ namespace UIDP.ODS.CangChu
             string PartOfSqlSort = " ORDER BY a.CODE DESC";
             string sql = " SELECT DISTINCT a.*,(CASE WHEN b.NAME IS NULL THEN Translate(a.REASON USING NCHAR_CS) ELSE b.NAME END)AS NAME," +
                 " c.ORG_SHORT_NAME,e.KCDD_NAME,h.USER_NAME from JJRK a " +
-                " join TS_DICTIONARY b on a.REASON=b.CODE AND b.PARENTCODE='" + ParentCode + "'" +
+                " left join TS_DICTIONARY b on a.REASON=b.CODE AND b.PARENTCODE='" + ParentCode + "'" +
                 " join TS_UIDP_ORG c on a.DW_CODE=c.ORG_CODE " +
                 " join WZ_KCDD e ON EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND e.DWCODE=DW_CODE ) AND a.KCDD = e.KCDD_CODE" +
                 " JOIN TS_UIDP_ORG_USER f ON a.CREATEBY=f.USER_ID" +
