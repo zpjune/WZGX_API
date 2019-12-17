@@ -457,7 +457,13 @@ namespace UIDP.ODS.CangChu
             string SQL = "select WL_CODE,WL_NAME from WZ_ZDWZPZ ";
             if (!string.IsNullOrWhiteSpace(WL_NAME))
             {
-                SQL += " WHERE WL_NAME LIKE '%" + WL_NAME + "%'";
+                if (WL_NAME== "钻井泥浆材料") {
+                    SQL += " WHERE WL_NAME LIKE '%封闭剂%' or WL_NAME LIKE '%膨润土粉%' or WL_NAME LIKE '%片碱%' or WL_NAME LIKE '%纯碱%'  or WL_NAME LIKE '%堵漏剂%' or WL_NAME LIKE '%润滑剂%'  ";
+                }
+                else {
+                    SQL += " WHERE WL_NAME LIKE '%" + WL_NAME + "%'";
+                }
+                
             }
             SQL += " ORDER BY  WL_CODE ";
             return db.GetDataTable(SQL);
