@@ -116,6 +116,9 @@ namespace UIDP.ODS
                 sql += ")";
                 fengefu = ",";
             }
+
+
+
             delSql += ")";
             List<string> list = new List<string>();
             list.Add(delSql);
