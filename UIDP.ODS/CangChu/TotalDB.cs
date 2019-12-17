@@ -182,7 +182,7 @@ namespace UIDP.ODS.CangChu
         /// <returns></returns>
         public DataTable getBGYGZL(string month, string workerName)
         {
-            string sql = @"select ERNAME,WORKER_NAME,WERKS_NAME,COUNT(*)XMHJ,max(substr(ERDAT,1,6))NIANYUE,
+            string sql = @"select DISTINCT ERNAME,a.WORKER_NAME,COUNT(*)XMHJ,c.NAME AS WERKS_NAME,max(substr(ERDAT,1,6))NIANYUE,
                             SUM(CASE WHEN JBJLDW='吨' then NSOLM ELSE 0 END ) HJ_DUN,
                             SUM(CASE WHEN JBJLDW='米' then NSOLM ELSE 0 END ) HJ_MI,
                             SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' then NSOLM ELSE 0 END ) HJ_QT,
@@ -194,16 +194,17 @@ namespace UIDP.ODS.CangChu
                             SUM(CASE WHEN JBJLDW='吨' and substr(TZD,1,1)='2' then NSOLM ELSE 0 END ) CK_DUN,
                             SUM(CASE WHEN JBJLDW='米'  and substr(TZD,1,1)='2' then NSOLM ELSE 0 END )  CK_MI,
                             SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' and substr(TZD,1,1)='2' then NSOLM ELSE 0 END )  CK_QT
-
                             from
-                            CONVERT_BGYGZL ";
+                            CONVERT_BGYGZL a 
+                            JOIN WZ_BGY b ON a.ERNAME=b.WORKER_CODE
+                            LEFT JOIN TS_DICTIONARY c ON b.CKH=c.CODE AND c.PARENTCODE='TOTAL'";
 
             sql += "   where substr(ERDAT,1,6)=substr('" + month + "',1,6)";
             if (!string.IsNullOrEmpty(workerName))
             {
                 sql += " and  WORKER_NAME like '%" + workerName + "%'";
             }
-            sql += "  group by ERNAME,WORKER_NAME,WERKS_NAME";
+            sql += "  group by ERNAME,a.WORKER_NAME,c.NAME";
             return db.GetDataTable(sql);
         }
         /// <summary>
