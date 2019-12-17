@@ -45,7 +45,7 @@ namespace UIDP.ODS.CangChu
         public DataTable GetSWKC(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
         {
             string sql = @" select row_number()over(order by werks,matnr asc),sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
-                            CASE WHEN ZSTATUS='04' THEN CASE WHEN months_between(sysdate,to_date(MIN(ERDAT),'yyyy-mm-dd'))>6 then '01' else '100' end   ELSE '100' END ZT
+                            CASE WHEN ZSTATUS='04' THEN CASE WHEN months_between(sysdate,to_date(MIN(ERDAT),'yyyy-mm-dd'))>12 then '01' else '100' end   ELSE '100' END ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
             sql += "where  KCTYPE<>3 ";
@@ -89,7 +89,7 @@ namespace UIDP.ODS.CangChu
                             '积压' ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
-            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6 AND KCTYPE=0  ";
+            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>12 AND KCTYPE=0  ";
             if (ISWZ == "1")
             {
                 sql += "  and substr(WERKS,1,3)='C27' ";

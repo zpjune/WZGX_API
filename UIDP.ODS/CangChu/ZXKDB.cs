@@ -237,7 +237,7 @@ namespace UIDP.ODS.CangChu
                             '积压' ZT
                                ,werks,matnr,lgort 
                             from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
-            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>6 AND substr(LGPLA,1,2)='" + DKCODE + "' ";
+            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>12 AND substr(LGPLA,1,2)='" + DKCODE + "' ";
             if (ISWZ == "1")
             {
                 sql += "  and substr(WERKS,1,3)='C27' ";
@@ -264,7 +264,7 @@ namespace UIDP.ODS.CangChu
         /// <param name="FacCode">大库编码</param>
         /// <param name="Month_between">积压月份上限，默认为6</param>
         /// <returns></returns>
-        public DataTable GetFacStatus(string FacCode, int Month_between = 6)
+        public DataTable GetFacStatus(string FacCode, int Month_between = 12)
         {
             //查询是否积压sql，后续查询用union all 拼上
             string sql = " SELECT SUBSTR(LGPLA,3,2) AS LG,01 AS Status FROM CONVERT_SWKC a" +
