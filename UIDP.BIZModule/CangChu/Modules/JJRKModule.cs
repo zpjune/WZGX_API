@@ -371,5 +371,33 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+
+        public Dictionary<string, object> GetWLInfo(string WL_CODE, string WL_NAME,int page,int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataSet ds = db.GetWLInfo(WL_CODE,WL_NAME,page,limit);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功!";
+                    r["items"] = ds.Tables[0];
+                    r["total"] = ds.Tables[1].Rows[0]["TOTAL"];
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功但是没有数据!";
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
     }
 }

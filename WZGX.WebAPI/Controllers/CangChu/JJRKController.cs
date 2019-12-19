@@ -118,6 +118,16 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpPost("BGYSendForm")]
         public IActionResult BGYSendForm([FromBody]JObject value) => Ok(JJRK.BGYSendForm(value.ToObject<Dictionary<string, object>>()));
+        /// <summary>
+        /// 获取物料信息
+        /// </summary>
+        /// <param name="WL_CODE"></param>
+        /// <param name="WL_NAME"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("GetWLInfo")]
+        public IActionResult GetWLInfo(string WL_CODE, string WL_NAME, int page, int limit) => Ok(JJRK.GetWLInfo(WL_CODE, WL_NAME, page, limit));
 
     }
 }

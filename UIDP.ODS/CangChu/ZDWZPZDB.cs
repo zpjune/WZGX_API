@@ -32,13 +32,13 @@ namespace UIDP.ODS.CangChu
 
         public string CreateZDWZPZInfo(Dictionary<string, string> d)
         {
-            string sql = "insert into WZ_ZDWZPZ(WL_CODE,WL_NAME,ID)VALUES('"+ d["WL_CODE"] + "','"+d["WL_NAME"]+"','"+d["ID"]+"')";
+            string sql = "insert into WZ_ZDWZPZ(WL_CODE,WL_NAME,ID,WL_SORT)VALUES('" + d["WL_CODE"] + "','"+d["WL_NAME"]+"','"+d["ID"]+"','"+d["WL_SORT"]+"')";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditZDWZPZInfo(Dictionary<string, string> d)
         {
-            string sql = " UPDATE WZ_ZDWZPZ SET WL_CODE='" + d["WL_CODE"] + "', WL_NAME='"+d["WL_NAME"]+"'" +" WHERE ID='"+d["ID"]+"'";
+            string sql = " UPDATE WZ_ZDWZPZ SET WL_CODE='" + d["WL_CODE"] + "', WL_NAME='"+d["WL_NAME"]+ "',WL_SORT='"+d["WL_SORT"]+"'" + " WHERE ID='"+d["ID"]+"'";
             return db.ExecutByStringResult(sql);
         }
         public string DelZDWZPZInfo(Dictionary<string, object> d)
@@ -53,9 +53,9 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
 
-        public DataTable GetRepeat(string WL_CODE)
+        public DataTable GetRepeat(string WL_CODE,string YEAR)
         {
-            string sql = "SELECT 1 FROM WZ_ZDWZPZ WHERE WL_CODE='"+ WL_CODE+"'";
+            string sql = "SELECT 1 FROM WZ_ZDWZPZ WHERE WL_CODE='"+ WL_CODE+"'AND YEAR='"+YEAR+"'";
             return db.GetDataTable(sql);
         }
 

@@ -16,7 +16,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
         ZDWZWHModule zDWZWH = new ZDWZWHModule();
 
         [HttpGet("GetZDWZWHInfo")]
-        public IActionResult GetZDWZWHInfo(string WL_LOCATIONCODE, string WLZ_CODE,string WL_CODE, int limit, int page) => Ok(zDWZWH.GetZDWZWHInfo(WL_LOCATIONCODE, WLZ_CODE,WL_CODE, limit, page));
+        public IActionResult GetZDWZWHInfo(string WL_LOCATIONCODE, string WLZ_CODE,string WL_CODE, int limit, int page,string YEAR) => Ok(zDWZWH.GetZDWZWHInfo(WL_LOCATIONCODE, WLZ_CODE,WL_CODE, limit, page,YEAR));
 
         [HttpPost("CreateZDWZWHInfo")]
         public IActionResult CreateZDWZWHInfo([FromBody]JObject value) => Ok(zDWZWH.CreateZDWZWHInfo(value.ToObject<Dictionary<string, string>>()));

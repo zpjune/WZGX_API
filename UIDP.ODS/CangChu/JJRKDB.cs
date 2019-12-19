@@ -168,7 +168,7 @@ namespace UIDP.ODS.CangChu
                 MATNR = "0" + MATNR;
             }
             string sql = " INSERT INTO JJRK (ID,CODE,DW_CODE,MATNR,MATNX,MEINS,RKNUMBER,PRICE,TOTALPRICE,RK_TIME,RKNUMBER1,TOTALPRICE1,REASON,ZRDW,ZRR,CLOSE_TIME," +
-            "EFFECTIVE_STATUS,APPROVAL_STATUS,CREATEBY,CREATEDATE,GYS,KCDD)VALUES('";
+            "EFFECTIVE_STATUS,APPROVAL_STATUS,CREATEBY,CREATEDATE,GYS,KCDD,MATKL,OTHERREASON)VALUES('";
             sql += Guid.NewGuid() + "',";
             sql += GetSQLStr(CODE);
             sql += GetSQLStr(d["DW_CODE"]);
@@ -191,6 +191,8 @@ namespace UIDP.ODS.CangChu
             sql += GetSQLStr(DateTime.Now, 1);
             sql += GetSQLStr(d["GYS"]);
             sql += GetSQLStr(d["KCDD"]);
+            sql += GetSQLStr(d["MATKL"]);
+            sql += GetSQLStr(d["OTHERREASON"]);
             sql = sql.TrimEnd(',');
             sql += ")";
             return db.ExecutByStringResult(sql);
@@ -226,6 +228,8 @@ namespace UIDP.ODS.CangChu
             sql += " UPDATEDATE=" + GetSQLStr(DateTime.Now,1);
             sql += " GYS=" + GetSQLStr(d["GYS"]);
             sql += " KCDD=" + GetSQLStr(d["KCDD"]);
+            sql += "MATKL="+ GetSQLStr(d["MATKL"]);
+            sql += " OTHERREASON="+GetSQLStr(d["OTHERREASON"]);
             sql = sql.TrimEnd(',');
             sql += " WHERE ID='" + d["ID"] + "'";
             return db.ExecutByStringResult(sql);
@@ -261,8 +265,8 @@ namespace UIDP.ODS.CangChu
             sql += " BGY_ID=" + GetSQLStr(d["userid"]);
             sql += " BGY_DATE=" + GetSQLStr(DateTime.Now, 1);
             sql += " EFFECTIVE_STATUS=0";//将紧急入库单的状态置为有效
-            sql += "WHERE ID='" + d["ID"] + "'";
-            string sql1 = " INSERT INTO CONVERT_SWKC (WERKS,ZDHTZD,MATNR,MAKTX,MEINS,GESME,LGORT,KCTYPE,LGPLA,ID)VALUES(";
+            sql += " WHERE ID='" + d["ID"] + "'";
+            string sql1 = " INSERT INTO CONVERT_SWKC (WERKS,ZDHTZD,MATNR,MAKTX,MEINS,GESME,LGORT,KCTYPE,LGPLA,ID,MATKL)VALUES(";
             sql1 += "(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE='" + d["DW_CODE"] + "'),";
             sql1 += GetSQLStr(d["CODE"]);
             sql1 += GetSQLStr(d["MATNR"]);
@@ -273,9 +277,10 @@ namespace UIDP.ODS.CangChu
             sql1 += GetSQLStr(1, 2);
             sql1 += GetSQLStr(d["LGPLA"]);
             sql1 += GetSQLStr(d["ID"]);
+            sql1 += GetSQLStr(d["MATKL"]);
             sql1 = sql1.TrimEnd(',');
             sql1 += ")";
-            string sql2 = "INSERT INTO CONVERT_ZWKC (BWKEY,MATNR,SALK3,LBKUM,DANJIA,DLDATE,KCTYPE,ID)VALUES(";
+            string sql2 = "INSERT INTO CONVERT_ZWKC (BWKEY,MATNR,SALK3,LBKUM,DANJIA,DLDATE,KCTYPE,ID,MATKL)VALUES(";
             sql2 += "(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE='" + d["DW_CODE"] + "'),";
             sql2+= GetSQLStr(d["MATNR"]);
             sql2 += GetSQLStr(d["TOTALPRICE1"],2);
@@ -284,6 +289,7 @@ namespace UIDP.ODS.CangChu
             sql2 += GetSQLStr(DateTime.Now.ToString("yyyyMMdd"));
             sql2 += GetSQLStr(1, 2);
             sql2 += GetSQLStr(d["ID"]);
+            sql2 += GetSQLStr(d["MATKL"]);
             sql2 = sql2.TrimEnd(',');
             sql2 += ")";
             list.Add(sql);
@@ -383,6 +389,30 @@ namespace UIDP.ODS.CangChu
         {
             string sql = " SELECT DISTINCT KCDD_CODE,KCDD_NAME FROM WZ_KCDD where DWCODE=(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE='" + orgCode+"')";
             return db.GetDataTable(sql);
+        }
+
+        public DataSet GetWLInfo(string WL_CODE,string WL_NAME,int page,int limit)
+        {
+            string MainSql = "(select a.MATKL,a.MATNR,a.MAKTX,b.JBJLDW FROM MARA a ";
+            MainSql += " join WZ_WLZ b on a.MATKL=b.PMCODE";
+            MainSql += " where 1=1";
+            if (!string.IsNullOrEmpty(WL_CODE))
+            {
+                MainSql += " AND MATNR LIKE '%" + WL_CODE + "%'";
+            }
+            if (!string.IsNullOrEmpty(WL_NAME))
+            {
+                MainSql += " AND MAKTX LIKE '%" + WL_NAME + "%'";
+            }
+            
+            MainSql += ")t";
+            string PartSql = " {0} SELECT {1} FROM {2}";
+            string DetailSql = string.Format(PartSql, " SELECT * FROM ( ", "ROWNUM rn, t.*", MainSql + " WHERE ROWNUM<" + ((page * limit) + 1) + ")WHERE rn>" + ((page - 1) * limit));
+            string TotailSql = string.Format(PartSql, "", "COUNT(*) AS TOTAL", MainSql);
+            Dictionary<string, string> list = new Dictionary<string, string>();
+            list.Add("DetailSql", DetailSql);
+            list.Add("TotailSql", TotailSql);
+            return db.GetDataSet(list);
         }
 
         /// <summary>

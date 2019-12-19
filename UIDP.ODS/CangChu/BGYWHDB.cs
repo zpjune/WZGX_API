@@ -11,10 +11,14 @@ namespace UIDP.ODS.CangChu
         DBTool db = new DBTool("");
         public DataTable GetBGYInfo(string WORKER_CODE,string WORKER_NAME,string WORKER_DP)
         {
-            string sql = "select distinct a.*,b.DW_NAME,c.KCDD_NAME from WZ_BGY a";
-            sql += " left join WZ_DW b on a.WORKER_DP=b.DW_CODE" +
-                "  JOIN WZ_KCDD c on a.CKH=c.CKH AND a.WORKER_DP=c.DWCODE" +
-                "  where 1=1";
+            //string sql = "select distinct a.*,b.DW_NAME,c.KCDD_NAME from WZ_BGY a";
+            //sql += " left join WZ_DW b on a.WORKER_DP=b.DW_CODE" +
+            //    "  JOIN WZ_KCDD c on a.CKH=c.CKH AND a.WORKER_DP=c.DWCODE" +
+            //    "  where 1=1";
+            string sql = " select a.*,b.DW_NAME,c.NAME as KCDD_NAME from WZ_BGY a " +
+                " left join TS_DICTIONARY c on a.CKH=c.CODE AND PARENTCODE='TOTAL'" +
+                " left join WZ_DW b on a.WORKER_DP=b.DW_CODE" +
+                " where 1=1";
             if (!String.IsNullOrEmpty(WORKER_CODE))
             {
                 sql += " AND WORKER_CODE='" + WORKER_CODE + "'";
@@ -54,9 +58,15 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
 
-        public DataTable GetCKHInfo()
+        public DataTable GetCKHInfo(string PARENTCODE)
         {
-            string sql = "SELECT DISTINCT CKH,KCDD_NAME FROM WZ_KCDD ORDER BY CKH";
+            //string sql = "SELECT DISTINCT CKH,KCDD_NAME FROM WZ_KCDD WHERE 1=1";
+            //if (!string.IsNullOrEmpty(DWCODE))
+            //{
+            //    sql += "DWCODE='" + DWCODE + "'";
+            //}
+            //sql += " order by CKH";
+            string sql = " select CODE,NAME FROM TS_DICTIONARY where PARENTCODE='" + PARENTCODE + "' ORDER BY CODE";
             return db.GetDataTable(sql);
         }
     }

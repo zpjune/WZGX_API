@@ -30,6 +30,6 @@ namespace WZGX.WebAPI.Controllers.CangChu
         public IActionResult GetGCInfo()=>Ok(bGYModule.GetGCInfo());
 
         [HttpGet("GetCKHInfo")]
-        public IActionResult GetCKHInfo() => Ok(bGYModule.GetCKHInfo());
+        public IActionResult GetCKHInfo(string PARENTCODE) => Ok(bGYModule.GetCKHInfo(PARENTCODE));
     }
 }

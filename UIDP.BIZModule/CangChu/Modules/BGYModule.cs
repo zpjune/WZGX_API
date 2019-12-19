@@ -173,12 +173,12 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
         }
 
-        public Dictionary<string, object> GetCKHInfo()
+        public Dictionary<string, object> GetCKHInfo(string PARENTCODE)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetCKHInfo();
+                DataTable dt = db.GetCKHInfo(PARENTCODE);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

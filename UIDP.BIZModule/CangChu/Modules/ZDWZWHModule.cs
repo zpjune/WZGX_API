@@ -11,12 +11,12 @@ namespace UIDP.BIZModule.CangChu.Modules
     {
         ZDWZWHDB db = new ZDWZWHDB();
 
-        public Dictionary<string,object> GetZDWZWHInfo(string WL_LOCATIONCODE, string WLZ_CODE,string WL_CODE,int limit,int page)
+        public Dictionary<string,object> GetZDWZWHInfo(string WL_LOCATIONCODE, string WLZ_CODE,string WL_CODE,int limit,int page,string YEAR)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetZDWZWHInfo(WL_LOCATIONCODE, WLZ_CODE,WL_CODE);
+                DataTable dt = db.GetZDWZWHInfo(WL_LOCATIONCODE, WLZ_CODE,WL_CODE,YEAR);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

@@ -110,5 +110,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpPost("BGYSendForm")]
         public IActionResult BGYSendForm([FromBody]JObject value) => Ok(JJCK.BGYSendForm(value.ToObject<Dictionary<string, object>>()));
+
+        [HttpGet("GetWLInfo")]
+        public IActionResult GetWLInfo(string WL_CODE, string WL_NAME, int page, int limit) => Ok(JJCK.GetWLInfo(WL_CODE, WL_NAME, page, limit));
     }
 }

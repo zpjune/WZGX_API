@@ -9,7 +9,7 @@ namespace UIDP.ODS.CangChu
     public class ZDWZWHDB
     {
         DBTool db = new DBTool("");
-        public DataTable GetZDWZWHInfo(string WL_LOCATIONCODE,string WLZ_CODE,string WL_CODE)
+        public DataTable GetZDWZWHInfo(string WL_LOCATIONCODE,string WLZ_CODE,string WL_CODE,string YEAR)
         {
             string sql = " SELECT DISTINCT a.*,d.NAME,b.KCDD_NAME FROM WZ_ZDWZWH a " +
                 "LEFT JOIN WZ_KCDD b ON a.WL_LOCATIONCODE = b.KCDD_CODE " +
@@ -17,13 +17,17 @@ namespace UIDP.ODS.CangChu
                 "LEFT JOIN TS_DICTIONARY d ON a.KC_CODE=d.CODE" +
                 " WHERE 1=1"+
                 " AND d.PARENTCODE='TOTAL'";
+            if (!String.IsNullOrEmpty(YEAR))
+            {
+                sql += " AND a.YEAR='" + YEAR.Substring(0,4) + "'";
+            }
             if (!String.IsNullOrEmpty(WL_LOCATIONCODE))
             {
                 sql += " AND a.KC_CODE='" + WL_LOCATIONCODE + "'";
             }
             if (!String.IsNullOrEmpty(WL_CODE))
             {
-                sql += " AND a.WL_CODE='" + WL_CODE + "'";
+                sql += " AND a.WL_CODE like'%" + WL_CODE + "%'";
             }
             if (!String.IsNullOrEmpty(WLZ_CODE))
             {
@@ -34,14 +38,14 @@ namespace UIDP.ODS.CangChu
 
         public string CreateZDWZWHInfo(Dictionary<string,string> d)
         {
-            string sql = "INSERT INTO WZ_ZDWZWH (ID,WL_CODE,MAXHAVING,MINHAVING,KC_CODE,WL_NAME)VALUES('" +
-                d["ID"] + "','"+d["WL_CODE"]+"','" + d["MAXHAVING"] + "','" + d["MINHAVING"] + "','"+d["KC_CODE"]+ "','"+d["WL_NAME"]+"')";
+            string sql = "INSERT INTO WZ_ZDWZWH (ID,WL_CODE,MAXHAVING,MINHAVING,KC_CODE,WL_NAME,YEAR)VALUES('" +
+                d["ID"] + "','"+d["WL_CODE"]+"','" + d["MAXHAVING"] + "','" + d["MINHAVING"] + "','"+d["KC_CODE"]+ "','"+d["WL_NAME"]+"','"+d["YEAR"].ToString().Substring(0,4)+"')";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditZDWZWHInfo(Dictionary<string,string> d)
         {
-            string sql = "UPDATE WZ_ZDWZWH SET MAXHAVING='" + d["MAXHAVING"] + "',MINHAVING='" + d["MINHAVING"] + "',WL_CODE='"+d["WL_CODE"]+ "',KC_CODE= '"+d["KC_CODE"]+ "',WL_NAME='"+d["WL_NAME"]+"'";
+            string sql = "UPDATE WZ_ZDWZWH SET MAXHAVING='" + d["MAXHAVING"] + "',MINHAVING='" + d["MINHAVING"] + "',WL_CODE='"+d["WL_CODE"]+ "',KC_CODE= '"+d["KC_CODE"]+ "',WL_NAME='"+d["WL_NAME"]+ "',YEAR='"+d["YEAR"].ToString().Substring(0,4)+"'";
             sql += " WHERE ID='" + d["ID"] + "'";
             return db.ExecutByStringResult(sql);
         }
