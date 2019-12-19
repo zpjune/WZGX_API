@@ -35,6 +35,38 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
         /// <summary>
+        /// 查询实物库存-第一层按单位
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <returns></returns>
+        public DataTable GetSWKCDW(string ISWZ, string WERKS)
+        {
+            string sql = @"  select COUNT(DISTINCT MATNR) XM,WERKS,WERKS_NAME from   CONVERT_SWKC    ";
+            sql += "where  KCTYPE<>3 ";
+            if (ISWZ == "1")
+            {
+                sql += "  and substr(WERKS,1,3)='C27' AND WERKS<>'C271' ";
+            }
+            if (!string.IsNullOrEmpty(WERKS))
+            {
+                sql += " and  WERKS ='" + WERKS + "'";
+            }
+            sql += " group by WERKS,WERKS_NAME ORDER BY WERKS ";//
+            return db.GetDataTable(sql);
+        }
+        /// <summary>
+        /// 查询实物库存-第二层 按大类
+        /// </summary>
+        /// <param name="WERKS_NAME">工厂名称</param>
+        /// <returns></returns>
+        public DataTable GetSWKCDL( string WERKS)
+        {
+            string sql = @"   select   substr(MATKL,0,2)DLCODE,COUNT(DISTINCT MATNR) XM,SUM(GESME)SL,max(meins)JLDW from   CONVERT_SWKC     ";
+            sql += "where  KCTYPE<>3  AND WERKS='"+WERKS+"'";
+            sql += " group by substr(MATKL,0,2) order by substr(MATKL,0,2) ";//
+            return db.GetDataTable(sql);
+        }
+        /// <summary>
         /// 查询实物库存-总库页面
         /// </summary>
         /// <param name="WERKS_NAME">工厂名称</param>
@@ -42,15 +74,20 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public DataTable GetSWKC(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
+        public DataTable GetSWKC(string DLCODE,string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
         {
             string sql = @" select row_number()over(order by werks,matnr asc),sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
-                            CASE WHEN ZSTATUS='04' THEN CASE WHEN months_between(sysdate,to_date(MIN(ERDAT),'yyyy-mm-dd'))>12 then '01' else '100' end   ELSE '100' END ZT
-                               ,werks,matnr,lgort 
-                            from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
+                            ZSTATUS ,werks,matnr,lgort 
+                            from CONVERT_SWKC  ";
+            //case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
+            // CASE WHEN ZSTATUS='04' THEN CASE WHEN months_between(sysdate,to_date(MIN(ERDAT),'yyyy-mm-dd'))>12 then '01' else '100' end   ELSE '100' END ZT
             sql += "where  KCTYPE<>3 ";
             if (ISWZ=="1") {
                 sql += "  and substr(WERKS,1,3)='C27' ";
+            }
+            if (!string.IsNullOrEmpty(DLCODE))
+            {
+                sql += " and  substr(MATKL,0,2) ='" + DLCODE + "'";
             }
             if (!string.IsNullOrEmpty(WERKS))
             {

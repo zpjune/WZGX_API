@@ -23,6 +23,24 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("GetKCZJ")]
         public IActionResult GetKCZJ() => Ok(md.GetKCZJ());
         /// <summary>
+        /// 查询实物库存-总库页面第一层
+        /// </summary>
+        /// <param name="WERKS">工厂名称</param>
+        /// <returns></returns>
+        [HttpGet("GetSWKCDW")]
+        public IActionResult GetSWKCDW(string ISWZ, string WERKS, int page, int limit) =>
+            Ok(md.GetSWKCDW(ISWZ, WERKS,  page, limit));
+        /// <summary>
+        /// 查询实物库存-总库页面第二层
+        /// </summary>
+        /// <param name="WERKS"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet("GetSWKCDL")]
+        public IActionResult GetSWKCDL( string WERKS, int page, int limit) =>
+            Ok(md.GetSWKCDL( WERKS, page, limit));
+        /// <summary>
         /// 查询实物库存-总库页面
         /// </summary>
         /// <param name="WERKS_NAME">工厂名称</param>
@@ -31,8 +49,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
         [HttpGet("GetSWKC")]
-        public IActionResult GetSWKC(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) => 
-            Ok(md.GetSWKC( ISWZ,  WERKS, WERKS_NAME,  LGORTNAME,  MATNR,  MATKL,  page,  limit));
+        public IActionResult GetSWKC(string DLCODE,string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) => 
+            Ok(md.GetSWKC( DLCODE,ISWZ,  WERKS, WERKS_NAME,  LGORTNAME,  MATNR,  MATKL,  page,  limit));
         /// <summary>
         /// 查询实物库存-总库页面
         /// </summary>

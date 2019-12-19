@@ -59,6 +59,74 @@ namespace UIDP.BIZModule.CangChu.Modules
             return r;
         }
         /// <summary>
+        /// 查询实物库存-总库 第一层
+        /// </summary>
+        /// <param name="WERKS">工厂名称</param>
+        /// <returns></returns>
+        public Dictionary<string, object> GetSWKCDW(string ISWZ, string WERKS,int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataTable dt = db.GetSWKCDW(ISWZ, WERKS);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "成功！";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功!但是没有数据";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        /// <summary>
+        /// 查询实物库存-总库 第二层
+        /// </summary>
+        /// <param name="WERKS">工厂名称</param>
+        /// <returns></returns>
+        public Dictionary<string, object> GetSWKCDL( string WERKS, int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataTable dt = db.GetSWKCDL( WERKS);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "成功！";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功!但是没有数据";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        /// <summary>
         /// 查询实物库存-总库页面
         /// </summary>
         /// <param name="WERKS_NAME">工厂名称</param>
@@ -66,13 +134,13 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public Dictionary<string, object> GetSWKC(string ISWZ,string WERKS,string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL,int page,int limit)
+        public Dictionary<string, object> GetSWKC(string DLCODE,string ISWZ,string WERKS,string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL,int page,int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataTable dt = db.GetSWKC( ISWZ,  WERKS, WERKS_NAME,  LGORTNAME,  MATNR,  MATKL);
+                DataTable dt = db.GetSWKC(DLCODE, ISWZ,  WERKS, WERKS_NAME,  LGORTNAME,  MATNR,  MATKL);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
