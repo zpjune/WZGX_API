@@ -205,13 +205,13 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// </summary>
         /// <param name="year"></param>
         /// <returns></returns>
-        public Dictionary<string, object> GetCRKJE(string year)
+        public Dictionary<string, object> GetCRKJE(string year,int ISWZ)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataSet ds = db.GetCRKJE(year);
+                DataSet ds = db.GetCRKJE(year,ISWZ);
                 if (ds.Tables.Count > 0)
                 {
                     List<DataTable> list = new List<DataTable>();

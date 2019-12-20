@@ -68,8 +68,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="year"></param>
         /// <returns></returns>
         [HttpGet("GetCRKJE")]
-        public IActionResult GetCRKJE(string year) =>
-           Ok(md.GetCRKJE(year));
+        public IActionResult GetCRKJE(string year,int ISWZ) =>
+           Ok(md.GetCRKJE(year,ISWZ));
         /// <summary>
         /// 总库存-查询出库如明细
         /// </summary>

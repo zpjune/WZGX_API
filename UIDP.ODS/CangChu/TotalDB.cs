@@ -159,19 +159,25 @@ namespace UIDP.ODS.CangChu
         /// </summary>
         /// <param name="year"></param>
         /// <returns></returns>
-        public DataSet GetCRKJE(string year)
+        public DataSet GetCRKJE(string year,int ISWZ)
         {
             Dictionary<string, string> d = new Dictionary<string, string>();//以万为单位
             string sql = @"select sum(JE)/10000 JE,substr(BUDAT_MKPF,5,2) Month
                             from CONVERT_CKJE
                             WHERE  substr(BUDAT_MKPF,1,4)='"+year+"'";
-            sql += " AND SUBSTR(WERKS, 0, 3)='C27'";
+            if (ISWZ != 2)
+            {
+                sql += " AND SUBSTR(WERKS, 0, 3)='C27'";
+            }         
             sql +="  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
             d.Add("CKJE", sql);
             sql = @"select sum(JE)/10000 JE,substr(BUDAT_MKPF,5,2) Month
                     from CONVERT_RKJE
                     WHERE  substr(BUDAT_MKPF,1,4)='"+year+"'";
-            sql += " AND SUBSTR(WERKS, 0, 3)='C27'";
+            if (ISWZ != 2)
+            {
+                sql += " AND SUBSTR(WERKS, 0, 3)='C27'";
+            }
             sql +="  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
             d.Add("RKJE", sql);
             return db.GetDataSet(d);
