@@ -337,7 +337,7 @@ namespace UIDP.ODS.CangChu
             {
                 sql += " and  A.MATKL like'%" + MATKL + "%'";
             }
-            sql += "  group by A.WERKS,A.MATNR,A.LGORT,A.WERKS_NAME,A.LGORT_NAME ,A.ZSTATUS  ";//
+            sql += "  group by A.WERKS,A.MATNR,A.LGORT,A.WERKS_NAME,A.LGORT_NAME ,A.ZSTATUS ";//
             return db.GetDataTable(sql);
         }
         ///重点物资储备-总库存
@@ -363,7 +363,7 @@ namespace UIDP.ODS.CangChu
             {
                 sql += " and  A.MATKL like'%" + MATKL + "%'";
             }
-            sql += "  group by A.MATNR ";//
+            sql += "  group by A.MATNR,B.WL_SORT ORDER BY B.WL_SORT";//
             return db.GetDataTable(sql);
         }
         ///重点物资储备明细-总库存

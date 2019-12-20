@@ -303,7 +303,7 @@ namespace UIDP.ODS.CangChu
             {
                 sql += " and  A.MATKL like'%" + MATKL + "%'";
             }
-            sql += "  group by A.WERKS,A.MATNR,A.WERKS_NAME ";//
+            sql += "  group by A.WERKS,A.MATNR,A.WERKS_NAME,B.WL_SORT GROUP BY B.WL_SORT";//
             return db.GetDataTable(sql);
         }
         ///重点物资储备-分库

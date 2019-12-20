@@ -48,7 +48,7 @@ namespace UIDP.BIZModule.CangChu.Modules
             d.Add("ID", Guid.NewGuid().ToString());
             try
             {
-                DataTable dt = db.GetRepeat(d["WL_CODE"].ToString(),d["YEAR"].ToString());
+                DataTable dt = db.GetRepeat(d["WL_CODE"].ToString());
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = -1;
@@ -106,7 +106,7 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetRepeat(d["WL_CODE"].ToString(), d["YEAR"].ToString());
+                DataTable dt = db.GetRepeat(d["WL_CODE"].ToString());
                 if (dt.Rows.Count > 1)
                 {
                     r["code"] = -1;

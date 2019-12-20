@@ -27,18 +27,19 @@ namespace UIDP.ODS.CangChu
             {
                 sql += " AND a.WL_NAME='" + WL_NAME + "'";
             }
+            sql += " ORDER BY WL_SORT";
             return db.GetDataTable(sql);
         }
 
         public string CreateZDWZPZInfo(Dictionary<string, string> d)
         {
-            string sql = "insert into WZ_ZDWZPZ(WL_CODE,WL_NAME,ID,WL_SORT)VALUES('" + d["WL_CODE"] + "','"+d["WL_NAME"]+"','"+d["ID"]+"','"+d["WL_SORT"]+"')";
+            string sql = "insert into WZ_ZDWZPZ(WL_CODE,WL_NAME,ID,WL_SORT)VALUES('" + d["WL_CODE"] + "','"+d["WL_NAME"]+"','"+d["ID"]+"',"+d["WL_SORT"]+")";
             return db.ExecutByStringResult(sql);
         }
 
         public string EditZDWZPZInfo(Dictionary<string, string> d)
         {
-            string sql = " UPDATE WZ_ZDWZPZ SET WL_CODE='" + d["WL_CODE"] + "', WL_NAME='"+d["WL_NAME"]+ "',WL_SORT='"+d["WL_SORT"]+"'" + " WHERE ID='"+d["ID"]+"'";
+            string sql = " UPDATE WZ_ZDWZPZ SET WL_CODE='" + d["WL_CODE"] + "', WL_NAME='"+d["WL_NAME"]+ "',WL_SORT="+d["WL_SORT"]+"" + " WHERE ID='"+d["ID"]+"'";
             return db.ExecutByStringResult(sql);
         }
         public string DelZDWZPZInfo(Dictionary<string, object> d)
@@ -53,9 +54,9 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
 
-        public DataTable GetRepeat(string WL_CODE,string YEAR)
+        public DataTable GetRepeat(string WL_CODE)
         {
-            string sql = "SELECT 1 FROM WZ_ZDWZPZ WHERE WL_CODE='"+ WL_CODE+"'AND YEAR='"+YEAR+"'";
+            string sql = "SELECT 1 FROM WZ_ZDWZPZ WHERE WL_CODE='"+ WL_CODE+"'";
             return db.GetDataTable(sql);
         }
 
