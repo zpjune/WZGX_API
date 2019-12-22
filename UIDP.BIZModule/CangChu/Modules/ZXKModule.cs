@@ -407,12 +407,12 @@ namespace UIDP.BIZModule.CangChu.Modules
             return r;
         }
 
-        public Dictionary<string,object> GetStatusDetail(string LGPLA,int page,int limit)
+        public Dictionary<string,object> GetStatusDetail(string LGPLA,string MATNR, string WERKS,int page,int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetStatusDetail(LGPLA);
+                DataTable dt = db.GetStatusDetail(LGPLA,MATNR,WERKS);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

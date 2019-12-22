@@ -119,6 +119,6 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="limit">每页条数</param>
         /// <returns></returns>
         [HttpGet("GetStatusDetail")]
-        public IActionResult GetStatusDetail(string LGPLA, int page, int limit) => Ok(ZXK.GetStatusDetail(LGPLA, page, limit));
+        public IActionResult GetStatusDetail(string LGPLA,string MATNR,string WERKS,int page, int limit) => Ok(ZXK.GetStatusDetail(LGPLA,MATNR,WERKS, page, limit));
     }
 }

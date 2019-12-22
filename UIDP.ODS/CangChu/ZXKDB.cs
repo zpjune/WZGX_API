@@ -472,15 +472,23 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
 
-        public DataTable GetStatusDetail(string LGPLA)
+        public DataTable GetStatusDetail(string LGPLA,string MATNR,string WERKS)
         {
             string date = DateTime.Now.ToString("yyyyMMdd");
             string sql = " SELECT ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS,SUM(GESME) AS GESME," +
-                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" +date+ " ','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 6 THEN 01 ELSE 02 END ) AS status "+
+                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + " ','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 6 THEN 01 ELSE 02 END ) AS status " +
                 " FROM CONVERT_SWKC" +
-                " WHERE LGPLA='" + LGPLA + "'" +
-                "GROUP BY  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS," +
-                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" +date+ "','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 6 THEN 01 ELSE 02 END )"+
+                " WHERE LGPLA='" + LGPLA + "'";
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                sql += " AND MATNR LIKE'%" + MATNR + "%'";
+            }
+            if (!string.IsNullOrEmpty(WERKS))
+            {
+                sql += " AND WERKS='" + WERKS + "'";
+            }
+            sql += "GROUP BY  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS," +
+                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + "','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 6 THEN 01 ELSE 02 END )" +
                 " ORDER BY ZSTATUS";
             return db.GetDataTable(sql);
         }
