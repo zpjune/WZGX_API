@@ -412,19 +412,19 @@ namespace UIDP.BIZModule.CangChu.Modules
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetStatusDetail(LGPLA,MATNR,WERKS);
-                if (dt.Rows.Count > 0)
+                DataSet ds = db.GetStatusDetail(LGPLA,MATNR,WERKS,page,limit);
+                if (ds.Tables[0].Rows.Count > 0)
                 {
                     r["code"] = 2000;
                     r["message"] = "成功";
-                    r["items"] = KVTool.GetPagedTable(dt, page, limit);
-                    r["total"] = dt.Rows.Count;
+                    r["items"] = ds.Tables[0];
+                    r["total"] = ds.Tables[1].Rows[0]["TOTAL"];
                 }
                 else
                 {
                     r["code"] = 2000;
                     r["message"] = "成功,但是没有数据";
-                    r["items"] = dt;
+                    r["items"] = new DataTable();
                     r["total"] = 0;
                 }
             }

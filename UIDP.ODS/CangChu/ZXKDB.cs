@@ -472,25 +472,33 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
 
-        public DataTable GetStatusDetail(string LGPLA,string MATNR,string WERKS)
+        public DataSet GetStatusDetail(string LGPLA,string MATNR,string WERKS,int page,int limit)
         {
+            string PartSql = " {0} SELECT {1} FROM {2}";
             string date = DateTime.Now.ToString("yyyyMMdd");
-            string sql = " SELECT ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS,SUM(GESME) AS GESME," +
-                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + " ','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 6 THEN 01 ELSE 02 END ) AS status " +
+            string MainSql = " (SELECT ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS,SUM(GESME) AS GESME," +
+                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + " ','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 12 THEN 01 ELSE 02 END ) AS status " +
                 " FROM CONVERT_SWKC" +
                 " WHERE LGPLA='" + LGPLA + "'";
             if (!string.IsNullOrEmpty(MATNR))
             {
-                sql += " AND MATNR LIKE'%" + MATNR + "%'";
+                MainSql += " AND MATNR LIKE'%" + MATNR + "%'";
             }
             if (!string.IsNullOrEmpty(WERKS))
             {
-                sql += " AND WERKS='" + WERKS + "'";
+                MainSql += " AND WERKS='" + WERKS + "'";
             }
-            sql += "GROUP BY  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS," +
-                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + "','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 6 THEN 01 ELSE 02 END )" +
-                " ORDER BY ZSTATUS";
-            return db.GetDataTable(sql);
+            MainSql += "GROUP BY  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS," +
+                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + "','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 12 THEN 01 ELSE 02 END )" +
+                " ORDER BY ZSTATUS)t";
+
+            string DetailSql = string.Format(PartSql, " SELECT * FROM ( ", "ROWNUM rn, t.*", MainSql + " WHERE ROWNUM<" + ((page * limit) + 1) + ")WHERE rn>" + ((page - 1) * limit));
+            string TotailSql = string.Format(PartSql, "", "COUNT(*) AS TOTAL", MainSql);
+            Dictionary<string, string> list = new Dictionary<string, string>();
+            list.Add("DetailSql", DetailSql);
+            list.Add("TotailSql", TotailSql);
+            return db.GetDataSet(list);
+            //return db.GetDataTable(sql);
         }
     }
 }
