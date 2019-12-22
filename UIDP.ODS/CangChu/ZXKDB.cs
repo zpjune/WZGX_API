@@ -492,8 +492,21 @@ namespace UIDP.ODS.CangChu
                 " ( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + "','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 12 THEN 01 ELSE 02 END )" +
                 "  order by ZSTATUS)t";
 
+            string MainTotal = " (SELECT ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS,SUM(GESME) AS GESME" +
+                " FROM CONVERT_SWKC" +
+                " WHERE LGPLA='" + LGPLA + "'";
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                MainTotal += " AND MATNR LIKE'%" + MATNR + "%'";
+            }
+            if (!string.IsNullOrEmpty(WERKS))
+            {
+                MainTotal += " AND WERKS='" + WERKS + "'";
+            }
+            MainTotal += " group by  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS order by ZSTATUS)t";
+
             string DetailSql = string.Format(PartSql, " SELECT * FROM ( ", "ROWNUM rn, t.*", MainSql + " WHERE ROWNUM<" + ((page * limit) + 1) + ")WHERE rn>" + ((page - 1) * limit));
-            string TotailSql = string.Format(PartSql, "", "COUNT(*) AS TOTAL", MainSql);
+            string TotailSql = string.Format(PartSql, "", "COUNT(*) AS TOTAL", MainTotal);
             Dictionary<string, string> list = new Dictionary<string, string>();
             list.Add("DetailSql", DetailSql);
             list.Add("TotailSql", TotailSql);
