@@ -74,8 +74,8 @@ namespace UIDP.ODS.CangChu
             }
             MainSql+= " {2}" +
                 " {3}" +
-                " GROUP BY a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME" +
-                " ORDER BY ZDHTZD DESC)t";        
+                " group by a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME" +
+                " order by ZDHTZD DESC)t";        
             //" AND g.CKH='"+FacCode+"'" +
 
 
@@ -179,8 +179,8 @@ namespace UIDP.ODS.CangChu
             }
             MainSql += " {2}" +
                 " {3}" +
-                " GROUP BY a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME" +
-                " ORDER BY ZCKTZD DESC)t";               
+                " group by a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME" +
+                " order by ZCKTZD DESC)t";               
             if (!string.IsNullOrEmpty(MATNR))
             {
                 //MainSql += " AND a.MATNR='" + MATNR + "'";
@@ -271,8 +271,8 @@ namespace UIDP.ODS.CangChu
                 " where ZSTATUS='04'" +
                 " AND SUBSTR(LGPLA,0,2)='" + FacCode + "'" +
                 " AND MONTHS_BETWEEN(TO_DATE('" + DateTime.Now.ToString("yyyyMMdd") + "','yyyyMMdd'),TO_DATE(ERDAT,'yyyyMMdd'))>" + Month_between +
-                " GROUP BY SUBSTR(LGPLA,3,2)" +
-                " ORDER BY SUBSTR(LGPLA,3,2)";
+                " group by SUBSTR(LGPLA,3,2)" +
+                " order by SUBSTR(LGPLA,3,2)";
             return db.GetDataTable(sql);
         }
         ///重点物资储备-分库(赞停用)
@@ -383,21 +383,21 @@ namespace UIDP.ODS.CangChu
             dc.Add("zgcb", sql);
             sql = "  select SUM(A.GESME)GESME";
             sql += " FROM CONVERT_SWKC_RECORD A WHERE substr(A.LGPLA,0,2)='"+DKCODE+"' and A.MATNR = '" + MATNR + "'  and A.KCTYPE<>3 AND substr(A.WERKS,0,3)= 'C27' and substr(A.DLDATE,0,4)='" + year + "'";
-            sql += "  GROUP BY A.DLDATE ";
+            sql += "  group by A.DLDATE ";
             dc.Add("kc", sql);
             sql = "select sum(ZSJDHSL)ZSJDHSL,to_char(to_date(B.ERDAT,'yyyy-mm-dd'),'ww')WEEK";
             sql += " from ZC10MMDG072 A";
             sql += " join ZC10MMDG085A B on A.ZDHTZD = B.ZDHTZD AND A.ZITEM = B.ZITEM";
             sql += " JOIN WZ_KCDD C ON C.DWCODE=A.WERKS AND C.KCDD_CODE=A.LGORT AND C.CKH='"+DKCODE+"' ";
             sql += " WHERE A.ZSTATUS > '03' and substr(A.ZCJRQ,1,4)= '" + year + "' and A.MATNR = '" + MATNR + "' AND substr(A.WERKS,0,3)= 'C27'";
-            sql += " GROUP BY   to_char(to_date(B.ERDAT, 'yyyy-mm-dd'), 'ww')";
+            sql += " group by   to_char(to_date(B.ERDAT, 'yyyy-mm-dd'), 'ww')";
             dc.Add("rk", sql);
             sql = " select sum(ZSJFHSL)ZSJFHSL,to_char(to_date(B.ERDAT,'yyyy-mm-dd'),'ww')WEEK";
             sql += "   from ZC10MMDG078 A";
             sql += "   join ZC10MMDG085A B on A.ZCKTZD = B.ZCKTZD AND A.ZCITEM = B.ZCITEM";
             sql += " JOIN WZ_KCDD C ON C.DWCODE=A.WERKS AND C.KCDD_CODE=A.LGORT AND C.CKH='" + DKCODE + "' ";
             sql += "   WHERE A.ZSTATUS > '02' and substr(A.ZCJRQ,1,4)= '" + year + "' and A.MATNR = '" + MATNR + "' AND substr(A.WERKS,0,3)= 'C27'";
-            sql += "   GROUP BY   to_char(to_date(B.ERDAT, 'yyyy-mm-dd'), 'ww')";
+            sql += "   group by   to_char(to_date(B.ERDAT, 'yyyy-mm-dd'), 'ww')";
             dc.Add("ck", sql);
             return db.GetDataSet(dc);
 
@@ -488,9 +488,9 @@ namespace UIDP.ODS.CangChu
             {
                 MainSql += " AND WERKS='" + WERKS + "'";
             }
-            MainSql += "GROUP BY  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS," +
-                "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + "','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 12 THEN 01 ELSE 02 END )" +
-                " ORDER BY ZSTATUS)t";
+            MainSql += " group by  ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS," +
+                " ( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + "','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 12 THEN 01 ELSE 02 END )" +
+                "  order by ZSTATUS)t";
 
             string DetailSql = string.Format(PartSql, " SELECT * FROM ( ", "ROWNUM rn, t.*", MainSql + " WHERE ROWNUM<" + ((page * limit) + 1) + ")WHERE rn>" + ((page - 1) * limit));
             string TotailSql = string.Format(PartSql, "", "COUNT(*) AS TOTAL", MainSql);
