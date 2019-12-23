@@ -120,5 +120,15 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetStatusDetail")]
         public IActionResult GetStatusDetail(string LGPLA,string MATNR,string WERKS,int page, int limit) => Ok(ZXK.GetStatusDetail(LGPLA,MATNR,WERKS, page, limit));
+
+        /// <summary>
+        /// 平面图悬浮窗查询
+        /// </summary>
+        /// <param name="LGPLA">货位号</param>
+        /// <param name="page">页数</param>
+        /// <param name="limit">每页条数</param>
+        /// <returns></returns>
+        [HttpGet("GetFloatWindowInfo")]
+        public IActionResult GetFloatWindowInfo(string LGPLA, int page, int limit) => Ok(ZXK.GetFloatWindowInfo(LGPLA, page, limit));
     }
 }

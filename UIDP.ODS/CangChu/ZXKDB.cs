@@ -39,7 +39,7 @@ namespace UIDP.ODS.CangChu
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
-                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
+                " JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
                 " WHERE a.ZSTATUS='01'" +
                 " AND SUBSTR( a.WERKS, 0, 3 ) = 'C27'" +
                 " AND a.ZCJRQ > trunc('" + DateTime.Now.ToString("yyyyMMdd") + "'-7)";
@@ -65,7 +65,7 @@ namespace UIDP.ODS.CangChu
                 " CAST(b.ORG_NAME  AS NVARCHAR2(100)) AS DW_NAME" +//单位名称
                 " FROM JJRK a" +//紧急入库单表名
                 " JOIN TS_UIDP_ORG b ON a.DW_CODE=b.ORG_CODE" +
-                " JOIN WZ_KCDD c ON a.KCDD=c.KCDD_CODE AND EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE )" +
+                " WZ_KCDD c ON a.KCDD=c.KCDD_CODE AND EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE )" +
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
                 " WHERE a.APPROVAL_STATUS = '2'";
             if (!string.IsNullOrEmpty(FacCode))
@@ -144,7 +144,7 @@ namespace UIDP.ODS.CangChu
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
-                " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
+                " JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
                 " WHERE a.ZSTATUS='01'" +
                 " AND SUBSTR( a.WERKS, 0, 3 ) = 'C27'" +
                 " AND a.ZCJRQ > trunc('" + DateTime.Now.ToString("yyyyMMdd") + "'-7)";
@@ -512,6 +512,14 @@ namespace UIDP.ODS.CangChu
             list.Add("TotailSql", TotailSql);
             return db.GetDataSet(list);
             //return db.GetDataTable(sql);
+        }
+
+        public DataTable GetFloatWindowInfo(string LGPLA)
+        {
+            string sql = " select  SUBSTR(MATKL, 0, 2) as DL,SUM(GESME)AS GESME,MAX(MEINS) AS MEINS,COUNT(*) AS SL" +
+                " from CONVERT_SWKC  where LGPLA='" + LGPLA + "'" +
+                " group by SUBSTR(MATKL, 0, 2) order by SUBSTR(MATKL, 0, 2) ";
+            return db.GetDataTable(sql);
         }
     }
 }
