@@ -521,8 +521,17 @@ namespace UIDP.ODS.CangChu
             string sql = " select  SUBSTR(MATKL, 0, 2) as DL,SUM(GESME)AS GESME,MAX(MEINS) AS MEINS,COUNT(*) AS SL" +
                 " from CONVERT_SWKC  where LGPLA='" + LGPLA + "'" +
                 " AND SUBSTR(WERKS,0,3)='C27'" +
+                " AND KCTYPE<>3 " +
                 " group by SUBSTR(MATKL, 0, 2) order by SUBSTR(MATKL, 0, 2) ";
             return db.GetDataTable(sql);
+        }
+        public DataTable GetGetFloatWindowDetailInfo(string LGPLA,string DLCODE)
+        {
+            string sql = " select ZSTATUS,MATNR,WERKS,WERKS_NAME,MATKL,MATNR,MAKTX,MEINS,SUM(GESME)AS GESME,LGORT,LGORT_NAME FROM CONVERT_SWKC " +
+                " where LGPLA='"+LGPLA+"'" +
+                " AND SUBSTR(MATKL,0,2)='" + DLCODE+"'" +
+                " group by ZSTATUS,MATNR,WERKS,WERKS_NAME,MATKL,MATNR,MAKTX,MEINS,LGORT,LGORT_NAME";
+             return db.GetDataTable(sql);
         }
     }
 }

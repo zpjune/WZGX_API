@@ -465,5 +465,35 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+
+        public Dictionary<string, object> GetGetFloatWindowDetailInfo(string LGPLA, string DLCODE,int page,int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetGetFloatWindowDetailInfo(LGPLA, DLCODE);
+                //DataTable dt = db.getZDWZCRKDetail(DKCODE,MATNR, MONTH);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
     }
 }
