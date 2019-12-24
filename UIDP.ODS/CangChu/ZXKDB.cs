@@ -479,7 +479,8 @@ namespace UIDP.ODS.CangChu
             string MainSql = " (SELECT ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS,SUM(GESME) AS GESME," +
                 "( CASE WHEN MONTHS_BETWEEN( TO_DATE( '" + date + " ','yyyyMMdd' ), TO_DATE( ERDAT, 'yyyyMMdd' )) > 12 THEN 01 ELSE 02 END ) AS status " +
                 " FROM CONVERT_SWKC" +
-                " WHERE LGPLA='" + LGPLA + "'";
+                " WHERE LGPLA='" + LGPLA + "'" +
+                " AND SUBSTR(WERKS,0,3)='C27'";
             if (!string.IsNullOrEmpty(MATNR))
             {
                 MainSql += " AND MATNR LIKE'%" + MATNR + "%'";
@@ -494,7 +495,8 @@ namespace UIDP.ODS.CangChu
 
             string MainTotal = " (SELECT ZSTATUS,WERKS,MATKL,MATNR,MAKTX,MEINS,SUM(GESME) AS GESME" +
                 " FROM CONVERT_SWKC" +
-                " WHERE LGPLA='" + LGPLA + "'";
+                " WHERE LGPLA='" + LGPLA + "'" +
+                " AND SUBSTR(WERKS,0,3)='C27'";
             if (!string.IsNullOrEmpty(MATNR))
             {
                 MainTotal += " AND MATNR LIKE'%" + MATNR + "%'";
@@ -518,6 +520,7 @@ namespace UIDP.ODS.CangChu
         {
             string sql = " select  SUBSTR(MATKL, 0, 2) as DL,SUM(GESME)AS GESME,MAX(MEINS) AS MEINS,COUNT(*) AS SL" +
                 " from CONVERT_SWKC  where LGPLA='" + LGPLA + "'" +
+                " AND SUBSTR(WERKS,0,3)='C27'" +
                 " group by SUBSTR(MATKL, 0, 2) order by SUBSTR(MATKL, 0, 2) ";
             return db.GetDataTable(sql);
         }
