@@ -525,13 +525,25 @@ namespace UIDP.ODS.CangChu
                 " group by SUBSTR(MATKL, 0, 2) order by SUBSTR(MATKL, 0, 2) ";
             return db.GetDataTable(sql);
         }
-        public DataTable GetGetFloatWindowDetailInfo(string LGPLA,string DLCODE)
+        public DataTable GetGetFloatWindowDetailInfo(string LGPLA, string DLCODE, string LGORT, string MATNR, string MATKL)
         {
             string sql = " select ZSTATUS,MATNR,WERKS,WERKS_NAME,MATKL,MATNR,MAKTX,MEINS,SUM(GESME)AS GESME,LGORT,LGORT_NAME FROM CONVERT_SWKC " +
-                " where LGPLA='"+LGPLA+"'" +
-                " AND SUBSTR(MATKL,0,2)='" + DLCODE+"'" +
-                " group by ZSTATUS,MATNR,WERKS,WERKS_NAME,MATKL,MATNR,MAKTX,MEINS,LGORT,LGORT_NAME";
-             return db.GetDataTable(sql);
+                " where LGPLA='" + LGPLA + "'" +
+                " AND SUBSTR(MATKL,0,2)='" + DLCODE + "'";
+            if (!string.IsNullOrEmpty(LGORT))
+            {
+                sql += " AND WERKS='" + LGORT + "'";
+            }
+            if (!string.IsNullOrEmpty(MATKL))
+            {
+                sql += " AND MATKL='" + MATKL + "'";
+            }
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                sql += " AND MATNR like'%" + MATNR + "%'";
+            }
+            sql += " group by ZSTATUS,MATNR,WERKS,WERKS_NAME,MATKL,MATNR,MAKTX,MEINS,LGORT,LGORT_NAME";
+            return db.GetDataTable(sql);
         }
     }
 }

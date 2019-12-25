@@ -140,6 +140,6 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="limit">每页条数</param>
         /// <returns></returns>
         [HttpGet("GetGetFloatWindowDetailInfo")]
-        public IActionResult GetGetFloatWindowDetailInfo(string LGPLA,string DLCODE, int page, int limit) => Ok(ZXK.GetGetFloatWindowDetailInfo(LGPLA,DLCODE,page, limit));
+        public IActionResult GetGetFloatWindowDetailInfo(string LGPLA,string DLCODE,string LGORT,string MATNR,string MATKL,int page, int limit) => Ok(ZXK.GetGetFloatWindowDetailInfo(LGPLA,DLCODE, LGORT,MATNR,MATKL,page, limit));
     }
 }

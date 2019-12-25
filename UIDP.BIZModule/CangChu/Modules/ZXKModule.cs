@@ -466,12 +466,12 @@ namespace UIDP.BIZModule.CangChu.Modules
             return r;
         }
 
-        public Dictionary<string, object> GetGetFloatWindowDetailInfo(string LGPLA, string DLCODE,int page,int limit)
+        public Dictionary<string, object> GetGetFloatWindowDetailInfo(string LGPLA, string DLCODE, string LGORT, string MATNR, string MATKL, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = db.GetGetFloatWindowDetailInfo(LGPLA, DLCODE);
+                DataTable dt = db.GetGetFloatWindowDetailInfo(LGPLA, DLCODE, LGORT, MATNR, MATKL);
                 //DataTable dt = db.getZDWZCRKDetail(DKCODE,MATNR, MONTH);
                 if (dt.Rows.Count > 0)
                 {
