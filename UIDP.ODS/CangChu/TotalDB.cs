@@ -112,6 +112,72 @@ namespace UIDP.ODS.CangChu
             sql += "group by werks,matnr,lgort,zstatus,WERKS_NAME,LGORT_NAME  ";//
             return db.GetDataTable(sql);
         }
+
+        /// <summary>
+        /// 积压物资分库-第一层 按单位分
+        /// </summary>
+        /// <param name="ISWZ"></param>
+        /// <param name="WERKS"></param>
+        /// <param name="DKCODE"></param>
+        /// <param name="MATNR"></param>
+        /// <param name="MATKL"></param>
+        /// <returns></returns>
+        public DataTable GetTotalJYWZ(string ISWZ, string WERKS)
+        {
+            string sql = " SELECT a.WERKS,a.WERKS_NAME,COUNT(DISTINCT a.MATNR) AS SL,SUM( a.GESME*NVL(b.DANJIA,0) ) AS SALK3 FROM CONVERT_SWKC a" +
+                " LEFT JOIN CONVERT_ZWKC b ON a.WERKS=b.BWKEY AND a.MATNR=b.MATNR" +
+                " {0}" +
+                " where months_between(sysdate,to_date(a.ERDAT,'yyyy-mm-dd'))>12" +
+                " AND a.KCTYPE=0" +
+                " AND c.CKH IS NOT NULL" +
+                " {1}";
+            if (ISWZ == "1")
+            {
+                sql = string.Format(sql, "LEFT JOIN WZ_KCDD c ON a.WERKS=c.DWCODE AND a.LGORT=c.KCDD_CODE", " AND c.CKH IS NOT NULL and substr(a.WERKS,1,3)='C27'");
+            }
+            else
+            {
+                sql = string.Format(sql, "", "");
+            }
+            if (!string.IsNullOrEmpty(WERKS))
+            {
+                sql += "  and a.WERKS='" + WERKS + "'";
+            }
+            sql += " GROUP BY a.WERKS,a.WERKS_NAME" +
+                " ORDER BY a.WERKS";
+            return db.GetDataTable(sql);
+        }
+
+
+        /// <summary>
+        /// 积压物资第二层 按大类分类
+        /// </summary>
+        /// <param name="ISWZ"></param>
+        /// <param name="WERKS"></param>
+        /// <param name="DKCODE"></param>
+        /// <returns></returns>
+        public DataTable GetDLJYWZ(string ISWZ, string WERKS)
+        {
+            string sql = " select SUBSTR(a.MATKL, 0,2)AS DLCODE,COUNT(DISTINCT a.MATNR) AS SL,SUM(a.GESME) AS GESME,a.MEINS,SUM( a.GESME*NVL(b.DANJIA,0) )AS SALK3" +
+                 " FROM CONVERT_SWKC a" +
+                 " LEFT JOIN CONVERT_ZWKC b ON a.WERKS=b.BWKEY AND a.MATNR=b.MATNR" +
+                 " {0}" +
+                 " where a.WERKS='" + WERKS + "'" +
+                 " AND months_between(SYSDATE,to_date( a.ERDAT, 'yyyy-mm-dd' )) > 12 " +
+                 " AND a.KCTYPE=0" +
+                 " {1}";
+            if (ISWZ == "1")
+            {
+                sql = string.Format(sql, "LEFT JOIN WZ_KCDD c ON a.WERKS=c.DWCODE AND a.LGORT=c.KCDD_CODE", " AND c.CKH IS NOT NULL and substr(a.WERKS,1,3)='C27'");
+            }
+            else
+            {
+                sql = string.Format(sql, "", "");
+            }
+            sql += " GROUP BY SUBSTR(a.MATKL, 0,2),a.MEINS" +
+                " ORDER BY SUBSTR(a.MATKL, 0,2)";
+            return db.GetDataTable(sql);
+        }
         /// <summary>
         /// 查询积压物资-总库页面
         /// </summary>
@@ -120,38 +186,39 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public DataTable GetJYWZ(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
+        public DataTable GetJYWZ(string DLCODE,string ISWZ,string MEINS,string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL)
         {
-            string sql = @" select row_number()over(order by werks,matnr asc),sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
+            string sql = @" select row_number()over(order by a.werks,a.matnr asc),sum(a.GESME) GESME,a.WERKS,a.WERKS_NAME,a.LGORT_NAME,a.LGORT,MAX(a.MATKL)MATKL,MAX(a.MAKTX)MAKTX,a.ZSTATUS,MAX(a.MEINS)MEINS,
                             '积压' ZT
-                               ,werks,matnr,lgort 
-                            from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
-            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>12 AND KCTYPE=0  ";
+                               ,a.werks,a.matnr,a.lgort,a.GESME*NVL(b.DANJIA,0)AS SALK3
+                            from CONVERT_SWKC a ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
+            sql += " LEFT JOIN CONVERT_ZWKC b ON a.WERKS = b.BWKEY AND a.MATNR = b.MATNR" +
+                " {0}";
+            sql += " where months_between(sysdate,to_date(a.ERDAT,'yyyy-mm-dd'))>12 " +
+                " AND SUBSTR(a.MATKL,0,2)='" + DLCODE + "'" +
+                " AND a.MEINS='"+MEINS+"'" +
+                " {1}";
             if (ISWZ == "1")
             {
-                sql += "  and substr(WERKS,1,3)='C27' ";
+                sql = string.Format(sql, "LEFT JOIN WZ_KCDD c ON a.WERKS=c.DWCODE AND a.LGORT=c.KCDD_CODE", " AND c.CKH IS NOT NULL and substr(a.WERKS,1,3)='C27'");
+            }
+            else
+            {
+                sql = string.Format(sql, "", "");
             }
             if (!string.IsNullOrEmpty(WERKS))
             {
-                sql += " and  WERKS ='" + WERKS + "'";
-            }
-            if (!string.IsNullOrEmpty(WERKS_NAME))
-            {
-                sql += " and  WERKS_NAME like'%" + WERKS_NAME + "%'";
-            }
-            if (!string.IsNullOrEmpty(LGORTNAME))
-            {
-                sql += " and  LGORT_NAME like'%" + LGORTNAME + "%'";
+                sql += " and  a.WERKS ='" + WERKS + "'";
             }
             if (!string.IsNullOrEmpty(MATNR))
             {
-                sql += " and  MATNR like'%" + MATNR + "%'";
+                sql += " and  a.MATNR like'%" + MATNR + "%'";
             }
             if (!string.IsNullOrEmpty(MATKL))
             {
-                sql += " and  MATKL like'%" + MATKL + "%'";
+                sql += " and  a.MATKL like'%" + MATKL + "%'";
             }
-            sql += "group by werks,matnr,lgort,zstatus,WERKS_NAME,LGORT_NAME ";//
+            sql += "group by a.werks,a.matnr,a.lgort,a.zstatus,a.WERKS_NAME,a.LGORT_NAME,a.GESME * NVL( b.DANJIA, 0 ) ";//
             return db.GetDataTable(sql);
         }
         /// <summary>

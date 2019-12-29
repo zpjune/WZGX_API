@@ -163,6 +163,65 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+
+        public Dictionary<string, object> GetTotalJYWZ(string ISWZ, string WERKS,int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetTotalJYWZ(ISWZ, WERKS);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功";
+                    r["total"] = dt.Rows.Count;
+                    r["items"] = KVTool.GetPagedTable(dt, page, limit);
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功,但是没有数据";
+                    r["total"] = 0;
+                    r["items"] = new DataTable();
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> GetDLJYWZ(string ISWZ, string WERKS,int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetDLJYWZ(ISWZ, WERKS);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功";
+                    r["total"] = dt.Rows.Count;
+                    r["items"] = KVTool.GetPagedTable(dt, page, limit);
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功,但是没有数据";
+                    r["total"] = 0;
+                    r["items"] = new DataTable();
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
         /// <summary>
         /// 查询积压物资-总库页面
         /// </summary>
@@ -171,13 +230,13 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public Dictionary<string, object> GetJYWZ(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit)
+        public Dictionary<string, object> GetJYWZ(string DLCODE,string MEINS,string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataTable dt = db.GetJYWZ( ISWZ,  WERKS, WERKS_NAME, LGORTNAME, MATNR, MATKL);
+                DataTable dt = db.GetJYWZ( DLCODE,ISWZ,MEINS,WERKS, WERKS_NAME, LGORTNAME, MATNR, MATKL);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

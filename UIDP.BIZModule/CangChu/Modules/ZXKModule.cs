@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Text;
+using UIDP.BIZModule.Modules;
 using UIDP.ODS.CangChu;
 using UIDP.UTILITY;
 
@@ -89,6 +91,64 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+
+        public Dictionary<string,object> GetTotalFK_JYWZ(string ISWZ, string WERKS, string DKCODE,int page,int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetTotalFK_JYWZ(ISWZ, WERKS, DKCODE);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功";
+                    r["total"] = dt.Rows.Count;
+                    r["items"] = KVTool.GetPagedTable(dt, page, limit);
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功,但是没有数据";
+                    r["total"] = 0;
+                    r["items"] = new DataTable();
+                }
+            }
+            catch(Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> GetDLFK_JYWZ(string ISWZ, string WERKS, string DKCODE, int page, int limit)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetDLFK_JYWZ(ISWZ, WERKS, DKCODE);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功";
+                    r["total"] = dt.Rows.Count;
+                    r["items"] = KVTool.GetPagedTable(dt, page, limit);
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功,但是没有数据";
+                    r["total"] = 0;
+                    r["items"] = new DataTable();
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
         /// <summary>
         /// 查询积压物资-分库查询
         /// </summary>
@@ -96,7 +156,7 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR"></param>
         /// <param name="MATKL"></param>
         /// <returns></returns>
-        public Dictionary<string, object> GetFK_JYWZ(string ISWZ, string WERKS, string DKCODE, string MATNR, string MATKL, int page, int limit)
+        public Dictionary<string, object> GetFK_JYWZ(string DLCODE,string ISWZ,string MEINS,string WERKS, string DKCODE, string MATNR, string MATKL, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
@@ -105,11 +165,11 @@ namespace UIDP.BIZModule.CangChu.Modules
                 if (DKCODE == "09")
                 {
                     CXZGKDB db1 = new CXZGKDB();
-                    dt=db1.GetFK_JYWZ(DKCODE, MATNR, MATKL);
+                    dt=db1.GetFK_JYWZ(DLCODE,DKCODE, MATNR, MATKL);
                 }
                 else
                 {
-                    dt = db.GetFK_JYWZ( ISWZ,  WERKS, DKCODE, MATNR, MATKL);
+                    dt = db.GetFK_JYWZ( DLCODE,ISWZ,MEINS,WERKS, DKCODE, MATNR, MATKL);
                 }
                 //DataTable dt = db.GetFK_JYWZ(DKCODE, MATNR, MATKL);
                 if (dt.Rows.Count > 0)
@@ -436,6 +496,37 @@ namespace UIDP.BIZModule.CangChu.Modules
             return r;
         }
 
+
+        public Dictionary<string, object> GetFloatWindowFirstInfo(string LGPLA)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetFloatWindowFirstInfo(LGPLA);
+                //DataTable dt = db.getZDWZCRKDetail(DKCODE,MATNR, MONTH);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = dt;
+                    r["message"] = "success";
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "success,but no info";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
         public Dictionary<string,object> GetFloatWindowInfo(string LGPLA,int page,int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
@@ -495,5 +586,79 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+
+        //public Dictionary<string,object> GetJYInfo(string LGPLA, string MATKL, string MATNR, int limit, int page)
+        //{
+        //    Dictionary<string, object> res = new Dictionary<string, object>();
+        //    try
+        //    {
+        //        DataSet ds = db.GetJYInfo(LGPLA, MATKL, MATNR, limit, page);
+        //        if (ds.Tables[0].Rows.Count > 0)
+        //        {
+        //            res["code"] = 2000;
+        //            res["message"] = "成功";
+        //            res["total"] = ds.Tables[0].Rows.Count;
+        //            res["items"] = CreateJYWZ(ds.Tables[0], ds.Tables[2]);
+        //        }
+        //        else
+        //        {
+        //            res["code"] = 2000;
+        //            res["message"] = "成功，但是没有数据";
+        //            res["total"] = 0;
+        //            res["items"] = new DataTable();
+        //        }
+        //    }
+        //    catch(Exception e)
+        //    {
+        //        res["code"] = -1;
+        //        res["message"] = e.Message;
+        //    }
+        //    return res;
+        //}
+        //public List<JYWZ> CreateJYWZ(DataTable MainTable,DataTable CompareTable)
+        //{
+        //    List<JYWZ> list = new List<JYWZ>();
+        //    foreach(DataRow dr in MainTable.Rows)
+        //    {
+        //        JYWZ node = new JYWZ();
+        //        node.WERKS = dr["WERKS"].ToString();
+        //        node.MATNR = dr["MATNR"].ToString();
+        //        node.MATKL = dr["MATKL"].ToString();
+        //        node.MAKTX = dr["MAKTX"].ToString();
+        //        node.MEINS = dr["MEINS"].ToString();
+        //        node.GESME = Convert.ToDecimal(dr["GESME"].ToString());
+        //        node.ZSTATUS = dr["ZSTATUS"].ToString();
+        //        node.KCSTATUS = GetStatus(node,CompareTable);
+        //        if (node.KCSTATUS == "01")
+        //        {
+        //            list.Add(node);
+        //        }
+                
+        //    }
+        //    return list;
+        //}
+
+        //public string GetStatus(JYWZ node, DataTable CompareTable)
+        //{
+        //    string res = "00";
+        //    DateTime Now = DateTime.Now;
+        //    string BUDAT_MKPF = Now.ToString();
+        //    decimal totalNumber = node.GESME;
+        //    foreach(DataRow dr in CompareTable.Select("WERKS='" + node.WERKS + "'AND MATNR like'%" + node.MATNR + "%'"))
+        //    {
+        //        totalNumber -= Convert.ToDecimal(dr["ZDHSL"].ToString());
+        //        if (totalNumber <= 0)
+        //        {
+        //            BUDAT_MKPF = dr["BUDAT_MKPF"].ToString();
+        //            break;
+        //        }
+        //    }
+            
+        //    if (((DateTime.Now - DateTime.Parse(BUDAT_MKPF)).Days / 30)> 12)
+        //    {
+        //        res = "01";
+        //    }
+        //    return res;
+        //}
     }
 }

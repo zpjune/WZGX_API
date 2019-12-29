@@ -51,6 +51,29 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("GetSWKC")]
         public IActionResult GetSWKC(string DLCODE,string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) => 
             Ok(md.GetSWKC( DLCODE,ISWZ,  WERKS, WERKS_NAME,  LGORTNAME,  MATNR,  MATKL,  page,  limit));
+
+        /// <summary>
+        /// 积压物资
+        /// </summary>
+        /// <param name="ISWZ">是否为物资公司</param>
+        /// <param name="WERKS">工厂代码</param>
+        /// <param name="page">页数</param>
+        /// <param name="limit">每页条数</param>
+        /// <returns></returns>
+        [HttpGet("GetTotalJYWZ")]
+        public IActionResult GetTotalJYWZ(string ISWZ, string WERKS, int page, int limit) => Ok(md.GetTotalJYWZ(ISWZ, WERKS, page, limit));
+
+        /// <summary>
+        /// 积压物资第二层查询 按大类分组
+        /// </summary>
+        /// <param name="ISWZ">是否为物资公司</param>
+        /// <param name="WERKS">工厂代码</param>
+        /// <param name="page">页数</param>
+        /// <param name="limit">每页条数</param>
+        /// <returns></returns>
+        [HttpGet("GetDLJYWZ")]
+        public IActionResult GetDLJYWZ(string ISWZ, string WERKS,int page, int limit) => Ok(md.GetDLJYWZ(ISWZ, WERKS, page, limit));
+
         /// <summary>
         /// 查询实物库存-总库页面
         /// </summary>
@@ -60,8 +83,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
         [HttpGet("GetJYWZ")]
-        public IActionResult GetJYWZ(string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
-            Ok(md.GetJYWZ( ISWZ,  WERKS, WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
+        public IActionResult GetJYWZ(string DLCODE,string MEINS,string ISWZ, string WERKS, string WERKS_NAME, string LGORTNAME, string MATNR, string MATKL, int page, int limit) =>
+            Ok(md.GetJYWZ(DLCODE, MEINS,ISWZ, WERKS, WERKS_NAME, LGORTNAME, MATNR, MATKL, page, limit));
         /// <summary>
         /// 总库存查询出入库金额 按年 按月分组统计
         /// </summary>

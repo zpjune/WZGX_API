@@ -36,6 +36,30 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetDCKInfo")]
         public IActionResult GetDCKInfo(string MATNR, string info,string FacCode,int page, int limit) => Ok(ZXK.GetDCKInfo(MATNR, info, FacCode,page, limit));
+
+        /// <summary>
+        /// 积压物资第一层查询 按单位分组
+        /// </summary>
+        /// <param name="ISWZ">是否为物资公司</param>
+        /// <param name="WERKS">工厂代码</param>
+        /// <param name="DKCODE">大库代码</param>
+        /// <param name="page">页数</param>
+        /// <param name="limit">每页条数</param>
+        /// <returns></returns>
+        [HttpGet("GetTotalFK_JYWZ")]
+        public IActionResult GetTotalFK_JYWZ(string ISWZ, string WERKS, string DKCODE, int page, int limit) => Ok(ZXK.GetTotalFK_JYWZ(ISWZ, WERKS, DKCODE, page, limit));
+
+        /// <summary>
+        /// 积压物资第二层查询 按大类分组
+        /// </summary>
+        /// <param name="ISWZ">是否为物资公司</param>
+        /// <param name="WERKS">工厂代码</param>
+        /// <param name="DKCODE">大库代码</param>
+        /// <param name="page">页数</param>
+        /// <param name="limit">每页条数</param>
+        /// <returns></returns>
+        [HttpGet("GetDLFK_JYWZ")]
+        public IActionResult GetDLFK_JYWZ(string ISWZ, string WERKS, string DKCODE, int page, int limit) => Ok(ZXK.GetDLFK_JYWZ(ISWZ, WERKS, DKCODE, page, limit));
         /// <summary>
         /// 查询积压物资-分库查询
         /// </summary>
@@ -46,7 +70,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet("GetFK_JYWZ")]
-        public IActionResult GetFK_JYWZ(string ISWZ, string WERKS, string DKCODE, string MATNR, string MATKL, int page, int limit) => Ok(ZXK.GetFK_JYWZ( ISWZ,  WERKS, DKCODE,  MATNR,  MATKL, page, limit));
+        public IActionResult GetFK_JYWZ(string DLCODE,string ISWZ,string MEINS,string WERKS, string DKCODE, string MATNR, string MATKL, int page, int limit) => Ok(ZXK.GetFK_JYWZ(DLCODE,ISWZ, MEINS,WERKS, DKCODE,  MATNR,  MATKL, page, limit));
 
         [HttpGet("GetFacStatus")]
         public IActionResult GetFacStatus(string FacCode) => Ok(ZXK.GetFacStatus(FacCode));
@@ -121,8 +145,17 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("GetStatusDetail")]
         public IActionResult GetStatusDetail(string LGPLA,string MATNR,string WERKS,int page, int limit) => Ok(ZXK.GetStatusDetail(LGPLA,MATNR,WERKS, page, limit));
 
+
+
         /// <summary>
-        /// 平面图悬浮窗查询
+        /// 平面图上半部第一层窗口
+        /// </summary>
+        /// <param name="LGPLA"></param>
+        /// <returns></returns>
+        [HttpGet("GetFloatWindowFirstInfo")]
+        public IActionResult GetFloatWindowFirstInfo(string LGPLA) => Ok(ZXK.GetFloatWindowFirstInfo(LGPLA));
+        /// <summary>
+        /// 平面图上半部第二层窗口
         /// </summary>
         /// <param name="LGPLA">货位号</param>
         /// <param name="page">页数</param>
@@ -132,7 +165,7 @@ namespace WZGX.WebAPI.Controllers.CangChu
         public IActionResult GetFloatWindowInfo(string LGPLA, int page, int limit) => Ok(ZXK.GetFloatWindowInfo(LGPLA, page, limit));
 
         /// <summary>
-        /// 悬浮图展开查询
+        /// 平面图上半部第三层窗口
         /// </summary>
         /// <param name="LGPLA">货位号</param>
         /// <param name="DLCODE">大类编码</param>

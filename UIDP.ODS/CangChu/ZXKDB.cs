@@ -225,36 +225,95 @@ namespace UIDP.ODS.CangChu
             return db.GetDataSet(list);
         }
         /// <summary>
+        /// 积压物资分库-第一层 按单位分
+        /// </summary>
+        /// <param name="ISWZ"></param>
+        /// <param name="WERKS"></param>
+        /// <param name="DKCODE"></param>
+        /// <param name="MATNR"></param>
+        /// <param name="MATKL"></param>
+        /// <returns></returns>
+        public DataTable GetTotalFK_JYWZ(string ISWZ, string WERKS, string DKCODE)
+        {
+            string sql = " SELECT a.WERKS,a.WERKS_NAME,COUNT(distinct a.MATNR) AS SL,SUM( a.GESME*NVL(b.DANJIA,0) ) AS SALK3 FROM CONVERT_SWKC a" +
+                " LEFT JOIN CONVERT_ZWKC b ON a.WERKS=b.BWKEY AND a.MATNR=b.MATNR" +
+                " where months_between(sysdate,to_date(a.ERDAT,'yyyy-mm-dd'))>12" +
+                " AND SUBSTR(a.LGPLA, 0, 2)='" + DKCODE + "'" +
+                " AND a.KCTYPE=0";
+            if (ISWZ == "1")
+            {
+                sql += "  and substr(a.WERKS,1,3)='C27' ";
+            }
+            if (!string.IsNullOrEmpty(WERKS))
+            {
+                sql += "  and a.WERKS='"+WERKS+"'";
+            }
+            sql += " GROUP BY a.WERKS,a.WERKS_NAME" +
+                " ORDER BY a.WERKS";
+            return db.GetDataTable(sql);
+        }
+
+
+        /// <summary>
+        /// 积压物资第二层 按大类分类
+        /// </summary>
+        /// <param name="ISWZ"></param>
+        /// <param name="WERKS"></param>
+        /// <param name="DKCODE"></param>
+        /// <returns></returns>
+        public DataTable GetDLFK_JYWZ(string ISWZ,string WERKS,string DKCODE)
+        {
+            string sql = " select SUBSTR(a.MATKL, 0,2)AS DLCODE,COUNT(distinct a.MATNR) AS SL,SUM(a.GESME) AS GESME,a.MEINS,SUM( a.GESME*NVL(b.DANJIA,0) )AS SALK3" +
+                 " FROM CONVERT_SWKC a" +
+                 " LEFT JOIN CONVERT_ZWKC b ON a.WERKS=b.BWKEY AND a.MATNR=b.MATNR" +
+                 " WHERE SUBSTR(a.LGPLA, 0, 2)='" + DKCODE + "'" +
+                 " and a.WERKS='" + WERKS + "'" +
+                 " AND months_between(SYSDATE,to_date( a.ERDAT, 'yyyy-mm-dd' )) > 12 " +
+                 " AND a.KCTYPE=0";
+            if (ISWZ == "1")
+            {
+                sql += "  and substr(a.WERKS,1,3)='C27' ";
+            }
+            sql += " GROUP BY SUBSTR(a.MATKL, 0,2),a.MEINS" +
+                " ORDER BY SUBSTR(a.MATKL, 0,2)";
+            return db.GetDataTable(sql);
+        }
+
+        /// <summary>
         /// 查询积压物资-分库查询
         /// </summary>
         /// <param name="DKCODE">大库编码</param>
         /// <param name="MATNR"></param>
         /// <param name="MATKL"></param>
         /// <returns></returns>
-        public DataTable GetFK_JYWZ(string ISWZ, string WERKS, string DKCODE, string MATNR, string MATKL)
+        public DataTable GetFK_JYWZ(string DLCODE,string ISWZ,string MEINS,string WERKS, string DKCODE, string MATNR, string MATKL)
         {
-            string sql = @" select row_number()over(order by werks,matnr asc),sum(GESME) GESME,WERKS,WERKS_NAME,LGORT_NAME,LGORT,MAX(MATKL)MATKL,MAX(MAKTX)MAKTX,ZSTATUS,MAX(MEINS)MEINS,
+            string sql = @" select row_number()over(order by a.werks,a.matnr asc),sum(a.GESME) GESME,a.WERKS,a.WERKS_NAME,a.LGORT_NAME,a.LGORT,MAX(a.MATKL)MATKL,MAX(a.MAKTX)MAKTX,a.ZSTATUS,MAX(a.MEINS)MEINS,
                             '积压' ZT
-                               ,werks,matnr,lgort 
-                            from CONVERT_SWKC  ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
-            sql += "where months_between(sysdate,to_date(ERDAT,'yyyy-mm-dd'))>12 AND substr(LGPLA,1,2)='" + DKCODE + "' ";
+                               ,a.werks,a.matnr,a.lgort,a.GESME*NVL(b.DANJIA,0)AS SALK3
+                            from CONVERT_SWKC a ";//case when 用来判断状态zt是否过期 积压等状态  01 积压 02报废活超期 03 有保存期限  其他为正常（100）， zstatus 是表示上架还是质检（未上架）状态
+            sql += " LEFT JOIN CONVERT_ZWKC b ON a.WERKS = b.BWKEY AND a.MATNR = b.MATNR" +
+                " where months_between(sysdate,to_date(a.ERDAT,'yyyy-mm-dd'))>12 " +
+                " AND SUBSTR(a.MATKL,0,2)='"+DLCODE+"'" +
+                " AND SUBSTR(a.LGPLA,0,2)='"+DKCODE+"'" +
+                " AND a.MEINS='"+MEINS+"'";
             if (ISWZ == "1")
             {
-                sql += "  and substr(WERKS,1,3)='C27' ";
+                sql += "  and substr(a.WERKS,1,3)='C27' ";
             }
             if (!string.IsNullOrEmpty(WERKS))
             {
-                sql += " and  WERKS ='" + WERKS + "'";
+                sql += " and  a.WERKS ='" + WERKS + "'";
             }
             if (!string.IsNullOrEmpty(MATNR))
             {
-                sql += " and  MATNR like'%" + MATNR + "%'";
+                sql += " and  a.MATNR like'%" + MATNR + "%'";
             }
             if (!string.IsNullOrEmpty(MATKL))
             {
-                sql += " and  MATKL like'%" + MATKL + "%'";
+                sql += " and  a.MATKL like'%" + MATKL + "%'";
             }
-            sql += "group by werks,matnr,lgort,zstatus,WERKS_NAME,LGORT_NAME ";//
+            sql += "group by a.werks,a.matnr,a.lgort,a.zstatus,a.WERKS_NAME,a.LGORT_NAME,a.GESME * NVL( b.DANJIA, 0 ) ";//
             return db.GetDataTable(sql);
         }
 
@@ -516,15 +575,50 @@ namespace UIDP.ODS.CangChu
             //return db.GetDataTable(sql);
         }
 
+
+        /// <summary>
+        /// 获取悬浮窗第一个table
+        /// </summary>
+        /// <param name="LGPLA"></param>
+        /// <returns></returns>
+        public DataTable GetFloatWindowFirstInfo(string LGPLA)
+        {
+            string sql = " SELECT * FROM(" +
+                " SELECT b.DLNAME,t.* FROM(" +
+                " SELECT SUBSTR( MATKL, 0, 2 ) AS DL,SUM( GESME ) AS GESME,MAX( MEINS ) AS MEINS,COUNT( * ) AS SL FROM CONVERT_SWKC " +
+                " WHERE LGPLA = '" + LGPLA + "'" +
+                " AND SUBSTR( WERKS, 0, 3 ) = 'C27'" +
+                " AND KCTYPE = 0 " +
+                " GROUP BY SUBSTR( MATKL, 0, 2 ) ) t" +
+                " JOIN WZ_WLZ b ON b.DLCODE = t.DL " +
+                " ORDER BY SL  DESC ) tt" +
+                " WHERE ROWNUM=1";
+            return db.GetDataTable(sql);
+        }
+
+        /// <summary>
+        /// 获取悬浮窗第二级table
+        /// </summary>
+        /// <param name="LGPLA"></param>
+        /// <returns></returns>
         public DataTable GetFloatWindowInfo(string LGPLA)
         {
             string sql = " select  SUBSTR(MATKL, 0, 2) as DL,SUM(GESME)AS GESME,MAX(MEINS) AS MEINS,COUNT(*) AS SL" +
                 " from CONVERT_SWKC  where LGPLA='" + LGPLA + "'" +
                 " AND SUBSTR(WERKS,0,3)='C27'" +
-                " AND KCTYPE<>3 " +
+                " AND KCTYPE=0 " +
                 " group by SUBSTR(MATKL, 0, 2) order by SUBSTR(MATKL, 0, 2) ";
             return db.GetDataTable(sql);
         }
+        /// <summary>
+        /// 获取悬浮窗第三级table
+        /// </summary>
+        /// <param name="LGPLA"></param>
+        /// <param name="DLCODE"></param>
+        /// <param name="LGORT"></param>
+        /// <param name="MATNR"></param>
+        /// <param name="MATKL"></param>
+        /// <returns></returns>
         public DataTable GetGetFloatWindowDetailInfo(string LGPLA, string DLCODE, string LGORT, string MATNR, string MATKL)
         {
             string sql = " select ZSTATUS,MATNR,WERKS,WERKS_NAME,MATKL,MATNR,MAKTX,MEINS,SUM(GESME)AS GESME,LGORT,LGORT_NAME FROM CONVERT_SWKC " +
@@ -544,6 +638,50 @@ namespace UIDP.ODS.CangChu
             }
             sql += " group by ZSTATUS,MATNR,WERKS,WERKS_NAME,MATKL,MATNR,MAKTX,MEINS,LGORT,LGORT_NAME";
             return db.GetDataTable(sql);
+        }
+
+
+        public DataSet GetJYInfo(string FacCode,string MATKL,string MATNR,int limit,int page)
+        {
+            string MainSql = " SELECT MATKL,MATNR,WERKS,MAKTX,MEINS,SUM( GESME ) AS GESME,ZSTATUS" +
+                " FROM CONVERT_SWKC" +
+                " WHERE KCTYPE = 0" +
+                " AND SUBSTR(LGPLA,2,2) = '" + FacCode + "'" +
+                " {0}" +
+                " {1}";//占位符，为后面条件做准备
+            MainSql += " GROUP BY MATKL,MATNR,WERKS,MAKTX,MEINS,ZSTATUS";
+            
+            string ComparisonSql = " SELECT a.WERKS,a.MATNR,a.MATKL,a.ZDHSL,a.LGORT,c.BUDAT_MKPF FROM ZC10MMDG072 a " +
+                " JOIN ZC10MMDG085B b ON a.ZDHTZD=b.ZDHTZD AND a.ZITEM=b.ZITEM" +
+                " JOIN MSEG c ON a.MBLNR=c.MBLNR AND a.ZEILE=c.ZEILE" +
+                " WHERE SUBSTR(b.LGPLA,7,2)='" + FacCode + "'" +
+                " {0}" +
+                " {1}" +
+                " ORDER BY BUDAT_MKPF DESC";
+            if (!string.IsNullOrEmpty(MATKL))
+            {
+                MainSql = string.Format(MainSql, " AND MATKL='" + MATKL + "'", "{0}");
+                ComparisonSql = string.Format(ComparisonSql, " AND a.MATKL='" + MATKL + "'", "{0}");
+            }
+            else
+            {
+                MainSql = string.Format(MainSql, "", "{0}");
+                ComparisonSql = string.Format(ComparisonSql, "", "{0}");
+            }
+            if (!string.IsNullOrEmpty(MATNR))
+            {
+                MainSql = string.Format(MainSql, " AND MATNR like'%" + MATNR + "%'");
+                ComparisonSql = string.Format(ComparisonSql, " AND a.MATNR like'%" + MATNR + "%'");
+            }
+            else
+            {
+                MainSql = string.Format(MainSql, "");
+                ComparisonSql = string.Format(ComparisonSql, "");
+            }
+            Dictionary<string, string> list = new Dictionary<string, string>();
+            list.Add("DetailSql", MainSql);
+            list.Add("ComparisonSql", ComparisonSql);
+            return db.GetDataSet(list);
         }
     }
 }
