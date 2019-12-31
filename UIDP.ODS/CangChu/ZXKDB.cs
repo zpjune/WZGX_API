@@ -35,7 +35,7 @@ namespace UIDP.ODS.CangChu
                 " CAST(f.DW_NAME  AS NVARCHAR2(100)) AS DW_NAME	" +
                 " FROM ZC10MMDG072 a " +//入库单表名
                 " JOIN WZ_WLZ b ON a.MATKL=b.PMCODE" +
-                " JOIN LFA1 c ON a.LIFNR=c.LIFNR" +
+                " LEFT JOIN LFA1 c ON a.LIFNR=c.LIFNR" +
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
@@ -140,7 +140,7 @@ namespace UIDP.ODS.CangChu
                 " CAST(f.DW_NAME  AS NVARCHAR2(100)) AS DW_NAME	" +
                 " FROM ZC10MMDG078 a " +//出库单表名
                 " JOIN WZ_WLZ b ON a.MATKL=b.PMCODE" +
-                " JOIN LFA1 c ON a.LIFNR=c.LIFNR" +
+                " LEFT JOIN LFA1 c ON a.LIFNR=c.LIFNR" +
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
@@ -340,7 +340,7 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public DataTable getZDWZCB(string DKCODE, string WERKS_NAME, string MATNR, string MATKL)
+        public DataTable getZDWZCB(string DKCODE, string WERKS_NAME,string MATNR, string MATKL)
         {
             string sql = @" select sum(A.GESME) GESME,A.WERKS,A.WERKS_NAME,
                         MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR,MAX(D.MAXHAVING)MAXHAVING,MAX(MINHAVING)MINHAVING
@@ -371,7 +371,7 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public DataTable getDetailZDWZCBTOTAL(string DKCODE, string MATNR, string MATKL)
+        public DataTable getDetailZDWZCBTOTAL(string DKCODE, string MATNR,string MATKL,string MAKTX)
         {
             string sql = @" select sum(A.GESME) GESME,
                         MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR
@@ -379,7 +379,7 @@ namespace UIDP.ODS.CangChu
                         JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR
                         join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS 
                         ";// zstatus 是表示上架还是质检（未上架）状态
-            sql += "where A.KCTYPE<>3 AND  C.CKH='" + DKCODE + "'  and substr(WERKS,1,3)='C27'  ";
+            sql += "where A.KCTYPE<>3 AND  C.CKH='" + DKCODE + "'  and substr(WERKS,1,3)='C27'";
             if (!string.IsNullOrEmpty(MATNR))
             {
                 sql += " and  A.MATNR like'%" + MATNR + "%'";
@@ -388,7 +388,20 @@ namespace UIDP.ODS.CangChu
             {
                 sql += " and  A.MATKL like'%" + MATKL + "%'";
             }
-            sql += "  group by A.MATNR ";//
+            if (MAKTX == "钻井泥浆材料")
+            {
+                sql += " WHERE a.MAKTX LIKE '%封闭剂%' " +
+                    " or a.MAKTX LIKE '%膨润土粉%' " +
+                    " or a.MAKTX LIKE '%片碱%'" +
+                    " or a.MAKTX LIKE '%纯碱%'  " +
+                    " or a.MAKTX LIKE '%堵漏剂%' " +
+                    " or a.MAKTX LIKE '%润滑剂%'  ";
+            }
+            else
+            {
+                sql += " AND a.MAKTX LIKE '%" + MAKTX + "%'";
+            }
+            sql += "  group by A.MATNR,B.WL_SORT ORDER BY B.WL_SORT";//
             return db.GetDataTable(sql);
         }
         ///重点物资储备-分库明细
@@ -585,7 +598,7 @@ namespace UIDP.ODS.CangChu
         {
             string sql = " SELECT * FROM(" +
                 " SELECT b.DLNAME,t.* FROM(" +
-                " SELECT SUBSTR( MATKL, 0, 2 ) AS DL,SUM( GESME ) AS GESME,MAX( MEINS ) AS MEINS,COUNT( * ) AS SL FROM CONVERT_SWKC " +
+                " SELECT SUBSTR( MATKL, 0, 2 ) AS DL,SUM( GESME ) AS GESME,MAX( MEINS ) AS MEINS,COUNT( distinct MATNR ) AS SL FROM CONVERT_SWKC " +
                 " WHERE LGPLA = '" + LGPLA + "'" +
                 " AND SUBSTR( WERKS, 0, 3 ) = 'C27'" +
                 " AND KCTYPE = 0 " +
@@ -603,7 +616,7 @@ namespace UIDP.ODS.CangChu
         /// <returns></returns>
         public DataTable GetFloatWindowInfo(string LGPLA)
         {
-            string sql = " select  SUBSTR(MATKL, 0, 2) as DL,SUM(GESME)AS GESME,MAX(MEINS) AS MEINS,COUNT(*) AS SL" +
+            string sql = " select  SUBSTR(MATKL, 0, 2) as DL,SUM(GESME)AS GESME,MAX(MEINS) AS MEINS,COUNT(distinct MATNR) AS SL" +
                 " from CONVERT_SWKC  where LGPLA='" + LGPLA + "'" +
                 " AND SUBSTR(WERKS,0,3)='C27'" +
                 " AND KCTYPE=0 " +
@@ -682,6 +695,56 @@ namespace UIDP.ODS.CangChu
             list.Add("DetailSql", MainSql);
             list.Add("ComparisonSql", ComparisonSql);
             return db.GetDataSet(list);
+        }
+
+        public DataTable GetWLCount(string DKCODE)
+        {
+            List<string> list = new List<string>()
+            {
+                "套管",
+                "油管",
+                "重晶石粉",
+                "水泥",
+                "支撑剂",
+                "钻井泥浆材料",
+                "柴油"
+            };
+            string Total = "";
+            string sql = " SELECT NVL(SUM(a.GESME),0) AS GESME," +
+                " ( CASE WHEN MAX( a.MEINS ) IS NULL THEN '吨' ELSE MAX( a.MEINS ) END ) AS DW  " +
+                " FROM CONVERT_SWKC a" +
+                " JOIN WZ_ZDWZPZ b ON B.WL_CODE = a.MATNR" +
+                " JOIN WZ_KCDD c ON C.KCDD_CODE = a.LGORT" +
+                " AND c.DWCODE = a.WERKS";
+            if (!string.IsNullOrEmpty(DKCODE))
+            {
+                sql += " WHERE c.CKH='" + DKCODE + "'";
+            }
+            else
+            {
+                sql += " WHERE c.CKH IS NOT NULL";
+            }
+            sql += " AND a.MAKTX LIKE  {0}";
+            foreach (string Name in list)
+            {
+                if(Name.Trim()== "钻井泥浆材料")
+                {
+                    Total += string.Format(sql, "'%封闭剂%' " +
+                    " or a.MAKTX LIKE '%膨润土粉%' " +
+                    " or a.MAKTX LIKE '%片碱%'" +
+                    " or a.MAKTX LIKE '%纯碱%'  " +
+                    " or a.MAKTX LIKE '%堵漏剂%' " +
+                    " or a.MAKTX LIKE '%润滑剂%' UNION ALL ");
+                }
+                else
+                {
+                    Total += string.Format(sql, "'%" + Name + "%' UNION ALL ");
+                }
+                
+            }
+            char[] arr = { 'U', 'N', 'I', 'O', 'N', ' ', 'A', 'L', 'L' };
+            Total = Total.TrimEnd(arr);
+            return db.GetDataTable(Total);
         }
     }
 }

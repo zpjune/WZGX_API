@@ -474,13 +474,13 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public Dictionary<string, object> getZDWZCBTOTAL( string MATNR, string MATKL, int page, int limit)
+        public Dictionary<string, object> getZDWZCBTOTAL( string MATNR, string MATKL,string MAKTX,int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataTable dt = db.getZDWZCBTOTAL( MATNR, MATKL);
+                DataTable dt = db.getZDWZCBTOTAL( MATNR, MATKL,MAKTX);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

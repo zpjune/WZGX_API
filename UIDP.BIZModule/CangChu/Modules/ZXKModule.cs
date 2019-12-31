@@ -263,7 +263,7 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public Dictionary<string, object> getZDWZCB(string DKCODE, string WERKS_NAME, string MATNR, string MATKL, int page, int limit)
+        public Dictionary<string, object> getZDWZCB(string DKCODE, string WERKS_NAME,string MATNR, string MATKL, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
@@ -276,7 +276,7 @@ namespace UIDP.BIZModule.CangChu.Modules
                 }
                 else
                 {
-                    dt = db.getZDWZCB(DKCODE, WERKS_NAME, MATNR, MATKL);
+                    dt = db.getZDWZCB(DKCODE,WERKS_NAME,MATNR, MATKL);
                 }
 
                 //DataTable dt = db.getZDWZCB(DKCODE,WERKS_NAME, MATNR, MATKL);
@@ -311,13 +311,13 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="page"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public Dictionary<string, object> getDetailZDWZCBTOTAL(string DKCODE,  string MATNR, string MATKL, int page, int limit)
+        public Dictionary<string, object> getDetailZDWZCBTOTAL(string DKCODE,string MATNR, string MATKL,string MAKTX, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
                 DataTable dt = new DataTable();
-                dt = db.getDetailZDWZCBTOTAL(DKCODE,  MATNR, MATKL);
+                dt = db.getDetailZDWZCBTOTAL(DKCODE,MATNR, MATKL,MAKTX);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -586,6 +586,31 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+        public Dictionary<string,object> GetWLCount(string DKCODE)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetWLCount(DKCODE);
+                r["code"] = 2000;
+                r["message"] = "成功";
+                r["TG"] = dt.Rows[0].ItemArray;
+                r["YG"] = dt.Rows[1].ItemArray;
+                r["ZJSF"] = dt.Rows[2].ItemArray;
+                r["SN"] = dt.Rows[3].ItemArray;
+                r["ZCJ"] = dt.Rows[4].ItemArray;
+                r["ZJNJCL"] = dt.Rows[5].ItemArray;
+                r["CX"] = dt.Rows[6].ItemArray;
+            }
+            catch(Exception e)
+            {
+                r["message"] = e.Message;
+                r["code"] = -1;
+            }
+            return r;
+        }
+
+
 
         //public Dictionary<string,object> GetJYInfo(string LGPLA, string MATKL, string MATNR, int limit, int page)
         //{
@@ -633,7 +658,7 @@ namespace UIDP.BIZModule.CangChu.Modules
         //        {
         //            list.Add(node);
         //        }
-                
+
         //    }
         //    return list;
         //}
@@ -653,7 +678,7 @@ namespace UIDP.BIZModule.CangChu.Modules
         //            break;
         //        }
         //    }
-            
+
         //    if (((DateTime.Now - DateTime.Parse(BUDAT_MKPF)).Days / 30)> 12)
         //    {
         //        res = "01";

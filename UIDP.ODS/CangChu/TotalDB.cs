@@ -413,15 +413,15 @@ namespace UIDP.ODS.CangChu
         /// <param name="MATNR">物料编码</param>
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
-        public DataTable getZDWZCBTOTAL( string MATNR, string MATKL)
+        public DataTable getZDWZCBTOTAL( string MATNR, string MATKL, string MAKTX)
         {
             string sql = @" select sum(A.GESME) GESME,
                         MAX(A.MATKL)MATKL,MAX(A.MAKTX)MAKTX,MAX(A.MEINS)MEINS, A.MATNR
                         from CONVERT_SWKC A
                         JOIN WZ_ZDWZPZ B ON B.WL_CODE=A.MATNR
-                        ";// zstatus 是表示上架还是质检（未上架）状态
-            sql += "where  A.KCTYPE<>3 AND substr(werks,0,3)='C27' ";
-           
+                        join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS";// zstatus 是表示上架还是质检（未上架）状态
+            sql += " where  A.KCTYPE<>3 AND substr(werks,0,3)='C27' " +
+                " and C.CKH IS NOT NULL";       
             if (!string.IsNullOrEmpty(MATNR))
             {
                 sql += " and  A.MATNR like'%" + MATNR + "%'";
@@ -429,6 +429,19 @@ namespace UIDP.ODS.CangChu
             if (!string.IsNullOrEmpty(MATKL))
             {
                 sql += " and  A.MATKL like'%" + MATKL + "%'";
+            }
+            if (MAKTX == "钻井泥浆材料")
+            {
+                sql += " AND a.MAKTX LIKE '%封闭剂%' " +
+                    " or a.MAKTX LIKE '%膨润土粉%' " +
+                    " or a.MAKTX LIKE '%片碱%'" +
+                    " or a.MAKTX LIKE '%纯碱%'  " +
+                    " or a.MAKTX LIKE '%堵漏剂%' " +
+                    " or a.MAKTX LIKE '%润滑剂%'  ";
+            }
+            else
+            {
+                sql += " AND a.MAKTX LIKE '%" + MAKTX + "%'";
             }
             sql += "  group by A.MATNR,B.WL_SORT ORDER BY B.WL_SORT";//
             return db.GetDataTable(sql);
@@ -448,7 +461,8 @@ namespace UIDP.ODS.CangChu
                         left join WZ_KCDD C ON C.KCDD_CODE=A.LGORT AND C.DWCODE=A.WERKS
                         left join WZ_ZDWZWH D ON D.KC_CODE=C.CKH AND D.WL_CODE=A.MATNR
                         ";// zstatus 是表示上架还是质检（未上架）状态
-            sql += "where  A.KCTYPE<>3  AND substr(werks,0,3)='C27'";
+            sql += "where  A.KCTYPE<>3  AND substr(werks,0,3)='C27'" +
+                " AND C.CKH IS NOT NULL";
             if (!string.IsNullOrEmpty(WERKS_NAME))
             {
                 sql += " and  A.WERKS_NAME like'%" + WERKS_NAME + "%'";

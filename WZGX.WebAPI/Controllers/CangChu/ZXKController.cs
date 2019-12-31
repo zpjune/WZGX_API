@@ -71,7 +71,11 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetFK_JYWZ")]
         public IActionResult GetFK_JYWZ(string DLCODE,string ISWZ,string MEINS,string WERKS, string DKCODE, string MATNR, string MATKL, int page, int limit) => Ok(ZXK.GetFK_JYWZ(DLCODE,ISWZ, MEINS,WERKS, DKCODE,  MATNR,  MATKL, page, limit));
-
+        /// <summary>
+        /// 获取平面图各个点位状态展示字符串
+        /// </summary>
+        /// <param name="FacCode"></param>
+        /// <returns></returns>
         [HttpGet("GetFacStatus")]
         public IActionResult GetFacStatus(string FacCode) => Ok(ZXK.GetFacStatus(FacCode));
         /// <summary>
@@ -83,8 +87,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
         [HttpGet("getZDWZCB")]
-        public IActionResult getZDWZCB(string DKCODE, string WERKS_NAME, string MATNR, string MATKL, int page, int limit) =>
-            Ok(ZXK.getZDWZCB(DKCODE,WERKS_NAME, MATNR, MATKL, page, limit));
+        public IActionResult getZDWZCB(string DKCODE,string WERKS_NAME, string MATNR, string MATKL, int page, int limit) =>
+            Ok(ZXK.getZDWZCB(DKCODE,WERKS_NAME,MATNR, MATKL, page, limit));
         /// <summary>
         /// 重点物资储备查询-分库页面
         /// </summary>
@@ -95,8 +99,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet("getDetailZDWZCBTOTAL")]
-        public IActionResult getDetailZDWZCBTOTAL(string DKCODE, string MATNR, string MATKL, int page, int limit) =>
-           Ok(ZXK.getDetailZDWZCBTOTAL(DKCODE, MATNR, MATKL, page, limit));
+        public IActionResult getDetailZDWZCBTOTAL(string DKCODE, string MATNR, string MATKL,string MAKTX,int page, int limit) =>
+           Ok(ZXK.getDetailZDWZCBTOTAL(DKCODE, MATNR, MATKL,MAKTX,page, limit));
         /// <summary>
         /// 重点物资储备查询-分库页面明细
         /// </summary>
@@ -134,6 +138,15 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("getZDWZCRKDetail")]
         public IActionResult getZDWZCRKDetail(string DKCODE, string MATNR, string MONTH, int page, int limit) =>
             Ok(ZXK.getZDWZCRKDetail(DKCODE,MATNR, MONTH, page, limit));
+
+
+        /// <summary>
+        /// 获取重点物资物料数量
+        /// </summary>
+        /// <param name="DKCODE">大库编码</param>
+        /// <returns></returns>
+        [HttpGet("GetWLCount")]
+        public IActionResult GetWLCount(string DKCODE) => Ok(ZXK.GetWLCount(DKCODE));
 
         /// <summary>
         /// 平面图详情查询

@@ -141,8 +141,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="MATKL">物料组编码</param>
         /// <returns></returns>
         [HttpGet("getZDWZCBTOTAL")]
-        public IActionResult getZDWZCBTOTAL( string MATNR, string MATKL, int page, int limit) =>
-            Ok(md.getZDWZCBTOTAL( MATNR, MATKL, page, limit));
+        public IActionResult getZDWZCBTOTAL( string MATNR, string MATKL,string MAKTX,int page, int limit) =>
+            Ok(md.getZDWZCBTOTAL( MATNR, MATKL, MAKTX,page, limit));
         /// <summary>
         /// 重点物资储备明细查询-总库存
         /// </summary>
