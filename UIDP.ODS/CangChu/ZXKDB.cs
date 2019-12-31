@@ -728,12 +728,12 @@ namespace UIDP.ODS.CangChu
             {
                 sql += " WHERE c.CKH IS NOT NULL";
             }
-            sql += " AND (a.MAKTX LIKE  {0}";
+            sql += " {0}";
             foreach (string Name in list)
             {
                 if(Name.Trim()== "钻井泥浆材料")
                 {
-                    Total += string.Format(sql, "'%封闭剂%' " +
+                    Total += string.Format(sql, "AND (a.MAKTX LIKE '%封闭剂%' " +
                     " or a.MAKTX LIKE '%膨润土粉%' " +
                     " or a.MAKTX LIKE '%片碱%'" +
                     " or a.MAKTX LIKE '%纯碱%'  " +
@@ -742,7 +742,7 @@ namespace UIDP.ODS.CangChu
                 }
                 else
                 {
-                    Total += string.Format(sql, "'%" + Name + "%' UNION ALL ");
+                    Total += string.Format(sql, "AND a.MAKTX LIKE '%" + Name + "%' UNION ALL ");
                 }
                 
             }
