@@ -32,7 +32,8 @@ namespace UIDP.ODS.CangChu
                 " CAST(a.WERKS AS NVARCHAR2(100)) AS WERKS," +
                 " CAST(SUM( d.GESME )AS DECIMAL(18,2)) AS GESME," +
                 " CAST(c.NAME1 AS NVARCHAR2(100)) AS NAME1," +
-                " CAST(f.DW_NAME  AS NVARCHAR2(100)) AS DW_NAME	" +
+                " CAST(f.DW_NAME  AS NVARCHAR2(100)) AS DW_NAME," +
+                " CAST(g.KCDD_NAME AS  NVARCHAR2 ( 100 ))  AS KCDD_NAME" +
                 " FROM ZC10MMDG072 a " +//入库单表名
                 " JOIN WZ_WLZ b ON a.MATKL=b.PMCODE" +
                 " LEFT JOIN LFA1 c ON a.LIFNR=c.LIFNR" +
@@ -49,12 +50,12 @@ namespace UIDP.ODS.CangChu
             }
             MainSql += " {0}" +
                 " {1}" +
-                " GROUP BY a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,a.WERKS,c.NAME1,f.DW_NAME " +
+                " GROUP BY a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,a.WERKS,c.NAME1,f.DW_NAME,g.KCDD_NAME " +
                 //以上是入库单表查询出的数据，union all下面的是紧急入库单查询出来的数据
                 " UNION ALL " +
                 " SELECT" +
                 " CAST(a.CODE AS NVARCHAR2(100)) AS ZDHTZD," +//入库单号，紧急入库单自动生成
-                " CAST('' AS NVARCHAR2(100)) AS MATKL," +//物料组，紧急入库单不存在此字段
+                " CAST(a.MATKL AS NVARCHAR2(100)) AS MATKL," +//物料组
                 " CAST(a.MATNR AS NVARCHAR2(100)) AS MATNR," +//物料编码
                 " CAST(a.MATNX AS NVARCHAR2(100)) AS MAKTX," +//物料描述
                 " CAST(a.MEINS AS NVARCHAR2(100)) AS JBJLDW," +//计量单位
@@ -62,7 +63,8 @@ namespace UIDP.ODS.CangChu
                 " CAST(b.DW_CODE AS NVARCHAR2(100)) AS WERKS," +//工厂编号
                 " CAST(SUM(d.GESME) AS DECIMAL(18,2)) AS GESME," +//库存数量 
                 " CAST(a.GYS  AS NVARCHAR2(100)) AS NAME1," +//供应商名称
-                " CAST(b.ORG_NAME  AS NVARCHAR2(100)) AS DW_NAME" +//单位名称
+                " CAST(b.ORG_NAME  AS NVARCHAR2(100)) AS DW_NAME," +
+                " CAST(c.KCDD_NAME AS  NVARCHAR2 ( 100 ))  AS KCDD_NAME" +//单位名称
                 " FROM JJRK a" +//紧急入库单表名
                 " JOIN TS_UIDP_ORG b ON a.DW_CODE=b.ORG_CODE" +
                 " JOIN WZ_KCDD c ON a.KCDD=c.KCDD_CODE AND EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE )" +
@@ -74,7 +76,7 @@ namespace UIDP.ODS.CangChu
             }
             MainSql+= " {2}" +
                 " {3}" +
-                " group by a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME" +
+                " group by a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME,c.KCDD_NAME,a.MATKL" +
                 " order by ZDHTZD DESC)t";        
             //" AND g.CKH='"+FacCode+"'" +
 
@@ -137,7 +139,8 @@ namespace UIDP.ODS.CangChu
                 " CAST(a.WERKS AS NVARCHAR2(100)) AS WERKS," +
                 " CAST(SUM( d.GESME )AS DECIMAL(18,2)) AS GESME," +
                 " CAST(c.NAME1 AS NVARCHAR2(100)) AS NAME1," +
-                " CAST(f.DW_NAME  AS NVARCHAR2(100)) AS DW_NAME	" +
+                " CAST(f.DW_NAME  AS NVARCHAR2(100)) AS DW_NAME," +
+                " CAST(g.KCDD_NAME AS  NVARCHAR2 ( 100 ))  AS KCDD_NAME" +
                 " FROM ZC10MMDG078 a " +//出库单表名
                 " JOIN WZ_WLZ b ON a.MATKL=b.PMCODE" +
                 " LEFT JOIN LFA1 c ON a.LIFNR=c.LIFNR" +
@@ -154,12 +157,12 @@ namespace UIDP.ODS.CangChu
             }
             MainSql += " {0}" +
                 " {1}" +
-                " GROUP BY a.ZCKTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,a.WERKS,c.NAME1,f.DW_NAME " +
+                " GROUP BY a.ZCKTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,a.WERKS,c.NAME1,f.DW_NAME,g.KCDD_NAME" +
                 //以上是入出库单表查询出的数据，union all下面的是紧急出库单查询出来的数据
                 " UNION ALL " +
                 " SELECT" +
                 " CAST(a.CODE AS NVARCHAR2(100)) AS ZCKTZD," +//出库单号，紧急入库单自动生成
-                " CAST(''AS NVARCHAR2(100)) AS MATKL," +//物料组，紧急出库单不存在此字段
+                " CAST(a.MATKL AS NVARCHAR2(100)) AS MATKL," +//物料组
                 " CAST(a.MATNR AS NVARCHAR2(100)) AS MATNR," +//物料编码
                 " CAST(a.MATNX AS NVARCHAR2(100)) AS MAKTX," +//物料描述
                 " CAST(a.MEINS AS NVARCHAR2(100)) AS JBJLDW," +//计量单位
@@ -167,7 +170,8 @@ namespace UIDP.ODS.CangChu
                 " CAST(b.DW_CODE AS NVARCHAR2(100)) AS WERKS," +//工厂编号
                 " CAST(SUM(d.GESME) AS DECIMAL(18,2)) AS GESME," +//库存数量 
                 " CAST(a.GYS  AS NVARCHAR2(100)) AS NAME1," +//供应商名称
-                " CAST(b.ORG_NAME  AS NVARCHAR2(100)) AS DW_NAME" +//单位名称
+                " CAST(b.ORG_NAME  AS NVARCHAR2(100)) AS DW_NAME," +
+                " CAST(c.KCDD_NAME AS  NVARCHAR2 ( 100 ))  AS KCDD_NAME" +//单位名称
                 " FROM JJCK a" +//紧急出库单表名
                 " JOIN TS_UIDP_ORG b ON a.DW_CODE=b.ORG_CODE" +
                 " JOIN WZ_KCDD c ON a.KCDD=c.KCDD_CODE AND EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE )" +
@@ -179,7 +183,7 @@ namespace UIDP.ODS.CangChu
             }
             MainSql += " {2}" +
                 " {3}" +
-                " group by a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME" +
+                " group by a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME,c.KCDD_NAME,a.MATKL" +
                 " order by ZCKTZD DESC)t";               
             if (!string.IsNullOrEmpty(MATNR))
             {
