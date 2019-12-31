@@ -604,7 +604,7 @@ namespace UIDP.ODS.CangChu
                 " AND KCTYPE = 0 " +
                 " GROUP BY SUBSTR( MATKL, 0, 2 ) ) t" +
                 " JOIN WZ_WLZ b ON b.DLCODE = t.DL " +
-                " ORDER BY SL  DESC ) tt" +
+                " ORDER BY GESME  DESC ) tt" +
                 " WHERE ROWNUM=1";
             return db.GetDataTable(sql);
         }
@@ -724,7 +724,7 @@ namespace UIDP.ODS.CangChu
             {
                 sql += " WHERE c.CKH IS NOT NULL";
             }
-            sql += " AND a.MAKTX LIKE  {0}";
+            sql += " AND (a.MAKTX LIKE  {0}";
             foreach (string Name in list)
             {
                 if(Name.Trim()== "钻井泥浆材料")
@@ -734,7 +734,7 @@ namespace UIDP.ODS.CangChu
                     " or a.MAKTX LIKE '%片碱%'" +
                     " or a.MAKTX LIKE '%纯碱%'  " +
                     " or a.MAKTX LIKE '%堵漏剂%' " +
-                    " or a.MAKTX LIKE '%润滑剂%' UNION ALL ");
+                    " or a.MAKTX LIKE '%润滑剂%') UNION ALL ");
                 }
                 else
                 {
