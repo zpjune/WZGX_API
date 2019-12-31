@@ -390,12 +390,12 @@ namespace UIDP.ODS.CangChu
             }
             if (MAKTX == "钻井泥浆材料")
             {
-                sql += " WHERE a.MAKTX LIKE '%封闭剂%' " +
+                sql += " AND (a.MAKTX LIKE '%封闭剂%' " +
                     " or a.MAKTX LIKE '%膨润土粉%' " +
                     " or a.MAKTX LIKE '%片碱%'" +
                     " or a.MAKTX LIKE '%纯碱%'  " +
                     " or a.MAKTX LIKE '%堵漏剂%' " +
-                    " or a.MAKTX LIKE '%润滑剂%'  ";
+                    " or a.MAKTX LIKE '%润滑剂%')";
             }
             else
             {
