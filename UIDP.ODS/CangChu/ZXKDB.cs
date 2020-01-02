@@ -69,7 +69,7 @@ namespace UIDP.ODS.CangChu
                 " JOIN TS_UIDP_ORG b ON a.DW_CODE=b.ORG_CODE" +
                 " JOIN WZ_KCDD c ON a.KCDD=c.KCDD_CODE AND EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE )" +
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
-                " WHERE a.APPROVAL_STATUS = '2'";
+                " WHERE (a.APPROVAL_STATUS = 2 OR a.APPROVAL_STATUS = 5)";
             if (!string.IsNullOrEmpty(FacCode))
             {
                 MainSql += " AND c.CKH='" + FacCode + "'";
@@ -176,7 +176,7 @@ namespace UIDP.ODS.CangChu
                 " JOIN TS_UIDP_ORG b ON a.DW_CODE=b.ORG_CODE" +
                 " JOIN WZ_KCDD c ON a.KCDD=c.KCDD_CODE AND EXISTS( SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE )" +
                 " LEFT JOIN CONVERT_SWKC d ON a.MATNR=d.MATNR AND d.KCTYPE<>3" +
-                " WHERE a.APPROVAL_STATUS = '2'";
+                " WHERE (a.APPROVAL_STATUS = 2 OR a.APPROVAL_STATUS = 5)";
             if (!string.IsNullOrEmpty(FacCode))
             {
                 MainSql += " AND c.CKH='" + FacCode + "'";

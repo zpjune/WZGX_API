@@ -266,7 +266,7 @@ namespace UIDP.ODS.CangChu
             sql += " BGY_DATE=" + GetSQLStr(DateTime.Now, 1);
             sql += " EFFECTIVE_STATUS=0";//将紧急入库单的状态置为有效
             sql += " WHERE ID='" + d["ID"] + "'";
-            string sql1 = " INSERT INTO CONVERT_SWKC (WERKS,ZDHTZD,MATNR,MAKTX,MEINS,GESME,LGORT,KCTYPE,LGPLA,ID,MATKL)VALUES(";
+            string sql1 = " INSERT INTO CONVERT_SWKC (WERKS,ZDHTZD,MATNR,MAKTX,MEINS,GESME,LGORT,KCTYPE,LGPLA,ID,MATKL,ZSTATUS)VALUES(";
             sql1 += "(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE='" + d["DW_CODE"] + "'),";
             sql1 += GetSQLStr(d["CODE"]);
             sql1 += GetSQLStr(d["MATNR"]);
@@ -278,9 +278,10 @@ namespace UIDP.ODS.CangChu
             sql1 += GetSQLStr(d["LGPLA"]);
             sql1 += GetSQLStr(d["ID"]);
             sql1 += GetSQLStr(d["MATKL"]);
+            sql1 += GetSQLStr("04");
             sql1 = sql1.TrimEnd(',');
             sql1 += ")";
-            string sql2 = "INSERT INTO CONVERT_ZWKC (BWKEY,MATNR,SALK3,LBKUM,DANJIA,DLDATE,KCTYPE,ID,MATKL)VALUES(";
+            string sql2 = "INSERT INTO CONVERT_ZWKC (BWKEY,MATNR,SALK3,LBKUM,DANJIA,DLDATE,KCTYPE,ID,MATKL,ZSTATUS)VALUES(";
             sql2 += "(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE='" + d["DW_CODE"] + "'),";
             sql2+= GetSQLStr(d["MATNR"]);
             sql2 += GetSQLStr(d["TOTALPRICE1"],2);
