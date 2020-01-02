@@ -281,7 +281,7 @@ namespace UIDP.ODS.CangChu
             sql1 += GetSQLStr("04");
             sql1 = sql1.TrimEnd(',');
             sql1 += ")";
-            string sql2 = "INSERT INTO CONVERT_ZWKC (BWKEY,MATNR,SALK3,LBKUM,DANJIA,DLDATE,KCTYPE,ID,MATKL,ZSTATUS)VALUES(";
+            string sql2 = "INSERT INTO CONVERT_ZWKC (BWKEY,MATNR,SALK3,LBKUM,DANJIA,DLDATE,KCTYPE,ID,MATKL)VALUES(";
             sql2 += "(SELECT DW_CODE FROM TS_UIDP_ORG WHERE ORG_CODE='" + d["DW_CODE"] + "'),";
             sql2+= GetSQLStr(d["MATNR"]);
             sql2 += GetSQLStr(d["TOTALPRICE1"],2);
