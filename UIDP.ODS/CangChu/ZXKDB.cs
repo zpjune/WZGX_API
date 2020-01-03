@@ -73,7 +73,7 @@ namespace UIDP.ODS.CangChu
             if (!string.IsNullOrEmpty(FacCode))
             {
                 MainSql += " AND c.CKH='" + FacCode + "'";
-            }
+            } 
             MainSql+= " {2}" +
                 " {3}" +
                 " group by a.CODE,a.MATNR,a.MATNX,a.MEINS,a.RKNUMBER,b.DW_CODE,a.GYS,b.ORG_NAME,c.KCDD_NAME,a.MATKL" +

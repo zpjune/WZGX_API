@@ -292,30 +292,134 @@ namespace UIDP.ODS.CangChu
         /// <returns></returns>
         public DataTable getBGYGZL(string month, string workerName)
         {
-            string sql = @"select DISTINCT ERNAME,a.WORKER_NAME,COUNT(*)XMHJ,c.NAME AS WERKS_NAME,max(substr(ERDAT,1,6))NIANYUE,
-                            SUM(CASE WHEN JBJLDW='吨' then NSOLM ELSE 0 END ) HJ_DUN,
-                            SUM(CASE WHEN JBJLDW='米' then NSOLM ELSE 0 END ) HJ_MI,
-                            SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' then NSOLM ELSE 0 END ) HJ_QT,
-                            sum(CASE WHEN substr(TZD,1,1)='1' then 1 ELSE 0 END ) RKHJ,
-                            SUM(CASE WHEN JBJLDW='吨' and substr(TZD,1,1)='1' then NSOLM ELSE 0 END ) RK_DUN,
-                            SUM(CASE WHEN JBJLDW='米'  and substr(TZD,1,1)='1' then NSOLM ELSE 0 END ) RK_MI,
-                            SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' and substr(TZD,1,1)='1' then NSOLM ELSE 0 END ) RK_QT,
-                            sum(CASE WHEN substr(TZD,1,1)='2' then 1 ELSE 0 END ) CKHJ,
-                            SUM(CASE WHEN JBJLDW='吨' and substr(TZD,1,1)='2' then NSOLM ELSE 0 END ) CK_DUN,
-                            SUM(CASE WHEN JBJLDW='米'  and substr(TZD,1,1)='2' then NSOLM ELSE 0 END )  CK_MI,
-                            SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' and substr(TZD,1,1)='2' then NSOLM ELSE 0 END )  CK_QT
-                            from
-                            CONVERT_BGYGZL a 
-                            JOIN WZ_BGY b ON a.ERNAME=b.WORKER_CODE
-                            LEFT JOIN TS_DICTIONARY c ON b.CKH=c.CODE AND c.PARENTCODE='TOTAL'";
+            //不带紧急出入库的保管员工作量查询
+            //string sql = @"select DISTINCT ERNAME,a.WORKER_NAME,COUNT(*)XMHJ,c.NAME AS WERKS_NAME,max(substr(ERDAT,1,6))NIANYUE,
+            //                SUM(CASE WHEN JBJLDW='吨' then NSOLM ELSE 0 END ) HJ_DUN,
+            //                SUM(CASE WHEN JBJLDW='米' then NSOLM ELSE 0 END ) HJ_MI,
+            //                SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' then NSOLM ELSE 0 END ) HJ_QT,
+            //                sum(CASE WHEN substr(TZD,1,1)='1' then 1 ELSE 0 END ) RKHJ,
+            //                SUM(CASE WHEN JBJLDW='吨' and substr(TZD,1,1)='1' then NSOLM ELSE 0 END ) RK_DUN,
+            //                SUM(CASE WHEN JBJLDW='米'  and substr(TZD,1,1)='1' then NSOLM ELSE 0 END ) RK_MI,
+            //                SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' and substr(TZD,1,1)='1' then NSOLM ELSE 0 END ) RK_QT,
+            //                sum(CASE WHEN substr(TZD,1,1)='2' then 1 ELSE 0 END ) CKHJ,
+            //                SUM(CASE WHEN JBJLDW='吨' and substr(TZD,1,1)='2' then NSOLM ELSE 0 END ) CK_DUN,
+            //                SUM(CASE WHEN JBJLDW='米'  and substr(TZD,1,1)='2' then NSOLM ELSE 0 END )  CK_MI,
+            //                SUM(CASE WHEN JBJLDW<>'米' AND JBJLDW<>'吨' and substr(TZD,1,1)='2' then NSOLM ELSE 0 END )  CK_QT
+            //                from
+            //                CONVERT_BGYGZL a 
+            //                JOIN WZ_BGY b ON a.ERNAME=b.WORKER_CODE
+            //                LEFT JOIN TS_DICTIONARY c ON b.CKH=c.CODE AND c.PARENTCODE='TOTAL'";
 
-            sql += "   where substr(ERDAT,1,6)=substr('" + month + "',1,6)";
+            //sql += "   where substr(ERDAT,1,6)=substr('" + month + "',1,6)";
+            //if (!string.IsNullOrEmpty(workerName))
+            //{
+            //    sql += " and  WORKER_NAME like '%" + workerName + "%'";
+            //}
+            //sql += "  group by ERNAME,a.WORKER_NAME,c.NAME";
+            //return db.GetDataTable(sql);
+            /***
+             *以下查询逻辑如下 
+             * 1.正常查询 CONVERT_BGYGZL表内的保管员工作量
+             * 2.查询紧急入库表内的保管员工作量，入库字段正常查询，出库字段全部返回0
+             * 3.查询紧急出库表内的保管员工作量，出库字段正常查询，入库字段全部返回0
+             * 4.将上述3个表通过UNION ALL 拼合在一起
+             * 5.通过查询拼合三个表的数据对总数进行查询
+             ***/
+            ///总查询字段
+            string PartSql = "SELECT t.ERNAME,t.WORKER_NAME,COUNT(*)AS XMHJ,t.WERKS_NAME,t.NIANYUE," +
+                " SUM(t.RK_DUN+t.CK_DUN) AS HJ_DUN," +
+                " SUM(t.RK_MI+t.CK_MI) AS HJ_MI," +
+                " SUM(t.RK_QT+t.CK_QT) AS HJ_QT," +
+                " SUM(t.RKHJ) AS RKHJ," +
+                " SUM(t.RK_DUN) AS RK_DUN," +
+                " SUM(t.RK_MI) AS RK_MI," +
+                " SUM(t.RK_QT) AS RK_QT," +
+                " SUM(t.CKHJ) AS CKHJ," +
+                " SUM(t.CK_DUN) AS CK_DUN," +
+                " SUM(t.CK_MI) AS CK_MI," +
+                " SUM(t.CK_QT) AS CK_QT" +
+                " FROM({0} UNION ALL {1} UNION ALL {2})t" +
+                  " GROUP BY t.ERNAME,t.WORKER_NAME,t.WERKS_NAME,t.NIANYUE";
+            /***
+             * 下面代码是查询保管员工作量的sql
+             ***/
+            string BGYSql = " SELECT " +
+                " CAST(ERNAME AS NVARCHAR2(100)) AS ERNAME," +
+                " CAST(a.WORKER_NAME AS NVARCHAR2(100)) AS WORKER_NAME ," +
+                " CAST(c.NAME AS NVARCHAR2(100)) AS WERKS_NAME," +
+                " CAST(substr( ERDAT, 1, 6 ) AS NVARCHAR2(100)) AS NIANYUE," +
+                " CAST(( CASE WHEN substr( TZD, 1, 1 ) = '1' THEN 1 ELSE 0 END ) AS DECIMAL(18,2)) AS RKHJ," +
+                " CAST(( CASE WHEN JBJLDW = '吨' AND substr( TZD, 1, 1 ) = '1' THEN NSOLM ELSE 0 END )AS DECIMAL(18,2)) AS RK_DUN," +
+                " CAST(( CASE WHEN JBJLDW = '米' AND substr( TZD, 1, 1 ) = '1' THEN NSOLM ELSE 0 END )AS DECIMAL(18,2)) AS RK_MI," +
+                " CAST(( CASE WHEN JBJLDW <> '米' AND JBJLDW <> '吨' AND substr( TZD, 1, 1 ) = '1' THEN NSOLM ELSE 0 END )AS DECIMAL(18,2)) AS RK_QT," +
+                " CAST((CASE WHEN substr(TZD,1,1)='2' then 1 ELSE 0 END) AS DECIMAL(18,2)) AS CKHJ," +
+                " CAST(( CASE WHEN JBJLDW = '吨' AND substr( TZD, 1, 1 ) = '2' THEN NSOLM ELSE 0 END )AS DECIMAL(18,2))AS  CK_DUN," +
+                " CAST(( CASE WHEN JBJLDW = '米' AND substr( TZD, 1, 1 ) = '2' THEN NSOLM ELSE 0 END )AS DECIMAL(18,2)) AS CK_MI," +
+                " CAST(( CASE WHEN JBJLDW <> '米' AND JBJLDW <> '吨' AND substr( TZD, 1, 1 ) = '2' THEN NSOLM ELSE 0 END ) AS DECIMAL(18,2))AS CK_QT " +
+                " FROM CONVERT_BGYGZL a " +
+                " JOIN WZ_BGY b ON a.ERNAME = b.WORKER_CODE" +
+                " LEFT JOIN TS_DICTIONARY c ON b.CKH = c.CODE" +
+                " AND c.PARENTCODE = 'TOTAL' " +
+                " WHERE" +
+                " substr( ERDAT, 1, 6 ) = substr( '"+ month+"', 1, 6 ) " +
+                " {0}";
+            /***
+             * 紧急出入库查询表字段基本一致，支
+             ***/
+            string JJRKSql = " SELECT " +
+                " CAST(b.USER_CODE AS NVARCHAR2(100)) AS ERNAME," +
+                " CAST(b.USER_NAME AS NVARCHAR2(100)) AS WORKER_NAME," +
+                " CAST(d.NAME AS NVARCHAR2(100))AS WERKS_NAME," +
+                " CAST(TO_CHAR(BGY_DATE,'yyyyMM') AS NVARCHAR2(100)) AS NIANYUE," +
+                " CAST( 1 AS DECIMAL(18,2)) AS RKHJ," +
+                " CAST(( CASE WHEN a.MEINS = '吨'  THEN TOTALPRICE1 ELSE 0 END )AS DECIMAL(18,2)) AS RK_DUN," +
+                " CAST(( CASE WHEN a.MEINS = '米'  THEN TOTALPRICE1 ELSE 0 END )AS DECIMAL(18,2)) AS RK_MI," +
+                " CAST(( CASE WHEN a.MEINS <> '米' AND a.MEINS <> '吨'  THEN TOTALPRICE1 ELSE 0 END )AS DECIMAL(18,2)) AS RK_QT," +
+                " CAST( 0 AS DECIMAL(18,2)) AS CKHJ," +
+                " CAST( 0 AS DECIMAL(18,2)) AS CK_DUN," +
+                " CAST( 0 AS DECIMAL(18,2)) AS CK_MI," +
+                " CAST(0 AS DECIMAL(18,2)) AS CK_QT" +
+                " FROM JJRK a" +
+                " JOIN TS_UIDP_USERINFO b ON a.BGY_ID=b.USER_ID" +
+                " JOIN WZ_KCDD c ON EXISTS (SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE)  AND a.KCDD=c.KCDD_CODE" +
+                " JOIN TS_DICTIONARY d ON c.CKH=d.CODE AND d.PARENTCODE='TOTAL'" +
+                " WHERE TO_CHAR(BGY_DATE,'yyyyMM')='" + month + "'" +
+                " AND a.APPROVAL_STATUS>=5 " +
+                " {0}";
+            string JJCKSql = " SELECT " +
+                " CAST(b.USER_CODE AS NVARCHAR2(100)) AS ERNAME," +
+                " CAST(b.USER_NAME AS NVARCHAR2(100)) AS WORKER_NAME," +
+                " CAST(d.NAME AS NVARCHAR2(100))AS WERKS_NAME," +
+                " CAST(TO_CHAR(BGY_DATE,'yyyyMM') AS NVARCHAR2(100)) AS NIANYUE," +
+                " CAST( 0 AS DECIMAL(18,2)) AS RKHJ," +
+                " CAST( 0 AS DECIMAL(18,2)) AS RK_DUN," +
+                " CAST( 0 AS DECIMAL(18,2)) AS RK_MI," +
+                " CAST( 0 AS DECIMAL(18,2)) AS RK_QT," +
+                " CAST( 1 AS DECIMAL(18,2)) AS CKHJ," +
+                " CAST(( CASE WHEN a.MEINS = '吨'  THEN TOTALPRICE1 ELSE 0 END )AS DECIMAL(18,2)) AS CK_DUN," +
+                " CAST(( CASE WHEN a.MEINS = '米'  THEN TOTALPRICE1 ELSE 0 END )AS DECIMAL(18,2)) AS CK_MI," +
+                " CAST(( CASE WHEN a.MEINS <> '米' AND a.MEINS <> '吨'  THEN TOTALPRICE1 ELSE 0 END )AS DECIMAL(18,2)) AS CK_QT" +
+                " FROM JJCK a" +
+                " JOIN TS_UIDP_USERINFO b ON a.BGY_ID=b.USER_ID" +
+                " JOIN WZ_KCDD c ON EXISTS (SELECT 1 FROM TS_UIDP_ORG WHERE ORG_CODE = a.DW_CODE AND c.DWCODE=DW_CODE)  AND a.KCDD=c.KCDD_CODE" +
+                " JOIN TS_DICTIONARY d ON c.CKH=d.CODE AND d.PARENTCODE='TOTAL'" +
+                " WHERE TO_CHAR(BGY_DATE,'yyyyMM')='"+ month+"' " +
+                " AND a.APPROVAL_STATUS>=5" +
+                " {0}";
             if (!string.IsNullOrEmpty(workerName))
             {
-                sql += " and  WORKER_NAME like '%" + workerName + "%'";
+                BGYSql = string.Format(BGYSql," and  b.WORKER_NAME like '%" + workerName + "%'");
+                JJRKSql = string.Format(JJRKSql, " and b.USER_NAME like '%" + workerName + "%'");
+                JJCKSql = string.Format(JJCKSql," and b.USER_NAME like '%" + workerName + "%'");
             }
-            sql += "  group by ERNAME,a.WORKER_NAME,c.NAME";
-            return db.GetDataTable(sql);
+            else
+            {
+                BGYSql = string.Format(BGYSql, "");
+                JJRKSql = string.Format(JJRKSql, "");
+                JJCKSql = string.Format(JJCKSql, "");
+            }
+            string TotalSql = string.Format(PartSql, BGYSql, JJRKSql, JJCKSql);
+            return db.GetDataTable(TotalSql);
         }
         /// <summary>
         /// 总库存保管员工作量明细查询
