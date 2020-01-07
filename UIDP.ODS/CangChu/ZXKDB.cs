@@ -43,7 +43,7 @@ namespace UIDP.ODS.CangChu
                 " JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
                 " WHERE a.ZSTATUS='01'" +
                 " AND SUBSTR( a.WERKS, 0, 3 ) = 'C27'" +
-                " AND a.ZCJRQ > trunc('" + DateTime.Now.ToString("yyyyMMdd") + "'-7)";
+                " AND a.ZCJRQ>to_char(SYSDATE-7,'yyyyMMdd')";
             if (!string.IsNullOrEmpty(FacCode))
             {
                 MainSql += " AND g.CKH='" + FacCode + "'";
@@ -150,7 +150,7 @@ namespace UIDP.ODS.CangChu
                 " JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
                 " WHERE a.ZSTATUS='01'" +
                 " AND SUBSTR( a.WERKS, 0, 3 ) = 'C27'" +
-                " AND a.ZCJRQ > trunc('" + DateTime.Now.ToString("yyyyMMdd") + "'-7)";
+                " AND a.ZCJRQ>to_char(SYSDATE-7,'yyyyMMdd')";
             if (!string.IsNullOrEmpty(FacCode))
             {
                 MainSql += " AND g.CKH='" + FacCode + "'";
