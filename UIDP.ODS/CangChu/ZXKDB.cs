@@ -48,6 +48,10 @@ namespace UIDP.ODS.CangChu
             {
                 MainSql += " AND g.CKH='" + FacCode + "'";
             }
+            else
+            {
+                MainSql += " AND g.CKH IS NOT NULL";
+            }
             MainSql += " {0}" +
                 " {1}" +
                 " GROUP BY a.ZDHTZD,a.MATKL,a.MATNR,e.MAKTX,b.JBJLDW,a.WERKS,c.NAME1,f.DW_NAME,g.KCDD_NAME " +
@@ -154,6 +158,10 @@ namespace UIDP.ODS.CangChu
             if (!string.IsNullOrEmpty(FacCode))
             {
                 MainSql += " AND g.CKH='" + FacCode + "'";
+            }
+            else
+            {
+                MainSql += " AND g.CKH IS NOT NULL";
             }
             MainSql += " {0}" +
                 " {1}" +
