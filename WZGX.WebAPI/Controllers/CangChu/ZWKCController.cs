@@ -59,5 +59,11 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetCompositeInfo")]
         public IActionResult GetCompositeInfo(string BWKEY, int type, string CODE, int page, int limit) => Ok(ZWKC.GetCompositeInfo(BWKEY, type, CODE, page, limit));
+        /// <summary>
+        /// 综合查询导出
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetExportCompositeInfo")]
+        public IActionResult GetExportCompositeInfo() => Ok(ZWKC.GetExportCompositeInfo());
     }
 }

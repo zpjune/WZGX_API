@@ -211,5 +211,31 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+        public Dictionary<string, object> GetExportCompositeInfo()
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetExportCompositeInfo();
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！";
+                    r["items"] = dt;
+                }
+                else
+                {
+                    r["code"] = 2001;
+                    r["message"] = "成功但是没有数据！";
+                    r["items"] = dt;
+                }
+            }
+            catch(Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
     }
 }

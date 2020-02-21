@@ -25,6 +25,12 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("GetFacInfo")]
         public IActionResult GetFacInfo(string WERKS, string LGORT, string LGORT_NAME, int page, int limit) => Ok(SWKC.GetFacInfo(WERKS, LGORT, LGORT_NAME, page, limit));
         /// <summary>
+        /// 单位物资导出接口
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetExportFacInfo")]
+        public IActionResult GetExportFacInfo() => Ok(SWKC.GetExportFacInfo());
+        /// <summary>
         /// 综合查询接口
         /// </summary>
         /// <param name="WERKS">工厂代码</param>
@@ -37,6 +43,12 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetCompositeInfo")]
         public IActionResult GetCompositeInfo(string WERKS, string LGORT, string LGORT_NAME, string MATNR, string MAKTX, int page, int limit) =>Ok(SWKC.GetCompositeInfo(WERKS, LGORT, LGORT_NAME, MATNR, MAKTX, page, limit));
+        /// <summary>
+        /// 综合查询导出接口
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetExportCompositeInfo")]
+        public IActionResult GetExportCompositeInfo() => Ok(SWKC.GetExportCompositeInfo());
 
         /// <summary>
         /// 分类查询父节点接口
@@ -68,6 +80,12 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetWLTotalInfo")]
         public IActionResult GetWLTotalInfo(string MATNR, string MAKTX, int page, int limit) => Ok(SWKC.GetWLTotalInfo(MATNR, MAKTX, page, limit));
+        /// <summary>
+        /// 物料查询导出
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetExportWLTotalInfo")]
+        public IActionResult GetExportWLTotalInfo() => Ok(SWKC.GetExportWLTotalInfo());
 
         /// <summary>
         /// 物料详情查询

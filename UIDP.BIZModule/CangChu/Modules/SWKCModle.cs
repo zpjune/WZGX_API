@@ -39,6 +39,33 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+        public Dictionary<string, object> GetExportFacInfo()
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetFacInfo(null,null,null);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！";
+                    r["items"] = dt;
+                    r["total"] = dt.Rows.Count;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！但是没有数据";
+                    r["items"] = new DataTable();
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
 
         public Dictionary<string,object> GetCompositeInfo(string WERKS, string LGORT, string LGORT_NAME, string MATNR, string MAKTX,int page,int limit)
         {
@@ -56,6 +83,33 @@ namespace UIDP.BIZModule.CangChu.Modules
                 else
                 {
                     r["code"] = 2000;
+                    r["message"] = "成功，但是没有数据！";
+                    r["items"] = new DataTable();
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+
+        public Dictionary<string, object> GetExportCompositeInfo()
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetExportCompositeInfo();
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = dt;
+                    r["message"] = "成功!";
+                }
+                else
+                {
+                    r["code"] = 2001;
                     r["message"] = "成功，但是没有数据！";
                     r["items"] = new DataTable();
                 }
@@ -203,6 +257,32 @@ namespace UIDP.BIZModule.CangChu.Modules
                 else
                 {
                     r["code"] = 2000;
+                    r["message"] = "成功！但是没有数据";
+                    r["items"] = new DataTable();
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        public Dictionary<string, object> GetExportWLTotalInfo()
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+               DataTable dt = db.GetExportWLTotalInfo();
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！";
+                    r["items"] = dt;
+                }
+                else
+                {
+                    r["code"] = 2001;
                     r["message"] = "成功！但是没有数据";
                     r["items"] = new DataTable();
                 }

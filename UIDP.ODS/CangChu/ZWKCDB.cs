@@ -57,6 +57,11 @@ namespace UIDP.ODS.CangChu
             return db.GetDataTable(sql);
         }
 
+        public DataTable GetExportCompositeInfo()
+        {
+            string sql = "select BWKEY,BWKEY_NAME,DLNAME,ZLNAME,XLNAME,PMNAME,SALK3 from CONVERT_ZWKC ";
+            return db.GetDataTable(sql);
+        }
         public DataSet GetCompositeInfo(string BWKEY,int type,string CODE,int page,int limit)
         {
             string PartSql = " select * from CONVERT_ZWKC where 1=1";
