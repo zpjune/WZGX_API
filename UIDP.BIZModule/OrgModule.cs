@@ -379,7 +379,7 @@ namespace UIDP.BIZModule
             for (int i = 1; i < truckNum + 1; i++)
             {
                 //StringBuilder sb = new StringBuilder();
-                string str = "insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ";
+                string str = "insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK,DW_CODE) values ";
                 string fengefu = "";
                 int rowbegin = (i - 1) * 500;
                 int rowend = i * 500;
@@ -409,7 +409,8 @@ namespace UIDP.BIZModule
                             sb.Append("'0',");
                         }
                         sb.Append("'1',");
-                        sb.Append("'" + getString(dt.Rows[j]["备注"]) + "')");
+                        sb.Append("'" + getString(dt.Rows[j]["备注"]) + "','");
+                        sb.Append(getString(dt.Rows[j]["单位编码"]) + "')");
                         //fengefu = ",";
                         sqllst.Add(sb.ToString());
                     }
@@ -424,8 +425,9 @@ namespace UIDP.BIZModule
                             //sql += " ORG_ID_UPPER='" + getString(d["parentId"]) + "',";
                             sql += " ORG_CODE_UPPER='" + getString(dt.Rows[j]["上级组织机构编码"]) + "',";
                             sql += " ISINVALID='" + getString((dt.Rows[j]["是否有效"] != null && dt.Rows[j]["是否有效"].ToString() == "是") ? 1 : 0) + "',";
-                            sql += " REMARK='" + getString(dt.Rows[j]["备注"]) + "'";
-                            sql += " where ORG_ID='" + item["ORG_ID"].ToString() + "' ;";
+                            sql += " REMARK='" + getString(dt.Rows[j]["备注"]) + "',";
+                            sql += " DW_CODE='" + getString(dt.Rows[j]["单位编码"]) + "'";
+                            sql += " where ORG_ID='" + item["ORG_ID"].ToString() + "'";
                             sqllst.Add(sql);
                         }
                     }
@@ -516,12 +518,12 @@ namespace UIDP.BIZModule
             {
                 return "组织机构编码存在重复数据，导入失败！";
             }
-            string fengefu = "";
-            StringBuilder sb = new StringBuilder();
-            sb.Append(" insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
+            List<string> list = new List<string>();
+            
             foreach (DataRow row in dt.Rows)
             {
-                sb.Append(fengefu + "('" + Guid.NewGuid().ToString() + "',");
+                StringBuilder sb = new StringBuilder("insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK,DW_CODE) values ");
+                sb.Append("('" + Guid.NewGuid().ToString() + "',");
                 sb.Append("'" + getString(row["组织机构编码"]) + "',");
                 sb.Append("'" + getString(row["组织机构名称"]) + "',");
                 sb.Append("'" + getString(row["组织机构简称"]) + "',");
@@ -535,10 +537,11 @@ namespace UIDP.BIZModule
                     sb.Append("'0',");
                 }
                 sb.Append("'1',");
-                sb.Append("'" + getString(row["备注"]) + "')");
-                fengefu = ",";
+                sb.Append("'" + getString(row["备注"]) + "','");
+                sb.Append(getString(row["单位编码"]) + "')");
+                list.Add(sb.ToString());
             }
-            return db.UploadOrgFile(sb.ToString());
+            return db.UploadOrgFileList(list);
         }
         public string getString(object obj)
         {

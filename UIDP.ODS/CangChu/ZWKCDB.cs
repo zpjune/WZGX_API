@@ -47,7 +47,7 @@ namespace UIDP.ODS.CangChu
             string sql = "select BWKEY,BWKEY_NAME,SUM(SALK3) as SALK3 from CONVERT_ZWKC  WHERE 1=1";
             if (!string.IsNullOrEmpty(BWKEY))
             {
-                sql += " AND BWKEY='" + BWKEY + "'";
+                sql += " AND BWKEY LIKE'" + BWKEY + "%'";
             }
             if (!string.IsNullOrEmpty(BWKEY_NAME))
             {
@@ -63,8 +63,8 @@ namespace UIDP.ODS.CangChu
             string totalsql = "select count(*) AS TOTAL from CONVERT_ZWKC WHERE 1=1";
             if (!string.IsNullOrEmpty(BWKEY))
             {
-                PartSql += " AND BWKEY='" + BWKEY + "'";
-                totalsql += " AND BWKEY='" + BWKEY + "'";
+                PartSql += " AND BWKEY LIKE'" + BWKEY + "%'";
+                totalsql += " AND BWKEY LIKE'" + BWKEY + "%'";
             }
             if (!string.IsNullOrEmpty(CODE))
             {

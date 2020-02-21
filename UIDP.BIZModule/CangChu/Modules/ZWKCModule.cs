@@ -156,6 +156,33 @@ namespace UIDP.BIZModule.CangChu.Modules
             }
             return r;
         }
+        public Dictionary<string, object> GetExportsFacMoney()
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.GetFacMoney(null, null);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = dt;
+                    r["total"] = dt.Rows.Count;
+                    r["message"] = "成功！";
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["items"] = new DataTable();
+                    r["message"] = "成功！,但是没有数据";
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
 
         public Dictionary<string, object> GetCompositeInfo(string BWKEY, int type, string CODE, int page, int limit)
         {

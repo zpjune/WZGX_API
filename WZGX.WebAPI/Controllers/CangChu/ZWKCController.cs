@@ -43,6 +43,12 @@ namespace WZGX.WebAPI.Controllers.CangChu
         [HttpGet("GetFacMoney")]
         public IActionResult GetFacMoney(string BWKEY, string BWKEY_NAME, int page, int limit) => Ok(ZWKC.GetFacMoney(BWKEY, BWKEY_NAME, page, limit));
         /// <summary>
+        /// 综合查询导出
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetExportsFacMoney")]
+        public IActionResult GetExportsFacMoney() => Ok(ZWKC.GetExportsFacMoney());
+        /// <summary>
         /// 综合查询接口
         /// </summary>
         /// <param name="BWKEY">工厂代码</param>
