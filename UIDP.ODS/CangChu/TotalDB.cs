@@ -39,7 +39,7 @@ namespace UIDP.ODS.CangChu
         /// </summary>
         /// <param name="WERKS_NAME">工厂名称</param>
         /// <returns></returns>
-        public DataTable GetSWKCDW(string ISWZ, string WERKS)
+        public DataTable GetSWKCDW(string ISWZ, string WERKS,string LGPLA)
         {
             string sql = @"  select COUNT(DISTINCT MATNR) XM,WERKS,WERKS_NAME from   CONVERT_SWKC    ";
             sql += "where  KCTYPE<>3 ";
@@ -51,6 +51,10 @@ namespace UIDP.ODS.CangChu
             {
                 sql += " and  WERKS ='" + WERKS + "'";
             }
+            if (!string.IsNullOrEmpty(LGPLA))
+            {
+                sql += "AND LGPLA LIKE '" + LGPLA + "%'";
+            }
             sql += " group by WERKS,WERKS_NAME ORDER BY WERKS ";//
             return db.GetDataTable(sql);
         }
@@ -59,10 +63,14 @@ namespace UIDP.ODS.CangChu
         /// </summary>
         /// <param name="WERKS_NAME">工厂名称</param>
         /// <returns></returns>
-        public DataTable GetSWKCDL( string WERKS)
+        public DataTable GetSWKCDL( string WERKS,string LGPLA)
         {
             string sql = @"   select   substr(MATKL,0,2)DLCODE,COUNT(DISTINCT MATNR) XM,SUM(GESME)SL,max(meins)JLDW from   CONVERT_SWKC     ";
             sql += "where  KCTYPE<>3  AND WERKS='"+WERKS+"'";
+            if (!string.IsNullOrEmpty(LGPLA))
+            {
+                sql += "AND LGPLA LIKE '" + LGPLA + "%'";
+            }
             sql += " group by substr(MATKL,0,2) order by substr(MATKL,0,2) ";//
             return db.GetDataTable(sql);
         }

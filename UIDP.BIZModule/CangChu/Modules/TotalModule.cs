@@ -63,13 +63,13 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// </summary>
         /// <param name="WERKS">工厂名称</param>
         /// <returns></returns>
-        public Dictionary<string, object> GetSWKCDW(string ISWZ, string WERKS,int page, int limit)
+        public Dictionary<string, object> GetSWKCDW(string ISWZ, string WERKS,string LGPLA, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataTable dt = db.GetSWKCDW(ISWZ, WERKS);
+                DataTable dt = db.GetSWKCDW(ISWZ, WERKS, LGPLA);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;
@@ -97,13 +97,13 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// </summary>
         /// <param name="WERKS">工厂名称</param>
         /// <returns></returns>
-        public Dictionary<string, object> GetSWKCDL( string WERKS, int page, int limit)
+        public Dictionary<string, object> GetSWKCDL( string WERKS, string LGPLA, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataTable dt = db.GetSWKCDL( WERKS);
+                DataTable dt = db.GetSWKCDL( WERKS, LGPLA);
                 if (dt.Rows.Count > 0)
                 {
                     r["code"] = 2000;

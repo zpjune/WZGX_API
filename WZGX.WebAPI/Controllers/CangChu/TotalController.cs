@@ -28,8 +28,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="WERKS">工厂名称</param>
         /// <returns></returns>
         [HttpGet("GetSWKCDW")]
-        public IActionResult GetSWKCDW(string ISWZ, string WERKS, int page, int limit) =>
-            Ok(md.GetSWKCDW(ISWZ, WERKS,  page, limit));
+        public IActionResult GetSWKCDW(string ISWZ, string WERKS, string LGPLA, int page, int limit) =>
+            Ok(md.GetSWKCDW(ISWZ, WERKS, LGPLA, page, limit));
         /// <summary>
         /// 查询实物库存-总库页面第二层
         /// </summary>
@@ -38,8 +38,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet("GetSWKCDL")]
-        public IActionResult GetSWKCDL( string WERKS, int page, int limit) =>
-            Ok(md.GetSWKCDL( WERKS, page, limit));
+        public IActionResult GetSWKCDL( string WERKS,string LGPLA, int page, int limit) =>
+            Ok(md.GetSWKCDL( WERKS, LGPLA, page, limit));
         /// <summary>
         /// 查询实物库存-总库页面
         /// </summary>

@@ -608,8 +608,25 @@ namespace UIDP.ODS.CangChu
         /// <returns></returns>
         public DataTable GetFloatWindowFirstInfo(string LGPLA)
         {
-            string sql = " SELECT * FROM(" +
-                " SELECT b.DLNAME,t.* FROM(" +
+            #region 2020.2.26 YZ修改需求，
+            ///下面这条SQL是查询数量最多的物资的大类名称、大类编号、数量、主要计量单位、以及项数的。
+            ///根据需求更改为查询数量最多的大类名称、所有物资的数量、所有物资的项数、以及数量最多的物资的主要单位，大体查询不变，变化的两项改为子查询实现。
+            //string sql1 = " SELECT * FROM(" +
+            //    " SELECT b.DLNAME,t.* FROM(" +
+            //    " SELECT SUBSTR( MATKL, 0, 2 ) AS DL,SUM( GESME ) AS GESME,MAX( MEINS ) AS MEINS,COUNT( distinct MATNR ) AS SL FROM CONVERT_SWKC " +
+            //    " WHERE LGPLA = '" + LGPLA + "'" +
+            //    " AND SUBSTR( WERKS, 0, 3 ) = 'C27'" +
+            //    " AND KCTYPE = 0 " +
+            //    " GROUP BY SUBSTR( MATKL, 0, 2 ) ) t" +
+            //    " JOIN WZ_WLZ b ON b.DLCODE = t.DL " +
+            //    " ORDER BY GESME  DESC ) tt" +
+            //    " WHERE ROWNUM=1";
+            #endregion
+            string sql = " SELECT tt.*," +
+                "(SELECT SUM( GESME ) AS GESME FROM CONVERT_SWKC WHERE LGPLA ='" +LGPLA+ "' AND SUBSTR( WERKS, 0, 3 ) = 'C27' AND KCTYPE = 0 ) as GESME," +//子查询查询总数量
+                "(SELECT COUNT( DISTINCT MATNR ) AS SL FROM CONVERT_SWKC WHERE LGPLA ='" + LGPLA + "' AND SUBSTR( WERKS, 0, 3 ) = 'C27' AND KCTYPE = 0 ) as SL" +//子查询查询总项数
+                " FROM(" +
+                " SELECT b.DLNAME,t.DL,t.MEINS FROM(" +
                 " SELECT SUBSTR( MATKL, 0, 2 ) AS DL,SUM( GESME ) AS GESME,MAX( MEINS ) AS MEINS,COUNT( distinct MATNR ) AS SL FROM CONVERT_SWKC " +
                 " WHERE LGPLA = '" + LGPLA + "'" +
                 " AND SUBSTR( WERKS, 0, 3 ) = 'C27'" +
