@@ -775,5 +775,51 @@ namespace UIDP.ODS.CangChu
             Total = Total.TrimEnd(arr);
             return db.GetDataTable(Total);
         }
+        /// <summary>
+        /// 分库查询 实物出入库数量
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="DKCODE"></param>
+        /// <returns></returns>
+        public DataSet GetCRKSL(string year, string DKCODE)
+        {
+            Dictionary<string, string> d = new Dictionary<string, string>();//以万为单位
+            string sql = @"select SUM(MENGE) MENGE,substr(BUDAT_MKPF,5,2) Month
+                            from CONVERT_CKJE
+                            WHERE  substr(BUDAT_MKPF,1,4)='" + year + "' AND DKCODE='"+ DKCODE + "' ";
+            sql += "  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
+            d.Add("CKSL", sql);
+            sql = @"select SUM(MENGE) MENGE,substr(BUDAT_MKPF,5,2) Month
+                    from CONVERT_RKJE
+                    WHERE  substr(BUDAT_MKPF,1,4)='" + year + "' AND DKCODE='" + DKCODE + "' ";
+            sql += "  GROUP BY substr(BUDAT_MKPF,5,2) ORDER BY substr(BUDAT_MKPF,5,2)";
+            d.Add("RKSL", sql);
+            return db.GetDataSet(d);
+        }
+        /// <summary>
+        /// 分库查询 实物出入库数量
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="DKCODE"></param>
+        /// <returns></returns>
+        public DataTable getSWCRKDetail(string year, string month, string dkcode, string typ)
+        {
+            string sql = "";
+            if (typ=="1") {
+                 sql = @"select SUM(MENGE) MENGE,WERKS_NAME,MEINS
+                            from CONVERT_CKJE
+                            WHERE  substr(BUDAT_MKPF,1,4)='" + year + "' AND DKCODE='" + dkcode + "' and substr(BUDAT_MKPF,5,2)='" + month + "' ";
+                sql += "  GROUP BY WERKS_NAME,MEINS ORDER BY WERKS_NAME ";
+                return db.GetDataTable(sql);
+            }
+            else { 
+                sql = @"select SUM(MENGE) MENGE,WERKS_NAME,MEINS
+                    from CONVERT_RKJE
+                    WHERE  substr(BUDAT_MKPF,1,4)='" + year + "' AND DKCODE='" + dkcode + "' and substr(BUDAT_MKPF,5,2)='"+ month + "' ";
+                sql += "  GROUP BY ,WERKS_NAME,MEINS ORDER BY WERKS_NAME ";
+                return db.GetDataTable(sql);
+            }
+          
+        }
     }
 }

@@ -685,5 +685,71 @@ namespace UIDP.BIZModule.CangChu.Modules
         //    }
         //    return res;
         //}
+        /// <summary>
+        /// 分库查询实物出入库数量
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> GetCRKSL(string year, string DKCODE)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataSet ds = db.GetCRKSL(year, DKCODE);
+                if (ds.Tables.Count > 0)
+                {
+                    List<DataTable> list = new List<DataTable>();
+                    list.Add(ds.Tables["CKSL"]);
+                    list.Add(ds.Tables["RKSL"]);
+                    r["code"] = 2000;
+                    r["items"] = list;//dt
+                    r["message"] = "成功！";
+                    r["total"] = 0;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！,但是没有数据";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
+        public Dictionary<string, object> getSWCRKDetail(string year, string month, string dkcode, string typ, int limit, int page)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+
+                DataTable dt = db.getSWCRKDetail( year,  month,  dkcode,  typ);
+                if (dt.Rows.Count > 0)
+                {
+                    r["code"] = 2000;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));//dt
+                    r["message"] = "成功！";
+                    r["total"] = 0;
+                }
+                else
+                {
+                    r["code"] = 2000;
+                    r["message"] = "成功！,但是没有数据";
+                    r["items"] = new DataTable();//dt
+                    r["total"] = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
     }
 }

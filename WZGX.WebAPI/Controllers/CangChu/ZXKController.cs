@@ -187,5 +187,24 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <returns></returns>
         [HttpGet("GetGetFloatWindowDetailInfo")]
         public IActionResult GetGetFloatWindowDetailInfo(string LGPLA,string DLCODE,string LGORT,string MATNR,string MATKL,int page, int limit) => Ok(ZXK.GetGetFloatWindowDetailInfo(LGPLA,DLCODE, LGORT,MATNR,MATKL,page, limit));
+
+        /// <summary>
+        /// 分库查询实物出入库数量
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="DKCODE"></param>
+        /// <returns></returns>
+        [HttpGet("GetCRKSL")]
+        public IActionResult GetCRKSL(string year, string DKCODE) =>
+          Ok(ZXK.GetCRKSL(year, DKCODE));
+        /// <summary>
+        /// 分库查询实物出入库数量明细
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="DKCODE"></param>
+        /// <returns></returns>
+        [HttpGet("getSWCRKDetail")]
+        public IActionResult getSWCRKDetail(string year, string month,string dkcode,string typ,int limit,int page) =>
+          Ok(ZXK.getSWCRKDetail( year,  month,  dkcode,  typ,  limit,  page));
     }
 }
