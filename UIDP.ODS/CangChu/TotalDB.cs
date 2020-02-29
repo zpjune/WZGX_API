@@ -240,7 +240,7 @@ namespace UIDP.ODS.CangChu
             string sql = @"select sum(JE)/10000 JE,substr(BUDAT_MKPF,5,2) Month
                             from CONVERT_CKJE
                             WHERE  substr(BUDAT_MKPF,1,4)='"+year+"'";
-            if (ISWZ != 2)
+            if (ISWZ == 2)
             {
                 sql += " AND SUBSTR(WERKS, 0, 3)='C27'";
             }         
@@ -249,7 +249,7 @@ namespace UIDP.ODS.CangChu
             sql = @"select sum(JE)/10000 JE,substr(BUDAT_MKPF,5,2) Month
                     from CONVERT_RKJE
                     WHERE  substr(BUDAT_MKPF,1,4)='"+year+"'";
-            if (ISWZ != 2)
+            if (ISWZ == 2)
             {
                 sql += " AND SUBSTR(WERKS, 0, 3)='C27'";
             }
@@ -257,15 +257,20 @@ namespace UIDP.ODS.CangChu
             d.Add("RKJE", sql);
             return db.GetDataSet(d);
         }
-        public DataSet getCRKDetail(string year, string month)
+        public DataSet getCRKDetail(string year, string month, int ISWZ)
         {
-            Dictionary<string, string> d = new Dictionary<string, string>();//以万为单位
-            string sql = @" select DISTINCT B.CKH_NAME
+            #region MyRegion
+            /*
+             string sql = @" select DISTINCT A.WERKS_NAME
                             from CONVERT_CKJE A 
                             join WZ_KCDD B on A.WERKS=B.DWCODE AND A.LGORT=B.KCDD_CODE
                             LEFT JOIN WZ_CRKL C ON DK_CODE=B.CKH  AND ";
             sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
             sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            if (ISWZ == 2)
+            {
+                sql += " AND SUBSTR(A.WERKS, 0, 3)='C27'";
+            }
             sql += " UNION ";
             sql += @"  select DISTINCT B.CKH_NAME
                             from CONVERT_RKJE A
@@ -273,7 +278,10 @@ namespace UIDP.ODS.CangChu
                             LEFT JOIN WZ_CRKL C ON DK_CODE = B.CKH  AND ";
             sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
             sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
-
+            if (ISWZ == 2)
+            {
+                sql += " AND SUBSTR(A.WERKS, 0, 3)='C27'";
+            }
             d.Add("DK_NAME", sql);//大库名称
             sql = @"select MAX(B.CKH_NAME) CKH_NAME,sum(JE)/10000 CKJE,SUM(C.CKL) CKL
                     from CONVERT_CKJE A
@@ -281,6 +289,10 @@ namespace UIDP.ODS.CangChu
                     LEFT JOIN WZ_CRKL C ON DK_CODE=B.CKH  AND ";
             sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
             sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            if (ISWZ == 2)
+            {
+                sql += " AND SUBSTR(A.WERKS, 0, 3)='C27'";
+            }
             sql += "   GROUP BY  B.CKH";
             d.Add("CKJE_Detail", sql);//出库金额明细
             sql = @"select MAX(B.CKH_NAME) CKH_NAME,sum(JE)/10000 RKJE,SUM(C.RKL) RKL
@@ -289,7 +301,51 @@ namespace UIDP.ODS.CangChu
                     LEFT JOIN WZ_CRKL C ON DK_CODE=B.CKH  AND ";
             sql += " substr(C.ERDATE,1,4)='" + year + "' AND  substr(C.ERDATE,5,2)='" + month + "'";
             sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            if (ISWZ == 2)
+            {
+                sql += " AND SUBSTR(A.WERKS, 0, 3)='C27'";
+            }
             sql += "   GROUP BY  B.CKH";
+            d.Add("RKJE_Detail", sql);//入库金额明细
+             */
+            #endregion
+
+            Dictionary<string, string> d = new Dictionary<string, string>();//以万为单位
+            string sql = @" select DISTINCT A.WERKS_NAME
+                            from CONVERT_CKJE A  ";
+            sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            if (ISWZ == 2)
+            {
+                sql += " AND SUBSTR(A.WERKS, 0, 3)='C27'";
+            }
+            sql += " UNION ";
+            sql += @"  select DISTINCT A.WERKS_NAME
+                            from CONVERT_RKJE A
+                             ";
+            sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            if (ISWZ == 2)
+            {
+                sql += " AND SUBSTR(A.WERKS, 0, 3)='C27'";
+            }
+            d.Add("DK_NAME", sql);//大库名称
+            sql = @"select A.WERKS_NAME ,sum(JE)/10000 CKJE
+                    from CONVERT_CKJE A
+                     ";
+            sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            if (ISWZ == 2)
+            {
+                sql += " AND SUBSTR(A.WERKS, 0, 3)='C27'";
+            }
+            sql += "   GROUP BY A.WERKS_NAME ";
+            d.Add("CKJE_Detail", sql);//出库金额明细
+            sql = @"select A.WERKS_NAME,sum(JE)/10000 RKJE
+                    from CONVERT_RKJE A ";
+            sql += "  WHERE substr(A.BUDAT_MKPF,1,4)='" + year + "' and substr(A.BUDAT_MKPF,5,2)='" + month + "'";
+            if (ISWZ == 2)
+            {
+                sql += " AND SUBSTR(A.WERKS, 0, 3)='C27'";
+            }
+            sql += "   GROUP BY  A.WERKS_NAME ";
             d.Add("RKJE_Detail", sql);//入库金额明细
             return db.GetDataSet(d);
         }

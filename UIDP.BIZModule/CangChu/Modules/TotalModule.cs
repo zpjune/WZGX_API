@@ -302,48 +302,48 @@ namespace UIDP.BIZModule.CangChu.Modules
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        public Dictionary<string, object> getCRKDetail(string year, string month)
+        public Dictionary<string, object> getCRKDetail(string year, string month,int ISWZ, int page, int limit)
         {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
 
-                DataSet ds = db.getCRKDetail(year,month);
+                DataSet ds = db.getCRKDetail(year,month,  ISWZ);
                 if (ds.Tables.Count > 0)
                 {
                     DataTable dtNew = new DataTable();
-                    dtNew.Columns.Add("DKName");
+                    dtNew.Columns.Add("WERKS_NAME");
                     dtNew.Columns.Add("RKJE");
-                    dtNew.Columns.Add("RKL");
+                    //dtNew.Columns.Add("RKL");
                     dtNew.Columns.Add("CKJE");
-                    dtNew.Columns.Add("CKL");
+                    //dtNew.Columns.Add("CKL");
                     foreach (DataRow rowDKName in ds.Tables["DK_NAME"].Rows)
                     {
                         int i = 0;//判断下面是否有数据，有才会add到dtnew里
                         DataRow newRow = dtNew.NewRow();
-                        DataRow[] rowRK = ds.Tables["RKJE_Detail"].Select("CKH_NAME='"+rowDKName["CKH_NAME"] +"'");
+                        DataRow[] rowRK = ds.Tables["RKJE_Detail"].Select("WERKS_NAME='"+rowDKName["WERKS_NAME"] +"'");
                         if (rowRK.Length>0) {
                             i = 1;
-                            newRow["DKName"] = rowRK[0]["CKH_NAME"];
+                            newRow["WERKS_NAME"] = rowRK[0]["WERKS_NAME"];
                             newRow["RKJE"] = rowRK[0]["RKJE"];
-                            newRow["RKL"] = rowRK[0]["RKL"];
+                           // newRow["RKL"] = rowRK[0]["RKL"];
                         }
-                        rowRK = ds.Tables["CKJE_Detail"].Select("CKH_NAME='" + rowDKName["CKH_NAME"] + "'");
+                        rowRK = ds.Tables["CKJE_Detail"].Select("WERKS_NAME='" + rowDKName["WERKS_NAME"] + "'");
                         if (rowRK.Length > 0)
                         {
                             i = 1;
-                            newRow["DKName"] = rowRK[0]["CKH_NAME"];
+                            newRow["WERKS_NAME"] = rowRK[0]["WERKS_NAME"];
                             newRow["CKJE"] = rowRK[0]["CKJE"];
-                            newRow["CKL"] = rowRK[0]["CKL"];
+                      //      newRow["CKL"] = rowRK[0]["CKL"];
                         }
                         if(i==1){
                             dtNew.Rows.Add(newRow);
                         }
                     }
                     r["code"] = 2000;
-                    r["items"] = dtNew;//dt
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dtNew, page, limit));//dt
                     r["message"] = "成功！";
-                    r["total"] = 0;
+                    r["total"] = dtNew.Rows.Count;
                 }
                 else
                 {

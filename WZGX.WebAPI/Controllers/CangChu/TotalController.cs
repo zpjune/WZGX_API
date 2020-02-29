@@ -100,8 +100,8 @@ namespace WZGX.WebAPI.Controllers.CangChu
         /// <param name="month"></param>
         /// <returns></returns>
         [HttpGet("getCRKDetail")]
-        public IActionResult getCRKDetail(string year,string month) =>
-          Ok(md.getCRKDetail(year,month));
+        public IActionResult getCRKDetail(string year,string month, int ISWZ, int page, int limit) =>
+          Ok(md.getCRKDetail(year,month,  ISWZ,  page,  limit));
         /// <summary>
         /// 总库查询保管员工作量
         /// </summary>
