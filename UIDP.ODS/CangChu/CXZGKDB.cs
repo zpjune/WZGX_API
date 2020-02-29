@@ -29,7 +29,7 @@ namespace UIDP.ODS.CangChu
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
                 " JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
-                " WHERE a.ZSTATUS='01'" +
+                " WHERE a.ZSTATUS='01' a.ZBL<>'是' " +
                 " AND g.CKH NOT IN('01','02','03','04','05','06','07','08')";
             if (!string.IsNullOrEmpty(MATNR))
             {
@@ -76,7 +76,7 @@ namespace UIDP.ODS.CangChu
                 " JOIN MARA e ON  a.MATNR=e.MATNR" +
                 " JOIN WZ_DW f ON a.WERKS=f.DW_CODE" +
                 " LEFT JOIN WZ_KCDD g ON a.WERKS=g.DWCODE AND a.LGORT=g.KCDD_CODE" +
-                " WHERE a.ZSTATUS='01'"+
+                " WHERE a.ZSTATUS='01' a.ZBL<>'是' " +
                 " AND g.CKH NOT IN('01','02','03','04','05','06','07','08')";
             if (!string.IsNullOrEmpty(MATNR))
             {
