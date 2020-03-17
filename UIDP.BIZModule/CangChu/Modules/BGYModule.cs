@@ -167,7 +167,23 @@ namespace UIDP.BIZModule.CangChu.Modules
             {
                 GCTreeNode Children = new GCTreeNode();
                 Children.DW_CODE = dr["DW_CODE"].ToString();
-                Children.DW_NAME = dr["DW_NAME"].ToString();
+                if (dr["DW_NAME"].ToString().Contains("大港油田公司"))
+                {
+                    Children.DW_NAME = dr["DW_NAME"].ToString().Replace("大港油田公司", "");
+                }
+                else
+                {
+                    if (dr["DW_NAME"].ToString().Contains("大港油田"))
+                    {
+                        Children.DW_NAME = dr["DW_NAME"].ToString().Replace("大港油田", "");
+                    }
+                    else
+                    {
+                        Children.DW_NAME = dr["DW_NAME"].ToString();
+                    }
+                }
+                //Children.DW_NAME = dr["DW_NAME"].ToString();
+
                 Children.Children = null;
                 node.Children.Add(Children);
             }
