@@ -531,6 +531,7 @@ namespace UIDP.BIZModule
             string modePath = System.IO.Directory.GetCurrentDirectory() + "\\ExcelModel\\用户.xls";//原始文件
             string path = filePath;//原始文件
             string mes = "";
+            string result = "";
             DataTable dt = new DataTable();
             DataTable userdt = db.fetchUserList();
             UTILITY.ExcelTools tool = new UTILITY.ExcelTools();
@@ -560,7 +561,6 @@ namespace UIDP.BIZModule
                 //    "USER_EMAIL,USER_IP,USER_SEX,AUTHENTICATION_TYPE,FLAG,REG_TIME,REMARK) values ");
                 OrgDB orgDB = new OrgDB();
                 DataTable dtOrg = orgDB.fetchOrgList();
-                string result = "";
                 string fengefu2 = "";
                 int rowbegin = (j - 1) * 500;
                 int rowend = j * 500;
@@ -745,8 +745,15 @@ namespace UIDP.BIZModule
 
                 list.Add(sqlUpdate);
             }
-
-            return db.UploadUserFile(list);
+            if (result != "")
+            {
+                return result;
+            }
+            else
+            {
+                return db.UploadUserFile(list);
+            }
+            
             //DataView dv = new DataView(dt);
             //if (dt.Rows.Count != dv.ToTable(true, "账号").Rows.Count)
             //{
