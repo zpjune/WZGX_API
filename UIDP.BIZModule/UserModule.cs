@@ -672,28 +672,28 @@ namespace UIDP.BIZModule
                         foreach (var item in rows)
                         {
                             string sql = "update  ts_uidp_userinfo set ";
-                            sql += " AUTHENTICATION_TYPE='";
-                            sql += getString((dt.Rows[i]["账号类型"] != null && dt.Rows[i]["账号类型"].ToString() == "PTR账号") ? 1 : 0) + "',";
+                            sql += " AUTHENTICATION_TYPE=";
+                            sql += getString((dt.Rows[i]["账号类型"] != null && dt.Rows[i]["账号类型"].ToString() == "PTR账号") ? 1 : 0) + ",";
                             sql += " USER_DOMAIN='" + getString(dt.Rows[i]["账号"]) + "',";
-                            sql += " USER_TYPE='";
-                            sql+= getString((dt.Rows[i]["用户类型"] != null && dt.Rows[i]["用户类型"].ToString() == "普通用户") ? 1 : 0) + "',";
+                            sql += " USER_TYPE=";
+                            sql+= getString((dt.Rows[i]["用户类型"] != null && dt.Rows[i]["用户类型"].ToString() == "普通用户") ? 1 : 0) + ",";
                             sql += " USER_PASS='";
                             sql+= getString(dt.Rows[i]["用户密码"]) == "" ? UIDP.Security.SecurityHelper.StringToMD5Hash("123456") + "'," : UIDP.Security.SecurityHelper.StringToMD5Hash(getString(dt.Rows[i]["用户密码"])) + "',";
                             sql += " USER_NAME='" + getString(dt.Rows[i]["员工姓名"]) + "',";
                             sql += " USER_CODE='" + getString(dt.Rows[i]["员工编号"]) + "',";
-                            sql += " USER_SEX='";
-                            sql+= getString((dt.Rows[i]["性别"] != null && dt.Rows[i]["性别"].ToString() == "男") ? 1 : 0) + "',";
+                            sql += " USER_SEX=";
+                            sql+= getString((dt.Rows[i]["性别"] != null && dt.Rows[i]["性别"].ToString() == "男") ? 1 : 0) + ",";
                             
                             sql += " PHONE_MOBILE='" + getString(dt.Rows[i]["手机"]) + "',";
                             sql += " PHONE_OFFICE='" + getString(dt.Rows[i]["办公电话"]) + "',";
                             sql += " USER_EMAIL='" + getString(dt.Rows[i]["电子邮箱"]) + "',";
-                            sql += " FLAG='";
-                            sql+= getString((dt.Rows[i]["账号状态"] != null && dt.Rows[i]["账号状态"].ToString() == "禁用") ? 0: 1) + "',";
-                            sql += " REG_TIME=TO_DATE('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "',yyyy-mm-dd hh24:mi:ss')";
+                            sql += " FLAG=";
+                            sql+= getString((dt.Rows[i]["账号状态"] != null && dt.Rows[i]["账号状态"].ToString() == "禁用") ? 0: 1) + ",";
+                            sql += " REG_TIME=TO_DATE('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','yyyy-mm-dd hh24:mi:ss'),";
                             sql += " REMARK='" + getString(dt.Rows[i]["备注"]) + "'";
-                            sql += " where USER_ID='" + item["USER_ID"].ToString() + "' ;";
+                            sql += " where USER_ID='" + item["USER_ID"].ToString() + "'";
                             list.Add(sql);
-                            string sql2 = "update ts_uidp_org_user set ORG_ID='" + dt.Rows[i]["组织机构编码"].ToString().Trim() + "' where USER_ID='" + item["USER_ID"].ToString() + "' ;";
+                            string sql2 = "update ts_uidp_org_user set ORG_ID=(SELECT ORG_ID FROM ts_uidp_org where ORG_CODE='" + dt.Rows[i]["组织机构编码"].ToString().Trim() + "') where USER_ID='" + item["USER_ID"].ToString() + "'";
                             list.Add(sql2);
                         }
 
@@ -741,9 +741,9 @@ namespace UIDP.BIZModule
             else if (db.GetDBType() == "ORACLE")
             {
                 //string sqlUpdate = "  update ts_uidp_org_user a ,ts_uidp_org b set a.ORG_ID = b.ORG_ID where a.ORG_ID = b.ORG_CODE";
-                string sqlUpdate = "UPDATE TS_UIDP_ORG_USER a SET a.ORG_ID = (SELECT ORG_ID FROM TS_UIDP_ORG b WHERE a.ORG_ID = b.ORG_CODE)";
+                //string sqlUpdate = "UPDATE TS_UIDP_ORG_USER a SET a.ORG_ID = (SELECT ORG_ID FROM TS_UIDP_ORG b WHERE a.ORG_ID = b.ORG_CODE)";
 
-                list.Add(sqlUpdate);
+                //list.Add(sqlUpdate);
             }
             if (result != "")
             {
