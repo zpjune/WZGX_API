@@ -381,7 +381,14 @@ namespace UIDP.BIZModule
                     //r["total"] = dtName.Rows.Count;
                     //r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dtName, page, limit));
                     r["total"] = dt.Rows.Count;
-                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));
+                    if (d["IS_EXPORT"].ToString() == "0")
+                    {
+                        r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));
+                    }
+                    else
+                    {
+                        r["items"] = KVTool.TableToListDic(dt);
+                    }
                     r["code"] = 2000;
                     r["message"] = "查询成功";
                 }
@@ -1045,5 +1052,6 @@ namespace UIDP.BIZModule
         {
             return db.getCloud_Password();
         }
+
     }
 }

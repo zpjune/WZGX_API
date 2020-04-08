@@ -34,12 +34,13 @@ namespace WZGX.WebAPI.Controllers
         [HttpGet("fetchUserList")]
         public IActionResult fetchUserList(string limit, string page, string USER_NAME, int? FLAG, string sort)
         {
-            Dictionary<string, object> d = new Dictionary<string, object>();
+             Dictionary<string, object> d = new Dictionary<string, object>();
             d["limit"] = limit;
             d["page"] = page;
             d["USER_NAME"] = USER_NAME;
             d["FLAG"] = FLAG;
             d["sort"] = sort;
+            
             Dictionary<string, object> res = mm.fetchUserList(d);
             return Json(res);
         }
@@ -347,7 +348,7 @@ namespace WZGX.WebAPI.Controllers
         /// <returns></returns>
         // GET api/values
         [HttpGet("fetchUserOrgList")]
-        public IActionResult fetchUserOrgList(string limit, string page, string USER_NAME, int? FLAG, string sort, string orgId, string USER_DOMAIN)
+        public IActionResult fetchUserOrgList(string limit, string page, string USER_NAME, int? FLAG, string sort, string orgId, string USER_DOMAIN,string IS_EXPORT)
         {
             Dictionary<string, object> d = new Dictionary<string, object>();
             if (!string.IsNullOrEmpty(orgId))
@@ -370,6 +371,7 @@ namespace WZGX.WebAPI.Controllers
             d["FLAG"] = FLAG;
             d["sort"] = sort;
             d["orgId"] = orgId;
+            d["IS_EXPORT"] = IS_EXPORT;
             Dictionary<string, object> res = mm.fetchUserOrgList(d);
             return Json(res);
         }
