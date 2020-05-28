@@ -816,7 +816,7 @@ namespace UIDP.ODS.CangChu
                 sql = @"select SUM(MENGE) MENGE,WERKS_NAME,MEINS
                     from CONVERT_RKJE
                     WHERE  substr(BUDAT_MKPF,1,4)='" + year + "' AND DKCODE='" + dkcode + "' and substr(BUDAT_MKPF,5,2)='"+ month + "' ";
-                sql += "  GROUP BY ,WERKS_NAME,MEINS ORDER BY WERKS_NAME ";
+                sql += "  GROUP BY WERKS_NAME,MEINS ORDER BY WERKS_NAME ";
                 return db.GetDataTable(sql);
             }
           
